@@ -62,11 +62,11 @@
 
 ### Cross-Session Learning (LEARN)
 
-- [ ] LEARN-01: Memory skill — lightweight semantic memory inspired by Daem0n-MCP patterns (store, recall, decay) called explicitly by Agency workflows, not via hooks
-- [ ] LEARN-02: Outcome recording — after build/review, store agent performance, task outcomes, and review findings with importance scoring
-- [ ] LEARN-03: Pattern recall — during plan/agent selection, query past outcomes to improve recommendations (falls back to registry algorithm if no memory available)
-- [ ] LEARN-04: Session briefing — richer resume via stored decision history and recent outcomes, enhancing STATUS.md-only restore
-- [ ] LEARN-05: Graceful degradation — all memory integration is optional; workflows function identically without it
+- [x] LEARN-01: Memory skill — lightweight semantic memory inspired by Daem0n-MCP patterns (store, recall, decay) called explicitly by Agency workflows, not via hooks
+- [x] LEARN-02: Outcome recording — after build/review, store agent performance, task outcomes, and review findings with importance scoring
+- [x] LEARN-03: Pattern recall — during plan/agent selection, query past outcomes to improve recommendations (falls back to registry algorithm if no memory available)
+- [x] LEARN-04: Session briefing — richer resume via stored decision history and recent outcomes, enhancing STATUS.md-only restore
+- [x] LEARN-05: Graceful degradation — all memory integration is optional; workflows function identically without it
 
 ### Custom Agents (CUSTOM)
 
@@ -118,7 +118,7 @@
 | STATUS-01 through STATUS-04 | Phase 6 |
 | PORT-01 through PORT-02 | Phase 7 |
 | MILE-01 through MILE-02 | Phase 8 |
-| LEARN-01 through LEARN-05 | TBD |
+| LEARN-01 through LEARN-05 | Phase 9 |
 | CUSTOM-01 through CUSTOM-03 | TBD |
 | GH-01 through GH-03 | TBD |
 | BROWN-01 through BROWN-03 | TBD |

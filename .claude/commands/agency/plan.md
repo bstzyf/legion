@@ -13,6 +13,7 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
 @./.claude/skills/agency/workflow-common.md
 @./.claude/skills/agency/agent-registry.md
 @./.claude/skills/agency/phase-decomposer.md
+@./.claude/skills/agency/memory-manager.md
 </execution_context>
 
 <context>

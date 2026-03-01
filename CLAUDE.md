@@ -49,6 +49,10 @@ agency-agents/        — 51 agent personality .md files organized by division
 
 Each phase: plan (decompose + assign agents) → build (parallel execution) → review (QA loop)
 
+## Memory Layer (Optional)
+
+After build/review cycles, outcomes are recorded to `.planning/memory/OUTCOMES.md`. During planning, past outcomes boost agent recommendations. During status, recent outcomes enrich the session briefing. All memory features degrade gracefully — the system works identically without them.
+
 ## Conventions
 
 - **Personality-first**: Agent .md files are the source of truth for agent behavior

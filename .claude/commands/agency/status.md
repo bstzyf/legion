@@ -15,6 +15,7 @@ Output: Dashboard display with next-action routing.
 @./.claude/skills/agency/workflow-common.md
 @./.claude/skills/agency/execution-tracker.md
 @./.claude/skills/agency/milestone-tracker.md
+@./.claude/skills/agency/memory-manager.md
 </execution_context>
 
 <context>
@@ -50,6 +51,11 @@ Output: Dashboard display with next-action routing.
    e. .planning/ROADMAP.md `## Milestones` section — if present, extract:
       - Each milestone: name, phase range, status
       - The current milestone (the one containing the current phase number)
+   f. .planning/memory/OUTCOMES.md — if present, follow memory-manager Section 4 "Recall Session Briefing":
+      - recent_outcomes: last 5 outcomes with decay scores
+      - top_agents: top 3 agents by task count and success rate
+      - total_records: total count of all outcome records
+      If .planning/memory/OUTCOMES.md does not exist: skip, set memory_available = false
 
 3. CALCULATE PROGRESS
    Follow execution-tracker Section 5 (Progress Calculation):
@@ -105,6 +111,24 @@ Output: Dashboard display with next-action routing.
    ## Requirements Progress
    {checked_count}/{total_count} requirements complete
    {List unchecked requirements from current phase, if any}
+
+   If memory_available (i.e., .planning/memory/OUTCOMES.md exists and has records):
+
+   ## Memory
+   **Outcomes**: {total_records} recorded | **Recent** (last 5):
+   | Date | Agent | Outcome | Summary |
+   |------|-------|---------|---------|
+   | {date} | {agent} | {outcome} | {summary} |
+   ...
+
+   **Top Agents** (by experience):
+   | Agent | Tasks | Success Rate |
+   |-------|-------|-------------|
+   | {agent_id} | {task_count} | {success_rate}% |
+   ...
+
+   If memory is not available (no OUTCOMES.md, or file exists but is empty):
+   Omit this section entirely. Do NOT show a placeholder, suggestion, or "no memory" message.
 
    If there are pre-existing issues in STATE.md:
    ## Known Issues

@@ -121,6 +121,29 @@ Plan names should describe the primary output, not the process:
 
 How to select agents for each plan using the `agent-registry.md` recommendation algorithm.
 
+### Memory-Enhanced Recommendation (Optional)
+
+Before running the per-plan recommendation algorithm, check if cross-session memory can inform agent selection.
+
+```
+Step 0: Check memory availability
+  - If .planning/memory/OUTCOMES.md exists:
+    a. Extract task types from the current phase's requirements and deliverables
+    b. Call memory-manager Section 4 "Recall Agent Scores" with those task types
+    c. Receive agent_id → memory_score mapping
+    d. Pass this mapping to the per-plan selection below — it will be consumed
+       by agent-registry.md Step 4.5 (Memory Boost)
+    e. Display memory context to inform the recommendation:
+       "Memory: {count} past outcomes found for task types [{types}].
+        Agents with track record: {agent_id} ({memory_score}), ..."
+  - If .planning/memory/OUTCOMES.md does not exist:
+    a. Skip memory recall entirely
+    b. Proceed to Per-Plan Selection with no memory data
+    c. Do NOT display any message about missing memory
+```
+
+This step enriches the recommendation but does not change the algorithm. If memory is absent, Section 4 works identically to how it worked before Phase 9.
+
 ### Per-Plan Selection
 
 ```
