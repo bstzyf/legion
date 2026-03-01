@@ -1,13 +1,13 @@
 # Project State
 
 ## Current Position
-- **Phase**: 5 of 6 (executing)
-- **Status**: Phase 5 executing — Plan 05-01 complete
-- **Last Activity**: Plan 05-01 execution (2026-03-01)
+- **Phase**: 5 of 6 (executed, pending review)
+- **Status**: Phase 5 complete — all plans executed successfully
+- **Last Activity**: Phase 5 execution (2026-03-01)
 
 ## Progress
 ```
-[#############.......] 69% — 10/15 plans complete
+[##############......] 73% — 11/15 plans complete
 ```
 
 ## Phase 1 Results
@@ -29,6 +29,7 @@
 
 ## Phase 5 Results
 - Plan 05-01 (Wave 1): Review-loop skill (685 lines) — 9-section dev-QA loop engine with structured feedback, fix routing, and escalation
+- Plan 05-02 (Wave 2): Full /agency:review implementation (315 lines) — 6-step process wiring review-loop + execution-tracker with agent selection, 3-cycle loop, and escalation
 
 ## Recent Decisions
 - Plugin format: Claude Code .claude/ directory structure
@@ -46,4 +47,4 @@
 - 2 spatial-computing agents lack YAML frontmatter (terminal-integration-specialist, visionos-spatial-engineer)
 
 ## Next Action
-Run `/agency:build` to execute Phase 5: Quality Gates
+Run `/agency:review` to verify Phase 5: Quality Gates
