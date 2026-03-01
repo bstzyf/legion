@@ -1,13 +1,13 @@
 # Project State
 
 ## Current Position
-- **Phase**: 8 of 14 (executing)
-- **Status**: Phase 8 executing — Wave 1 complete, Wave 2 executing
-- **Last Activity**: Phase 8 Wave 2 execution (2026-03-01)
+- **Phase**: 8 of 14 (complete)
+- **Status**: Phase 8 complete — 2 plans, 2 waves
+- **Last Activity**: Phase 8 Plan 08-02 execution (2026-03-01)
 
 ## Progress
 ```
-[##################..] 81% — 18/22 plans complete
+[#################...] 86% — 19/22 plans complete
 ```
 
 ## Phase 1 Results
@@ -37,6 +37,7 @@
 
 ## Phase 8 Results
 - Plan 08-01 (Wave 1): Milestone-tracker skill (434 lines) — 6-section milestone management with format, definition, completion, archiving, metrics, error handling + workflow-common and execution-tracker updates
+- Plan 08-02 (Wave 2): Full /agency:milestone command (241 lines) — 7-step lifecycle process + status.md milestone integration + MILE-01/02 complete
 
 ## Recent Decisions
 - Plugin format: Claude Code .claude/ directory structure
@@ -56,6 +57,9 @@
 - Milestones placed between Phase Details and Progress in ROADMAP.md
 - Plan percentage as primary milestone metric (finer than phase count)
 - 10-char milestone progress bar (vs 20-char project bar)
+- Milestone command follows portfolio.md structure with 7-step action loop
+- Status milestone section conditional — omitted when milestones not defined
+- Milestone boundary routing (e2) takes priority over generic next-phase routing
 
 ## Phase 6 Results
 - Plan 06-01 (Wave 1): Full /agency:status implementation (134 lines) — 6-step dashboard with progress bar, phase history, session resume, deterministic next-action routing
@@ -68,4 +72,4 @@
 - ~~status.md missing execution-tracker in execution_context~~ — Fixed (2026-03-01)
 
 ## Next Action
-Continue Phase 8: execute Plan 08-02 (milestone command implementation).
+Run `/agency:plan 9` to plan Phase 9: Cross-Session Learning.

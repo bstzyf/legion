@@ -9,7 +9,7 @@
 - [x] **Phase 5: Quality Gates** — `/agency:review` with dev-QA loops and verification
 - [x] **Phase 6: Status & Quick** — `/agency:status`, `/agency:quick`, session resume
 - [x] **Phase 7: Portfolio Management** — Multi-project tracking, Studio Producer coordination
-- [ ] **Phase 8: Milestone Management** — Milestone completion, archiving, metrics
+- [x] **Phase 8: Milestone Management** — Milestone completion, archiving, metrics
 - [ ] **Phase 9: Cross-Session Learning** — Pattern memory, rich session context restoration
 - [ ] **Phase 10: Custom Agents** — Agent creation workflow, schema validation, registry auto-update
 - [ ] **Phase 11: GitHub Integration** — Issue linking, PR creation, status sync
@@ -100,7 +100,7 @@
 - Milestone completion generates summary with metrics
 - Archived milestones are accessible but don't clutter active state
 - STATE.md and ROADMAP.md reflect milestone boundaries
-**Plans**: TBD
+**Plans**: 2
 
 ### Phase 9: Cross-Session Learning
 **Goal**: A lightweight "daem0n-lite" memory layer — Agency workflows explicitly store and recall outcomes to improve over time. Inspired by Daem0n-MCP's proven patterns (semantic memory, outcome tracking, importance scoring, decay) but passive and opt-in, not hook-driven.
@@ -169,7 +169,7 @@
 | 5. Quality Gates | 2 | 2 | Complete |
 | 6. Status & Quick | 2 | 2 | Complete |
 | 7. Portfolio Management | 2 | 2 | Complete |
-| 8. Milestone Management | 2 | 1 | In Progress |
+| 8. Milestone Management | 2 | 2 | Complete |
 | 9. Cross-Session Learning | TBD | 0 | Pending |
 | 10. Custom Agents | TBD | 0 | Pending |
 | 11. GitHub Integration | TBD | 0 | Pending |
