@@ -14,6 +14,7 @@ Output: Dashboard display with next-action routing.
 <execution_context>
 @./.claude/skills/agency/workflow-common.md
 @./.claude/skills/agency/execution-tracker.md
+@./.claude/skills/agency/milestone-tracker.md
 </execution_context>
 
 <context>
@@ -46,6 +47,9 @@ Output: Dashboard display with next-action routing.
       - Phase list with names, goals, and completion status
       - Progress table: phase name, plans count, completed count, status per phase
    d. .planning/REQUIREMENTS.md — if exists, count checked vs unchecked requirements
+   e. .planning/ROADMAP.md `## Milestones` section — if present, extract:
+      - Each milestone: name, phase range, status
+      - The current milestone (the one containing the current phase number)
 
 3. CALCULATE PROGRESS
    Follow execution-tracker Section 5 (Progress Calculation):
@@ -69,6 +73,17 @@ Output: Dashboard display with next-action routing.
    **Phase {N}: {phase_name}** — {status}
    Plans: {completed_in_phase}/{total_in_phase}
    Goal: {phase_goal from ROADMAP.md}
+
+   If milestones are defined in ROADMAP.md:
+
+   ## Current Milestone
+   **Milestone {N}: {name}** — {status}
+   Phases {start}-{end} | {phases_complete}/{phases_total} phases complete
+
+   If the current milestone is Complete but not Archived:
+   Tip: Run `/agency:milestone` to generate a summary and optionally archive.
+
+   If milestones are NOT defined in ROADMAP.md, omit this section entirely (do not show a placeholder).
 
    ## Phase History
    | Phase | Status | Plans |
@@ -113,6 +128,10 @@ Output: Dashboard display with next-action routing.
    e. Current phase is "Complete" AND there are more phases:
       - Find the next incomplete phase number (N+1)
       Next: "Run `/agency:plan {N+1}` to plan Phase {N+1}: {next_phase_name}."
+
+   e2. Current phase is "Complete" AND it's the last phase of the current milestone AND all phases in the milestone are Complete:
+       Next: "Milestone {N}: {name} is complete! Run `/agency:milestone` to mark it done and generate a summary."
+       This case takes priority over (e) when a milestone boundary is reached.
 
    f. All phases are "Complete":
       Next: "All phases complete! Project is finished.
