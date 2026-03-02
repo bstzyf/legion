@@ -22,9 +22,19 @@ All core workflows operational: project initialization, phase planning with agen
 
 See [v1.0 archived requirements](milestones/v1.0-REQUIREMENTS.md) for full details.
 
-## Next Milestone Goals
+## Current Milestone: v2.0 Proper Plugin
 
-(To be defined via `/gsd:new-milestone` or `/agency:start`)
+**Goal:** Convert Agency from a standalone `.claude/` directory config into a proper Claude Code plugin — installable via `claude plugin add`, distributable via marketplace, with correct plugin structure.
+
+**Target features:**
+- Plugin manifest (`.claude-plugin/plugin.json`) with full metadata
+- Restructured directory layout: `commands/`, `skills/`, `agents/` at plugin root
+- 51 agent files migrated to plugin `agents/` format
+- 15 skills converted to `skills/{name}/SKILL.md` format
+- 9 commands moved to plugin `commands/` directory
+- All internal cross-references updated for new paths
+- Installable via `claude plugin add github:user/repo` and `--plugin-dir`
+- README and marketplace entry for distribution
 
 ## Out of Scope
 
@@ -62,5 +72,7 @@ See [v1.0 archived requirements](milestones/v1.0-REQUIREMENTS.md) for full detai
 | **Shipyard** | Wave-based execution, max 3 tasks/plan, atomic commits, agent role boundaries | 29 commands, checkpoint/rollback system, hook complexity |
 | **Best Practice** | Skills/commands/agents structure, agent frontmatter, permission patterns | RPI workflow (too specific), custom hooks infrastructure |
 
+| Convert to Claude Code plugin format | Plugin system is mature, enables distribution and updates | — Pending |
+
 ---
-*Last updated: 2026-03-01 — v1.0 milestone completed and archived*
+*Last updated: 2026-03-01 — v2.0 milestone started*
