@@ -1,4 +1,4 @@
-# Contributing to The Agency Workflows
+# Contributing to Legion
 
 ## Development Setup
 
@@ -17,7 +17,7 @@ claude --plugin-dir .
 ```
 
 As you make changes, restart Claude Code to pick up updates. You can test:
-- Commands with `/agency:start`, `/agency:plan 1`, etc.
+- Commands with `/legion:start`, `/legion:plan 1`, etc.
 - Skills are loaded automatically from `skills/{name}/SKILL.md`
 - Agents appear in the registry via `skills/agent-registry/SKILL.md`
 
@@ -32,7 +32,7 @@ claude --plugin-dir ./agency-agents --plugin-dir ./other-plugin
 ## Plugin Structure
 
 ```
-commands/           10 command entry points (/agency:*)
+commands/           10 command entry points (/legion:*)
 skills/             17 workflow skills (SKILL.md format)
 agents/             51 agent personality files (.md)
 scripts/            Validation and maintenance scripts
@@ -43,7 +43,7 @@ CLAUDE.md           Project-level instructions
 
 ### Commands (`commands/`)
 
-Each command is a `.md` file that serves as an entry point for an `/agency:*` slash command. Commands orchestrate skills and spawn agents — they don't contain business logic directly.
+Each command is a `.md` file that serves as an entry point for a `/legion:*` slash command. Commands orchestrate skills and spawn agents — they don't contain business logic directly.
 
 ### Skills (`skills/{name}/SKILL.md`)
 
@@ -55,7 +55,7 @@ Agent personality files define how each AI specialist behaves when spawned. Each
 
 ## Adding a New Agent
 
-The easiest way is `/agency:agent` — it guides you through creation and handles validation + registry updates. To add one manually:
+The easiest way is `/legion:agent` — it guides you through creation and handles validation + registry updates. To add one manually:
 
 1. Create `agents/{division}-{name}.md` with frontmatter:
    ```yaml
@@ -71,7 +71,7 @@ The easiest way is `/agency:agent` — it guides you through creation and handle
 2. Write the personality using Format A emoji headings (80-350 lines). Required sections: `## 🧠 Your Identity & Memory`, `## 🎯 Your Core Mission`, `## 🚨 Critical Rules You Must Follow`, `## 🛠️ Your Technical Deliverables`, `## 🔄 Your Workflow Process`, `## 💭 Your Communication Style`, `## 🔄 Learning & Memory`, `## 🎯 Your Success Metrics`
 3. Add the agent to the catalog in `skills/agent-registry/CATALOG.md`
 4. Run `bash scripts/validate.sh` to verify schema compliance
-5. Test with `/agency:quick "task for your agent"`
+5. Test with `/legion:quick "task for your agent"`
 
 ## Adding a New Skill
 
