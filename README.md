@@ -14,7 +14,7 @@ Turn 51 isolated agent personalities into a coordinated legion. Type `/legion:st
 
 ```bash
 # Step 1: Add the marketplace
-claude plugin marketplace add 9thLevelSoftware/agency-agents
+claude plugin marketplace add 9thLevelSoftware/legion
 
 # Step 2: Install the plugin
 claude plugin install legion
@@ -22,15 +22,15 @@ claude plugin install legion
 
 Or from inside the Claude Code TUI:
 ```
-/plugin marketplace add 9thLevelSoftware/agency-agents
+/plugin marketplace add 9thLevelSoftware/legion
 /plugin install legion
 ```
 
 ### Local development
 
 ```bash
-git clone https://github.com/9thLevelSoftware/agency-agents.git
-claude --plugin-dir ./agency-agents
+git clone https://github.com/9thLevelSoftware/legion.git
+claude --plugin-dir ./legion
 ```
 
 ### Prerequisites
@@ -391,7 +391,7 @@ Browse the full roster in the [`agents/`](agents/) directory.
 ## Architecture
 
 ```
-agency-agents/              <- Plugin root
+legion/                     <- Plugin root
 ├── .claude-plugin/
 │   ├── plugin.json         <- Plugin manifest (name, version, author, keywords)
 │   └── marketplace.json    <- Marketplace entry for `claude plugin marketplace add`

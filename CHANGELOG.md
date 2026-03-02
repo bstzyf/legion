@@ -22,8 +22,10 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Unchanged
 - 51 agent personality files (contain zero "agency" references — no changes needed)
-- Repository URL remains `9thLevelSoftware/agency-agents` (actual GitHub repo name)
 - All features, workflows, and capabilities remain identical
+
+### Repository
+- GitHub repository renamed from `9thLevelSoftware/agency-agents` to `9thLevelSoftware/legion`
 
 ## [2.0.0] - 2026-03-02
 

@@ -11,8 +11,8 @@
 Clone the repository and load it as a local plugin:
 
 ```bash
-git clone https://github.com/9thLevelSoftware/agency-agents.git
-cd agency-agents
+git clone https://github.com/9thLevelSoftware/legion.git
+cd legion
 claude --plugin-dir .
 ```
 
@@ -26,7 +26,7 @@ As you make changes, restart Claude Code to pick up updates. You can test:
 If you're developing alongside other plugins:
 
 ```bash
-claude --plugin-dir ./agency-agents --plugin-dir ./other-plugin
+claude --plugin-dir ./legion --plugin-dir ./other-plugin
 ```
 
 ## Plugin Structure
