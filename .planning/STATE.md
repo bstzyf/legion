@@ -33,15 +33,15 @@ progress:
 
 ## Current Position
 
-Phase: 21 (Strategic Advisors) — Planned
-Plan: 21-01 (planned, 2 tasks — advise.md command + state updates)
-Status: Phase 21 planned — 1 plan, 1 wave, 1 command to create
-Last activity: 2026-03-02 — Phase 21 planning complete
+Phase: 21 (Strategic Advisors) — Complete
+Plan: 21-01 (complete, 2 tasks — advise.md command + state updates)
+Status: Phase 21 executed — /agency:advise command created with three-layer read-only enforcement
+Last activity: 2026-03-02 — Phase 21 execution complete
 
 ## Progress (v2.0)
 
 ```
-[##################            ]  67% — 6/9 phases complete
+[#####################         ]  78% — 7/9 phases complete
 ```
 
 | Phase | Plans Complete | Status | Completed |
@@ -52,7 +52,7 @@ Last activity: 2026-03-02 — Phase 21 planning complete
 | 18. Command Migration and Path Updates | 1/1 | Complete | 2026-03-02 |
 | 19. Registry Integration | 1/1 | Complete | 2026-03-02 |
 | 20. Distribution | 1/1 | Complete | 2026-03-02 |
-| 21. Strategic Advisors | 0/1 | Planned | - |
+| 21. Strategic Advisors | 1/1 | Complete | 2026-03-02 |
 | 22. Dynamic Review Panels | 0/? | Not started | - |
 | 23. Plan Critique | 0/? | Not started | - |
 
@@ -70,7 +70,7 @@ Last activity: 2026-03-02 — Phase 21 planning complete
 - Command migration (Phase 18) depends on agents and skills being in place first
 - Registry update (Phase 19) depends on agent paths being settled (Phase 16) and commands updated (Phase 18)
 - Distribution artifacts (Phase 20) are last — depends on full functional plugin
-- Strategic advisors (Phase 21) use dynamic agent selection, not fixed roles — leverages existing agent-registry
+- Strategic advisors (Phase 21) use dynamic agent selection, not fixed roles — leverages existing agent-registry. Three-layer read-only: command allowed-tools + Explore subagent + prompt instruction
 - Dynamic review panels (Phase 22) compose 2-4 reviewers with domain-weighted rubrics — replaces Conductor's fixed 5-director board
 - Plan critique (Phase 23) uses pre-mortem inversion and assumption hunting — cherry-picked from Conductor's plan-critiquer
 
@@ -97,6 +97,6 @@ Last activity: 2026-03-02 — Phase 21 planning complete
 
 ### Next Steps
 
-Phase 21 planned. `/agency:advise` command designed with three-layer read-only enforcement (command tools + Explore subagent + prompt instruction).
-Next: Run `/gsd:execute-phase 21` to execute.
-Remaining phases: 21 (Strategic Advisors — planned), 22 (Dynamic Review Panels), 23 (Plan Critique).
+Phase 21 complete. `/agency:advise` command created with three-layer read-only enforcement (command allowed-tools + Explore subagent + prompt instruction).
+Next: Run `/gsd:plan-phase 22` to plan Dynamic Review Panels.
+Remaining phases: 22 (Dynamic Review Panels), 23 (Plan Critique).

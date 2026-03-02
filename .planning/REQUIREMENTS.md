@@ -43,8 +43,8 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 
 ### Strategic Advisory (ADV)
 
-- [ ] **ADV-01**: `/agency:advise` command spawns read-only consultation agents from the 51 agent pool based on topic (architecture, UX, business, marketing, etc.)
-- [ ] **ADV-02**: Advisory agents operate in explicit read-only mode — can explore codebase and read files but cannot modify anything
+- [x] **ADV-01**: `/agency:advise` command spawns read-only consultation agents from the 51 agent pool based on topic (architecture, UX, business, marketing, etc.)
+- [x] **ADV-02**: Advisory agents operate in explicit read-only mode — can explore codebase and read files but cannot modify anything
 
 ### Dynamic Review Panels (REV)
 
@@ -101,8 +101,8 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 | DIST-02 | Phase 20 | Complete |
 | DIST-03 | Phase 20 | Complete |
 | DIST-04 | Phase 20 | Complete |
-| ADV-01 | Phase 21 | Pending |
-| ADV-02 | Phase 21 | Pending |
+| ADV-01 | Phase 21 | Complete |
+| ADV-02 | Phase 21 | Complete |
 | REV-01 | Phase 22 | Pending |
 | REV-02 | Phase 22 | Pending |
 | REV-03 | Phase 22 | Pending |

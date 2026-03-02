@@ -12,6 +12,7 @@ A Claude Code plugin for orchestrating 51 AI specialist personalities as coordin
 | `/agency:review` | Run quality review cycle with testing/QA agents |
 | `/agency:status` | Show progress dashboard and route to next action |
 | `/agency:quick <task>` | Run ad-hoc task with intelligent agent selection |
+| `/agency:advise` | Get read-only expert consultation from any of the 51 agent personalities |
 | `/agency:portfolio` | Multi-project dashboard with dependency tracking |
 | `/agency:milestone` | Milestone completion, archiving, and metrics |
 | `/agency:agent` | Create a new agent personality through a guided workflow |
@@ -20,7 +21,7 @@ A Claude Code plugin for orchestrating 51 AI specialist personalities as coordin
 
 ```
 .claude/
-  commands/agency/    — 8 /agency: command entry points
+  commands/agency/    — 10 /agency: command entry points
   skills/agency/      — Reusable workflow skills (agent-registry, workflow-common)
 agents/               — 51 agent personality .md files (flat, with division in frontmatter)
 .planning/            — Project state (PROJECT.md, ROADMAP.md, STATE.md)
@@ -49,6 +50,8 @@ agents/               — 51 agent personality .md files (flat, with division in
 ```
 
 Each phase: plan (decompose + assign agents) → build (parallel execution) → review (QA loop)
+
+Advisory: `/agency:advise <topic>` — standalone consultation, no phase context needed
 
 GitHub integration is opt-in — when a GitHub remote exists, `/agency:plan` creates issues, `/agency:build` creates PRs, and `/agency:status` shows GitHub status.
 
