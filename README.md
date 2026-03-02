@@ -339,7 +339,7 @@ The key insight from Daem0n was computing decay at recall time rather than destr
 
 Beyond combining these five systems, The Agency Workflows introduced several original patterns:
 
-- **Personality-first agents**: The 51 agent personalities aren't just role labels — they're 80-120 line character sheets with expertise, communication style, hard rules, and personality quirks. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
+- **Personality-first agents**: The 51 agent personalities aren't just role labels — they're 80-350 line character sheets with expertise, communication style, hard rules, and personality quirks, all in a standardized emoji-headed format. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
 
 - **Hybrid agent selection**: The workflow recommends agents based on task analysis (keyword matching, division affinity, past performance), but the user always confirms or overrides. No black-box assignment.
 
@@ -404,7 +404,9 @@ agency-agents/              <- Plugin root
 │   └── agent.md
 ├── skills/                 <- 17 reusable workflow skills
 │   ├── workflow-common/SKILL.md     <- Shared constants and conventions
-│   ├── agent-registry/SKILL.md     <- 51 agent catalog + recommendation
+│   ├── agent-registry/
+│   │   ├── SKILL.md               <- Recommendation algorithm + team patterns
+│   │   └── CATALOG.md             <- 51 agent catalog + task-type index
 │   ├── questioning-flow/SKILL.md   <- 3-stage adaptive conversation
 │   ├── phase-decomposer/SKILL.md   <- Phase decomposition with domain detection
 │   ├── wave-executor/SKILL.md      <- Parallel execution with personality injection
@@ -423,7 +425,8 @@ agency-agents/              <- Plugin root
     ├── PROJECT.md
     ├── ROADMAP.md
     ├── STATE.md
-    └── phases/
+    ├── phases/             <- Active phase plans and summaries
+    └── archive/            <- Archived phases from completed milestones
 ```
 
 ## Design Principles
@@ -432,6 +435,7 @@ agency-agents/              <- Plugin root
 - **Pure Claude Code**: No custom tooling — skills, commands, and agents only
 - **Human-readable state**: All planning files are markdown, readable without tools
 - **Full personality injection**: Agents are spawned with their complete .md as instructions
+- **Standardized format**: All 51 agents use Format A — emoji section headings, "Your" pronouns, 80-350 line range
 - **Balanced cost**: Opus for planning, Sonnet for execution, Haiku for checks
 - **Max 3 tasks per plan**: Keeps work focused and reviewable
 - **Hybrid selection**: Workflow recommends agents, user confirms or overrides
