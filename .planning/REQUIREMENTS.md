@@ -88,9 +88,9 @@
 
 ### Marketing Workflows (MKT)
 
-- [ ] MKT-01: Campaign planning workflow — structured campaign creation with marketing agents
-- [ ] MKT-02: Content calendar generation — time-based content planning with assignments
-- [ ] MKT-03: Cross-channel coordination — align messaging across social, email, web
+- [x] MKT-01: Campaign planning workflow — structured campaign creation with marketing agents
+- [x] MKT-02: Content calendar generation — time-based content planning with assignments
+- [x] MKT-03: Cross-channel coordination — align messaging across social, email, web
 
 ### Design Workflows (DSN)
 
@@ -122,5 +122,5 @@
 | CUSTOM-01 through CUSTOM-03 | Phase 10 |
 | GH-01 through GH-03 | Phase 11 |
 | BROWN-01 through BROWN-03 | Phase 12 |
-| MKT-01 through MKT-03 | TBD |
+| MKT-01 through MKT-03 | Phase 13 |
 | DSN-01 through DSN-03 | TBD |
