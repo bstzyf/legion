@@ -89,9 +89,19 @@ Best Practice's agent frontmatter schema (YAML with name, description, color, di
 
 **Left behind:** Best Practice's RPI workflow (too domain-specific) and custom hooks infrastructure. We kept the architecture patterns and dropped the opinionated workflows.
 
+#### From [Daem0n-MCP](https://github.com/UnderdogProtocol/daem0n-MCP)
+
+**Took: The semantic memory architecture.**
+
+Daem0n-MCP proved that AI agents can learn across sessions through structured outcome tracking with importance scoring and time-based decay. We adopted its core memory primitives — store, recall, and decay — as our `memory-manager.md` skill. After each build/review cycle, outcomes are recorded with agent ID, task type, success/failure, and importance score. During future planning, past outcomes are queried to boost agent recommendations, weighted by a 4-bracket decay curve (1.0 for recent, down to 0.1 for old) so the system improves over time without getting stuck in historical patterns.
+
+The key insight from Daem0n was computing decay at recall time rather than destructively aging stored data. This means the full outcome history is always preserved — you can audit every decision — while relevance scoring adapts naturally as time passes.
+
+**Left behind:** Daem0n's hook-driven architecture (memory operations triggered automatically on every tool call) and MCP server dependency. Our memory layer is called explicitly by Agency workflows and stored as a single markdown table at `.planning/memory/OUTCOMES.md` — no server process, no hooks, no background sync. Everything degrades gracefully if the memory file doesn't exist.
+
 ### What The Agency Added
 
-Beyond combining these four systems, The Agency Workflows introduced several original patterns:
+Beyond combining these five systems, The Agency Workflows introduced several original patterns:
 
 - **Personality-first agents**: The 51 agent personalities aren't just role labels — they're 80-120 line character sheets with expertise, communication style, hard rules, and personality quirks. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
 
@@ -105,15 +115,16 @@ Beyond combining these four systems, The Agency Workflows introduced several ori
 
 ### The Result
 
-| Metric | GSD | Conductor | Shipyard | Best Practice | **Agency** |
-|--------|-----|-----------|----------|---------------|------------|
-| Commands | 33+ | 15+ | 29 | 5 | **9** |
-| Workflow files | 33+ | 20+ | 15+ | 8 | **15 skills** |
-| Setup required | CLI install + config | Directory init | Hook setup | Copy files | **Copy files** |
-| Custom tooling | Node.js CLI | None | Shell hooks | None | **None** |
-| Agent personalities | None | None | None | Templates | **51 specialists** |
-| Domain workflows | Engineering only | Engineering only | Engineering only | Engineering only | **Engineering + Marketing + Design** |
-| State format | Markdown | JSON + Markdown | Markdown + JSON | Markdown | **Markdown only** |
+| Metric | GSD | Conductor | Shipyard | Best Practice | Daem0n | **Agency** |
+|--------|-----|-----------|----------|---------------|--------|------------|
+| Commands | 33+ | 15+ | 29 | 5 | N/A | **9** |
+| Workflow files | 33+ | 20+ | 15+ | 8 | 3 | **15 skills** |
+| Setup required | CLI install + config | Directory init | Hook setup | Copy files | MCP server | **Copy files** |
+| Custom tooling | Node.js CLI | None | Shell hooks | None | MCP server | **None** |
+| Agent personalities | None | None | None | Templates | None | **51 specialists** |
+| Cross-session memory | None | None | None | None | Hook-driven | **Explicit, opt-in** |
+| Domain workflows | Engineering only | Engineering only | Engineering only | Engineering only | N/A | **Eng + Marketing + Design** |
+| State format | Markdown | JSON + Markdown | Markdown + JSON | Markdown | SQLite | **Markdown only** |
 
 Nine commands. Fifteen skills. Zero custom tooling. Fifty-one personalities. Copy the directory and go.
 
