@@ -21,9 +21,9 @@ progress:
 
 Milestone: v3.0 — Legion Rebrand
 Phase: 28 — Documentation
-Plan: 28-02 COMPLETE
-Status: Phase 28 plan 02 executed — CLAUDE.md, CONTRIBUTING.md, CHANGELOG.md rebranded to Legion (zero /agency: references, v3.0.0 changelog entry added)
-Last activity: 2026-03-02 — Phase 28 plan 02 executed (3 files, zero /agency: remnants, v3.0.0 entry with Legion quote)
+Plan: 28-01 + 28-02 COMPLETE
+Status: Phase 28 fully executed — all 4 docs (README, CLAUDE.md, CONTRIBUTING.md, CHANGELOG.md) rebranded to Legion with correct msitarzewski attribution
+Last activity: 2026-03-02 — Phase 28 plans 01+02 executed (4 files rebranded, attribution credits msitarzewski/agency-agents)
 
 Progress: [##########] 100% (5/5 phases complete)
 
