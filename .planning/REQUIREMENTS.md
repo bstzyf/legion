@@ -55,25 +55,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CMD-01 | — | Pending |
-| CMD-02 | — | Pending |
-| CMD-03 | — | Pending |
-| SKL-01 | — | Pending |
-| SKL-02 | — | Pending |
-| SKL-03 | — | Pending |
-| PLG-01 | — | Pending |
-| PLG-02 | — | Pending |
-| DOC-01 | — | Pending |
-| DOC-02 | — | Pending |
-| DOC-03 | — | Pending |
-| DOC-04 | — | Pending |
-| ATR-01 | — | Pending |
+| SKL-01 | Phase 24 | Pending |
+| CMD-01 | Phase 25 | Pending |
+| CMD-02 | Phase 25 | Pending |
+| CMD-03 | Phase 25 | Pending |
+| SKL-02 | Phase 26 | Pending |
+| SKL-03 | Phase 26 | Pending |
+| PLG-01 | Phase 27 | Pending |
+| PLG-02 | Phase 27 | Pending |
+| DOC-01 | Phase 28 | Pending |
+| DOC-02 | Phase 28 | Pending |
+| DOC-03 | Phase 28 | Pending |
+| DOC-04 | Phase 28 | Pending |
+| ATR-01 | Phase 28 | Pending |
 
 **Coverage:**
 - v3.0 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-02*
-*Last updated: 2026-03-02 after initial definition*
+*Last updated: 2026-03-02 after roadmap creation*

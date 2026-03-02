@@ -7,10 +7,12 @@
 ## Current Position
 
 Milestone: v3.0 — Legion Rebrand
-Phase: Not started (defining requirements)
+Phase: 24 — Foundation
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-02 — Milestone v3.0 started
+Status: Ready to plan
+Last activity: 2026-03-02 — Roadmap created, ready for Phase 24
+
+Progress: [----------] 0% (0/5 phases complete)
 
 ## Shipped Milestones
 
@@ -27,6 +29,16 @@ Last activity: 2026-03-02 — Milestone v3.0 started
 - Plugin manifest at `.claude-plugin/plugin.json`
 - Distribution: marketplace.json, README, CHANGELOG, CONTRIBUTING
 
+## v3.0 Phase Map
+
+| Phase | Goal | Requirements | Status |
+|-------|------|--------------|--------|
+| 24 — Foundation | `/legion:` namespace in workflow-common constants | SKL-01 | Not started |
+| 25 — Commands | All 10 commands renamed to `/legion:` | CMD-01, CMD-02, CMD-03 | Not started |
+| 26 — Skills | Remaining 16 skill files updated | SKL-02, SKL-03 | Not started |
+| 27 — Plugin Manifest | plugin.json + marketplace.json to Legion identity | PLG-01, PLG-02 | Not started |
+| 28 — Documentation | README, CLAUDE.md, CONTRIBUTING, CHANGELOG, attribution | DOC-01, DOC-02, DOC-03, DOC-04, ATR-01 | Not started |
+
 ## Session Continuity
 
 ### Key Decisions (carried forward)
@@ -42,3 +54,11 @@ Last activity: 2026-03-02 — Milestone v3.0 started
 - Three-layer read-only for advisory: allowed-tools + Explore subagent + prompt
 - Dynamic review panels over fixed board of directors
 - Pre-mortem + assumption hunting for plan critique
+
+### v3.0 Decisions
+
+- workflow-common updated first — it is the shared constants layer all skills and commands read from
+- Commands updated before docs — doc success criteria reference final command names
+- Plugin manifest updated before docs — README install instructions depend on final plugin name
+- Agent personality files excluded from rebrand — they contain zero "agency" references
+- .planning/ archive files excluded — preserve history as-is
