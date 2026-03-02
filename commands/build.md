@@ -129,6 +129,21 @@ skills/github-sync/SKILL.md
              explicitly requires it (e.g., updating an import in a file that uses the new file)
            - If a task is ambiguous, apply your specialist expertise to resolve the ambiguity
              and document the decision in your summary
+
+           ## Execution Resilience
+           - If you encounter an error, classify it before reporting failure:
+             BLOCKER: architecture/design/logic issues → stop, report in summary, move to next task
+             ENVIRONMENT: missing deps, wrong versions, missing dirs → auto-remediate and retry
+           - Auto-remediation steps:
+             1. Log: "ENVIRONMENT ISSUE: {error}. Attempting remediation..."
+             2. Generate and execute a fix (npm install, mkdir -p, etc.)
+             3. Retry the failed step once
+             4. If retry fails: escalate to BLOCKER in your summary
+           - Only remediate within autonomous scope (declared deps, expected dirs).
+             Do NOT install new unplanned dependencies.
+           - For verbose commands (npm/pip/cargo install, docker build, go build):
+             redirect output to a temp file, check exit code, only show last 20
+             lines if the command failed. Keep test/lint/typecheck output visible.
         6. Agent name: "{agent-id}-{NN}-{PP}" (e.g., "engineering-senior-developer-04-01")
         - If personality file is missing: fall back to autonomous mode, log the warning
 
@@ -148,6 +163,21 @@ skills/github-sync/SKILL.md
            - After all tasks complete, run the full <verification> checklist
            - Create a summary of what you did: files created/modified, key decisions,
              verification command outputs, and any issues encountered
+
+           ## Execution Resilience
+           - If you encounter an error, classify it before reporting failure:
+             BLOCKER: architecture/design/logic issues → stop, report in summary, move to next task
+             ENVIRONMENT: missing deps, wrong versions, missing dirs → auto-remediate and retry
+           - Auto-remediation steps:
+             1. Log: "ENVIRONMENT ISSUE: {error}. Attempting remediation..."
+             2. Generate and execute a fix (npm install, mkdir -p, etc.)
+             3. Retry the failed step once
+             4. If retry fails: escalate to BLOCKER in your summary
+           - Only remediate within autonomous scope (declared deps, expected dirs).
+             Do NOT install new unplanned dependencies.
+           - For verbose commands (npm/pip/cargo install, docker build, go build):
+             redirect output to a temp file, check exit code, only show last 20
+             lines if the command failed. Keep test/lint/typecheck output visible.
         3. Agent name: "executor-{NN}-{PP}" (e.g., "executor-04-01")
 
    d. Spawn all agents in the wave IN PARALLEL (wave-executor Section 4, Step 4):
@@ -165,6 +195,11 @@ skills/github-sync/SKILL.md
    f. Process results for each completed agent (wave-executor Section 5):
       - Parse the agent's SendMessage content for the structured Status field
       - Determine status: Complete | Complete with Warnings | Failed
+      - Check the agent's summary for auto-remediation reports:
+        If the summary contains "Auto-remediated:" lines, include them in the SUMMARY.md
+        under a "## Auto-Remediation" section with what was fixed and the retry result
+      - An agent that auto-remediated and succeeded is still "Complete" (not "Complete with Warnings")
+      - An agent that escalated an ENVIRONMENT issue to BLOCKER is "Failed" for that task
       - Write the plan summary file to .planning/phases/{NN}-{slug}/{NN}-{PP}-SUMMARY.md
         using the format defined in wave-executor Section 5, Step 3
       - Verify the summary file was written successfully
