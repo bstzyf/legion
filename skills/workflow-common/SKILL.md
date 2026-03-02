@@ -14,7 +14,7 @@ Shared constants, paths, and patterns used across all /agency: commands.
 | PROJECT.md | `.planning/PROJECT.md` | Project vision, requirements, constraints, decisions |
 | ROADMAP.md | `.planning/ROADMAP.md` | Phase breakdown with agent assignments and progress |
 | STATE.md | `.planning/STATE.md` | Current position, recent activity, next action |
-| Templates | `.planning/templates/` | Schema files for generating PROJECT/ROADMAP/STATE |
+| Templates | `skills/questioning-flow/templates/` | Schema files for generating PROJECT/ROADMAP/STATE |
 | Phase Plans | `.planning/phases/{NN-name}/` | Plan and summary files per phase |
 | PORTFOLIO.md | `~/.claude/agency/portfolio.md` | Global portfolio registry — all Agency projects |
 | Milestone Summaries | `.planning/milestones/MILESTONE-{N}.md` | Completion summaries with metrics per milestone |
