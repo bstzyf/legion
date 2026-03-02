@@ -185,6 +185,112 @@ When an agent fails during execution:
 4. Suggest: re-run the specific plan, or run /legion:review for diagnosis
 5. If multiple agents fail in a wave, stop the wave and report all failures
 
+## Auto-Remediation Pattern
+
+When an agent encounters an error during task execution, it classifies the error before reporting failure. Environment issues are auto-fixed; blockers require human judgment.
+
+### Error Classification
+
+| Type | Indicators | Examples | Action |
+|------|-----------|----------|--------|
+| BLOCKER | Involves business logic, API design, architectural decisions, or test logic failures | Missing API endpoint, schema mismatch, failing test assertions, dependency conflict between packages | Stop. Report to coordinator with full error context. Do not attempt auto-fix. |
+| ENVIRONMENT | Involves missing dependencies, wrong versions, missing directories, or configuration | `MODULE_NOT_FOUND`, missing `node_modules/`, wrong Node version, missing `.env` file, port already in use, missing build directory | Auto-remediate: generate fix, execute, retry. |
+
+### Remediation Flow
+
+```
+1. Agent encounters error during task execution
+2. Classify: BLOCKER or ENVIRONMENT?
+   - BLOCKER indicators: error references business logic, API contracts,
+     architecture patterns, or test assertions
+   - ENVIRONMENT indicators: error references missing packages, wrong versions,
+     missing files/directories, or system configuration
+3. If BLOCKER:
+   - Stop the current task
+   - Include in completion summary: "BLOCKER: {error description}"
+   - Continue to next independent task in the plan (if any)
+4. If ENVIRONMENT:
+   a. Log: "ENVIRONMENT ISSUE: {error}. Attempting remediation..."
+   b. Generate remediation command based on error type:
+      - MODULE_NOT_FOUND / missing package → npm install (or pip install, etc.)
+      - Missing directory → mkdir -p {path}
+      - Missing config file → check if template exists, copy it
+      - Wrong version → check package.json/requirements.txt for declared version
+   c. Execute the remediation command
+   d. If remediation succeeds: retry the original step that failed
+   e. If remediation fails OR retry also fails: escalate to BLOCKER
+   f. Max 1 remediation attempt per unique error — no retry loops
+5. Report all remediation actions in the task completion summary:
+   "Auto-remediated: {error} → {fix applied} → {retry result}"
+```
+
+### Remediation Scope (Authority Matrix)
+
+Auto-remediation is limited to the autonomous scope defined in the CLAUDE.md authority matrix:
+
+| Allowed (autonomous) | Not Allowed (requires human approval) |
+|----------------------|--------------------------------------|
+| Install dependencies declared in package.json, requirements.txt, Cargo.toml, go.mod | Add NEW dependencies not in any manifest |
+| Create directories the codebase expects to exist | Create new architectural directories |
+| Run standard build setup (npm install, pip install -r requirements.txt) | Modify build configuration files |
+| Set environment variables documented in the project | Change CI/CD or deployment configuration |
+| Clear caches or temp files that are safe to regenerate | Delete source files or user data |
+
+If an environment fix would require an action outside autonomous scope, escalate to BLOCKER with the message: "ENVIRONMENT issue requires human approval: {description of needed fix}."
+
+## Output Redirection Convention
+
+Commands known to produce verbose output waste context tokens when captured inline. Agents redirect them to temp files and only surface errors.
+
+### Verbose Commands (always redirect)
+
+| Command Pattern | Why Redirect |
+|----------------|-------------|
+| `npm install`, `yarn install`, `pnpm install` | Package download/resolution logs are verbose and rarely informative |
+| `pip install`, `pip install -r requirements.txt` | Same — dependency resolution output |
+| `cargo build`, `cargo test` (initial compile only) | Compilation progress bars and dependency resolution |
+| `go build`, `go mod tidy`, `go mod download` | Module download output |
+| `mvn install`, `mvn package`, `gradle build` | Java/Kotlin build system output |
+| `dotnet build`, `dotnet restore` | .NET build/restore output |
+| `docker build`, `docker pull`, `docker compose up` | Layer download and build progress |
+| `bundle install`, `gem install` | Ruby dependency installation |
+
+### Never Redirect (informative output)
+
+| Command Pattern | Why Keep Inline |
+|----------------|----------------|
+| `npm test`, `jest`, `pytest`, `cargo test` (results) | Test results are essential feedback — pass/fail, assertion messages |
+| `eslint`, `prettier --check`, `ruff`, `clippy` | Linting output identifies specific issues to fix |
+| `tsc --noEmit`, `mypy`, `pyright` | Type-check errors are actionable and concise |
+| `git status`, `git diff`, `git log` | Version control state is always relevant |
+| Custom scripts and application output | Unknown verbosity — keep visible |
+
+### Redirection Pattern
+
+```
+# Redirect verbose command output to temp file
+{command} > /tmp/legion-{command-slug}-$(date +%s).log 2>&1
+exit_code=$?
+
+if [ $exit_code -ne 0 ]; then
+  echo "FAILED: {command} (exit code $exit_code)"
+  echo "Last 20 lines of output:"
+  tail -20 /tmp/legion-{command-slug}-*.log
+else
+  echo "OK: {command} completed successfully"
+fi
+```
+
+### Rules
+
+1. Redirect BOTH stdout and stderr to the temp file (`2>&1`)
+2. Always check exit code immediately after the command
+3. On success: report one-line confirmation, do NOT read or display the log
+4. On failure: display the last 20 lines of the log for diagnosis
+5. Never redirect interactive commands, test runners, or linting tools
+6. Temp files are ephemeral — do not commit, track, or clean them up
+7. If unsure whether a command is verbose: do NOT redirect (safe default is to keep output visible)
+
 ## Division Constants
 
 ```
