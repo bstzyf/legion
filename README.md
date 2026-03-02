@@ -281,7 +281,7 @@ Pre-execution stress testing that catches plan weaknesses before agents start bu
 
 ## Standing on the Shoulders of Giants
 
-Legion didn't invent its patterns from scratch. It cherry-picked the best ideas from four proven Claude Code orchestration systems, combined them into something greater than the sum of its parts, and left behind the complexity that made each system hard to adopt.
+Legion didn't invent its patterns from scratch. It cherry-picked the best ideas from six proven Claude Code orchestration systems, combined them into something greater than the sum of its parts, and left behind the complexity that made each system hard to adopt.
 
 ### What We Took (and What We Left Behind)
 
