@@ -261,6 +261,30 @@ skills/github-sync/SKILL.md
       - All plans succeeded: phase is complete
       - Some plans failed: phase is partial
 
+   a2. DETECT MANUAL EDITS for preference capture (optional — follows memory-manager Section 13)
+       Check if the user made manual edits to files that agents modified during execution:
+       1. Build list of all files modified by agents (from SUMMARY.md files_modified lists)
+       2. Run: git diff --name-only
+          This shows unstaged changes — files the user edited after agent commits
+       3. Intersect: find files that appear in BOTH the agent-modified list AND the git diff output
+       4. If intersection is non-empty:
+          These are manual edits to agent output — corrective preference signals.
+          For each manually-edited file:
+          - Get the diff: git diff {file}
+          - Store preference (if memory available, follows memory-manager Section 13):
+            - Decision Point: "manual-edit"
+            - Context: "Phase {N}, post-build manual edit to {file}"
+            - Proposed: "Agent output for {file} (see plan SUMMARY.md)"
+            - User Choice: "User edited {file} — {brief diff summary: +N/-N lines}"
+            - Signal: "corrective"
+            - Agent: the agent that last modified this file (from SUMMARY.md)
+            - Tags: "manual-edit", file extension, agent division
+          - NOTE: Do not include the full diff content — just a summary (+N/-N lines, key changes)
+       5. If intersection is empty: no manual edits detected, skip
+       6. If git diff fails or memory not available: skip silently (same degradation pattern)
+       This step is informational and non-blocking. Manual edit detection never prevents
+       phase completion or produces errors.
+
    b. Update STATE.md:
       - Phase: {N} of {total} (executed, pending review) OR (partial — {count} plan(s) failed)
       - Status: "Phase {N} complete — all plans executed successfully"
