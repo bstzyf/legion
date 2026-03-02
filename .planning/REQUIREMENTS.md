@@ -15,7 +15,7 @@ Requirements for the Legion rebrand. Each maps to roadmap phases.
 
 ### Skill Updates (SKL)
 
-- [ ] **SKL-01**: `workflow-common` skill updated with `/legion:` namespace across all shared constants and documentation
+- [x] **SKL-01**: `workflow-common` skill updated with `/legion:` namespace across all shared constants and documentation
 - [ ] **SKL-02**: All 17 skill files have `/agency:` references replaced with `/legion:` for command routing and integration points
 - [ ] **SKL-03**: Commit format patterns in execution-tracker and github-sync skills updated to `feat(legion):` / `chore(legion):`
 
@@ -55,7 +55,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SKL-01 | Phase 24 | Pending |
+| SKL-01 | Phase 24 | Complete |
 | CMD-01 | Phase 25 | Pending |
 | CMD-02 | Phase 25 | Pending |
 | CMD-03 | Phase 25 | Pending |
@@ -76,4 +76,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-02*
-*Last updated: 2026-03-02 after roadmap creation*
+*Last updated: 2026-03-02 after Phase 24 completion (SKL-01 complete)*

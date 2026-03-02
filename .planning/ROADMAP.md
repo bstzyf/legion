@@ -12,7 +12,7 @@
 
 ### Phases
 
-- [ ] **Phase 24: Foundation** — Update workflow-common with Legion constants; everything else depends on this
+- [x] **Phase 24: Foundation** — Update workflow-common with Legion constants; everything else depends on this
 - [ ] **Phase 25: Commands** — Rename all 10 command files to `/legion:` namespace
 - [ ] **Phase 26: Skills** — Update remaining 16 skill files with `/legion:` references
 - [ ] **Phase 27: Plugin Manifest** — Update plugin.json and marketplace.json to Legion identity
@@ -28,7 +28,7 @@
 1. `workflow-common` skill file contains no `/agency:` references
 2. All shared constants, command routing strings, and documentation within `workflow-common` use `/legion:`
 3. A developer reading `workflow-common` sees Legion as the identity with no Agency remnants
-**Plans:** TBD
+**Plans:** 1 (24-01: Full namespace substitution in workflow-common)
 
 #### Phase 25: Commands
 **Goal:** Every command the user can type is a `/legion:` command — the `/agency:` namespace is gone
@@ -77,7 +77,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. Foundation | 0/? | Not started | — |
+| 24. Foundation | 1/1 | Complete | 2026-03-02 |
 | 25. Commands | 0/? | Not started | — |
 | 26. Skills | 0/? | Not started | — |
 | 27. Plugin Manifest | 0/? | Not started | — |

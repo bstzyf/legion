@@ -8,11 +8,11 @@
 
 Milestone: v3.0 — Legion Rebrand
 Phase: 24 — Foundation
-Plan: —
-Status: Ready to plan
-Last activity: 2026-03-02 — Roadmap created, ready for Phase 24
+Plan: 24-01 COMPLETE — advancing to Phase 25
+Status: Phase 24 complete — workflow-common fully rebranded to /legion: namespace
+Last activity: 2026-03-02 — Phase 24 plan 01 executed (47 substitutions, 0 agency remnants, commit a772397)
 
-Progress: [----------] 0% (0/5 phases complete)
+Progress: [##--------] 20% (1/5 phases complete)
 
 ## Shipped Milestones
 
@@ -33,7 +33,7 @@ Progress: [----------] 0% (0/5 phases complete)
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 24 — Foundation | `/legion:` namespace in workflow-common constants | SKL-01 | Not started |
+| 24 — Foundation | `/legion:` namespace in workflow-common constants | SKL-01 | Complete |
 | 25 — Commands | All 10 commands renamed to `/legion:` | CMD-01, CMD-02, CMD-03 | Not started |
 | 26 — Skills | Remaining 16 skill files updated | SKL-02, SKL-03 | Not started |
 | 27 — Plugin Manifest | plugin.json + marketplace.json to Legion identity | PLG-01, PLG-02 | Not started |
@@ -57,6 +57,7 @@ Progress: [----------] 0% (0/5 phases complete)
 
 ### v3.0 Decisions
 
+- Single atomic Write used for namespace substitution — prevents partial state during 47-occurrence bulk replace
 - workflow-common updated first — it is the shared constants layer all skills and commands read from
 - Commands updated before docs — doc success criteria reference final command names
 - Plugin manifest updated before docs — README install instructions depend on final plugin name
