@@ -36,10 +36,10 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 
 ### Distribution (DIST)
 
-- [ ] **DIST-01**: `marketplace.json` entry for GitHub-based installation
-- [ ] **DIST-02**: README.md with installation instructions, prerequisites, and getting started guide
-- [ ] **DIST-03**: CHANGELOG.md with v1.0 and v2.0 version history
-- [ ] **DIST-04**: Development docs for testing with `--plugin-dir`
+- [x] **DIST-01**: `marketplace.json` entry for GitHub-based installation
+- [x] **DIST-02**: README.md with installation instructions, prerequisites, and getting started guide
+- [x] **DIST-03**: CHANGELOG.md with v1.0 and v2.0 version history
+- [x] **DIST-04**: Development docs for testing with `--plugin-dir`
 
 ### Strategic Advisory (ADV)
 
@@ -97,10 +97,10 @@ Requirements for plugin conversion. Each maps to roadmap phases.
 | PATH-02 | Phase 18 | Pending |
 | PATH-03 | Phase 18 | Pending |
 | AGENT-04 | Phase 19 | Complete |
-| DIST-01 | Phase 20 | Pending |
-| DIST-02 | Phase 20 | Pending |
-| DIST-03 | Phase 20 | Pending |
-| DIST-04 | Phase 20 | Pending |
+| DIST-01 | Phase 20 | Complete |
+| DIST-02 | Phase 20 | Complete |
+| DIST-03 | Phase 20 | Complete |
+| DIST-04 | Phase 20 | Complete |
 | ADV-01 | Phase 21 | Pending |
 | ADV-02 | Phase 21 | Pending |
 | REV-01 | Phase 22 | Pending |

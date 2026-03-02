@@ -22,7 +22,7 @@ A Claude Code plugin for orchestrating 51 AI specialist personalities as coordin
 .claude/
   commands/agency/    — 8 /agency: command entry points
   skills/agency/      — Reusable workflow skills (agent-registry, workflow-common)
-agency-agents/        — 51 agent personality .md files organized by division
+agents/               — 51 agent personality .md files (flat, with division in frontmatter)
 .planning/            — Project state (PROJECT.md, ROADMAP.md, STATE.md)
   templates/          — Schema for generated state files
   phases/             — Phase plan and summary files

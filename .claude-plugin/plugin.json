@@ -1,0 +1,20 @@
+{
+  "name": "agency-workflows",
+  "version": "2.0.0",
+  "description": "Orchestrate 51 AI specialist personalities as coordinated teams — project initialization, phase planning, parallel execution, quality review, and portfolio management",
+  "author": {
+    "name": "9thLevelSoftware",
+    "url": "https://github.com/9thLevelSoftware"
+  },
+  "repository": "https://github.com/9thLevelSoftware/agency-agents",
+  "license": "MIT",
+  "keywords": [
+    "ai-agents",
+    "workflow-orchestration",
+    "team-coordination",
+    "project-management",
+    "multi-agent",
+    "code-review",
+    "parallel-execution"
+  ]
+}

@@ -6,12 +6,46 @@ Orchestrate 51 AI specialist personalities as coordinated teams in Claude Code.
 
 Turn a collection of 51 isolated agent personalities into a functional AI agency. Type `/agency:start`, describe what you want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
 
-## Quick Start
+## Installation
 
-1. Copy this repository into your project (or clone alongside it)
-2. The `.claude/` directory integrates automatically with Claude Code
-3. Run `/agency:start` to begin a new project
-4. Or run `/agency:status` to check progress on an existing project
+### From GitHub (recommended)
+
+```bash
+# Step 1: Add the marketplace
+claude plugin marketplace add 9thLevelSoftware/agency-agents
+
+# Step 2: Install the plugin
+claude plugin install agency-workflows@agency-workflows
+```
+
+Or from inside the Claude Code TUI:
+```
+/plugin marketplace add 9thLevelSoftware/agency-agents
+/plugin install agency-workflows@agency-workflows
+```
+
+### Local development
+
+```bash
+git clone https://github.com/9thLevelSoftware/agency-agents.git
+claude --plugin-dir ./agency-agents
+```
+
+### Prerequisites
+
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI installed
+- No additional dependencies — pure Claude Code primitives
+
+## Getting Started
+
+1. Install the plugin (see above)
+2. In any project directory, run `/agency:start`
+3. Answer the guided questions — the system explores your vision before jumping to implementation
+4. Review the generated PROJECT.md and ROADMAP.md
+5. Run `/agency:plan 1` to plan the first phase with agent recommendations
+6. Run `/agency:build` to execute with parallel agent teams
+7. Run `/agency:review` for quality review
+8. Repeat `/agency:plan N` → `/agency:build` → `/agency:review` for each phase
 
 ## Commands
 
@@ -119,14 +153,14 @@ Beyond combining these five systems, The Agency Workflows introduced several ori
 |--------|-----|-----------|----------|---------------|--------|------------|
 | Commands | 33+ | 15+ | 29 | 5 | N/A | **9** |
 | Workflow files | 33+ | 20+ | 15+ | 8 | 3 | **15 skills** |
-| Setup required | CLI install + config | Directory init | Hook setup | Copy files | MCP server | **Copy files** |
+| Setup required | CLI install + config | Directory init | Hook setup | Copy files | MCP server | **`plugin install`** |
 | Custom tooling | Node.js CLI | None | Shell hooks | None | MCP server | **None** |
 | Agent personalities | None | None | None | Templates | None | **51 specialists** |
 | Cross-session memory | None | None | None | None | Hook-driven | **Explicit, opt-in** |
 | Domain workflows | Engineering only | Engineering only | Engineering only | Engineering only | N/A | **Eng + Marketing + Design** |
 | State format | Markdown | JSON + Markdown | Markdown + JSON | Markdown | SQLite | **Markdown only** |
 
-Nine commands. Fifteen skills. Zero custom tooling. Fifty-one personalities. Copy the directory and go.
+Nine commands. Fifteen skills. Zero custom tooling. Fifty-one personalities. Install the plugin and go.
 
 ## The 51 Agents
 
@@ -144,36 +178,47 @@ Agents are organized across 9 divisions, each with deep specialist personalities
 | Spatial Computing | 6 | VisionOS, XR, Metal, terminal integration |
 | Specialized | 3 | Orchestration, data analytics, LSP indexing |
 
-See the full roster with individual specialties: [`agency-agents/README.md`](agency-agents/README.md)
+Browse the full roster in the [`agents/`](agents/) directory.
 
 ## Architecture
 
 ```
-.claude/
-  commands/agency/      <- 9 /agency: command entry points
-  skills/agency/        <- 15 reusable workflow skills (7,191 lines)
-    workflow-common.md  <- Shared constants, paths, conventions
-    agent-registry.md   <- 51 agent catalog + recommendation algorithm
-    questioning-flow.md <- 3-stage adaptive conversation engine
-    phase-decomposer.md <- Phase decomposition with domain detection
-    wave-executor.md    <- Parallel execution with personality injection
-    execution-tracker.md <- Progress tracking + atomic commits
-    review-loop.md      <- Dev-QA loop with structured feedback
-    + 8 more (portfolio, milestone, memory, agents, GitHub, brownfield, marketing, design)
-agency-agents/          <- 51 personality .md files by division
-  engineering/          <- 7 agents
-  design/               <- 6 agents
-  marketing/            <- 8 agents
-  testing/              <- 7 agents
-  product/              <- 3 agents
-  project-management/   <- 5 agents
-  support/              <- 6 agents
-  spatial-computing/    <- 6 agents
-  specialized/          <- 3 agents
-.planning/              <- Project state (generated per-project)
-  templates/            <- Schema for generated files
-  phases/               <- Phase plan and summary files
-  milestones/           <- Archived milestone records
+agency-agents/              <- Plugin root
+├── .claude-plugin/
+│   ├── plugin.json         <- Plugin manifest (name, version, author, keywords)
+│   └── marketplace.json    <- Marketplace entry for `claude plugin marketplace add`
+├── settings.json           <- Plugin settings (empty — multi-agent, not single-agent)
+├── CLAUDE.md               <- Project instructions (injected into Claude Code context)
+├── commands/               <- 9 /agency: command entry points
+│   ├── start.md
+│   ├── plan.md
+│   ├── build.md
+│   ├── review.md
+│   ├── status.md
+│   ├── quick.md
+│   ├── portfolio.md
+│   ├── milestone.md
+│   └── agent.md
+├── skills/                 <- 15 reusable workflow skills
+│   ├── workflow-common/SKILL.md     <- Shared constants and conventions
+│   ├── agent-registry/SKILL.md     <- 51 agent catalog + recommendation
+│   ├── questioning-flow/SKILL.md   <- 3-stage adaptive conversation
+│   ├── phase-decomposer/SKILL.md   <- Phase decomposition with domain detection
+│   ├── wave-executor/SKILL.md      <- Parallel execution with personality injection
+│   ├── execution-tracker/SKILL.md  <- Progress tracking + atomic commits
+│   ├── review-loop/SKILL.md        <- Dev-QA loop with structured feedback
+│   └── + 8 more (portfolio, milestone, memory, agents, GitHub, brownfield, marketing, design)
+├── agents/                 <- 51 personality .md files (flat, with division in frontmatter)
+│   ├── engineering-senior-developer.md
+│   ├── design-ui-designer.md
+│   ├── marketing-content-creator.md
+│   ├── testing-reality-checker.md
+│   └── ... (47 more)
+└── .planning/              <- Project state (generated per-project, not part of plugin)
+    ├── PROJECT.md
+    ├── ROADMAP.md
+    ├── STATE.md
+    └── phases/
 ```
 
 ## Design Principles
@@ -202,9 +247,13 @@ These activate automatically when their prerequisites are met:
 
 ## Requirements
 
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code)
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
 - No additional dependencies
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](agency-agents/CONTRIBUTING.md) for agent design guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and agent design guidelines.
+
+## License
+
+MIT
