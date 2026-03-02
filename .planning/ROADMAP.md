@@ -12,7 +12,7 @@
 - [x] **Phase 17: Skill Migration** - Convert all 15 skills to `skills/{name}/SKILL.md` directory structure with supporting files alongside
 - [ ] **Phase 18: Command Migration and Path Updates** - Move 9 commands to plugin `commands/` directory and update all cross-references throughout the codebase
 - [x] **Phase 19: Registry Integration** - Update agent-registry skill to reference new plugin-relative agent paths so lookup and recommendation work correctly (completed 2026-03-02)
-- [ ] **Phase 20: Distribution** - Produce marketplace entry, README, CHANGELOG, and developer testing docs so the plugin can be installed and shared
+- [x] **Phase 20: Distribution** - Produce marketplace entry, README, CHANGELOG, and developer testing docs so the plugin can be installed and shared
 - [ ] **Phase 21: Strategic Advisors** - Add `/agency:advise` command for read-only consultation using Agency's 51 agent personalities as domain experts
 - [ ] **Phase 22: Dynamic Review Panels** - Compose context-aware multi-perspective review teams with domain-weighted scoring rubrics
 - [ ] **Phase 23: Plan Critique** - Pre-mortem analysis and assumption hunting for stress-testing plans before execution
@@ -88,7 +88,8 @@
   2. `README.md` contains installation instructions (both `claude plugin add` and `--plugin-dir`), prerequisites, and a getting started guide covering the core workflow
   3. `CHANGELOG.md` documents v1.0 accomplishments and v2.0 changes in a standard format
   4. A developer doc (e.g., `CONTRIBUTING.md` or `docs/dev-testing.md`) explains how to test changes locally with `--plugin-dir`
-**Plans**: TBD
+**Plans**: 1
+- Plan 20-01 (Wave 1): Create marketplace entry, rewrite README, produce CHANGELOG and CONTRIBUTING — create `.claude-plugin/marketplace.json`, rewrite `README.md` for plugin install, create `CHANGELOG.md` (v1.0 + v2.0), create `CONTRIBUTING.md` with dev testing guide
 
 ### Phase 21: Strategic Advisors
 **Goal**: Users can type `/agency:advise architecture` (or UX, business, marketing, etc.) and get a read-only consultation session with the most relevant agent from the 51-agent pool, without risk of code modification
@@ -99,7 +100,8 @@
   2. The command uses agent-registry recommendation to select the most relevant agent for the given topic
   3. The selected agent is spawned with its full personality but restricted to read-only tools (Read, Glob, Grep, WebSearch, WebFetch — no Write, Edit, Bash)
   4. Advisory session is interactive — agent can ask clarifying questions and explore the codebase to inform recommendations
-**Plans**: TBD
+**Plans**: 1
+- Plan 21-01 (Wave 1): Create /agency:advise command and update project state — advise.md with read-only agent spawning, topic-based selection via agent-registry, interactive follow-up
 
 ### Phase 22: Dynamic Review Panels
 **Goal**: `/agency:review` can assemble a multi-perspective review panel of 2-4 agents, each evaluating through domain-specific weighted rubrics with non-overlapping criteria — replacing the need for a fixed board of directors
@@ -132,7 +134,7 @@
 | 17. Skill Migration | 1/1 | Complete    | 2026-03-02 |
 | 18. Command Migration and Path Updates | 1/1 | Complete | 2026-03-02 |
 | 19. Registry Integration | 1/1 | Complete    | 2026-03-02 |
-| 20. Distribution | 0/? | Not started | - |
-| 21. Strategic Advisors | 0/? | Not started | - |
+| 20. Distribution | 1/1 | Complete | 2026-03-02 |
+| 21. Strategic Advisors | 0/1 | Planned | - |
 | 22. Dynamic Review Panels | 0/? | Not started | - |
 | 23. Plan Critique | 0/? | Not started | - |

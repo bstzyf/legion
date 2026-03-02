@@ -33,15 +33,15 @@ progress:
 
 ## Current Position
 
-Phase: 20 (Distribution) — Not started
-Plan: 20-01 (not started)
-Status: Phase 19 complete — registry verified, all 51 agent paths confirmed, AGENT-04 satisfied
-Last activity: 2026-03-02 — Phase 19 execution complete
+Phase: 21 (Strategic Advisors) — Planned
+Plan: 21-01 (planned, 2 tasks — advise.md command + state updates)
+Status: Phase 21 planned — 1 plan, 1 wave, 1 command to create
+Last activity: 2026-03-02 — Phase 21 planning complete
 
 ## Progress (v2.0)
 
 ```
-[###############               ]  56% — 5/9 phases complete
+[##################            ]  67% — 6/9 phases complete
 ```
 
 | Phase | Plans Complete | Status | Completed |
@@ -51,8 +51,8 @@ Last activity: 2026-03-02 — Phase 19 execution complete
 | 17. Skill Migration | 1/1 | Complete | 2026-03-02 |
 | 18. Command Migration and Path Updates | 1/1 | Complete | 2026-03-02 |
 | 19. Registry Integration | 1/1 | Complete | 2026-03-02 |
-| 20. Distribution | 0/? | Not started | - |
-| 21. Strategic Advisors | 0/? | Not started | - |
+| 20. Distribution | 1/1 | Complete | 2026-03-02 |
+| 21. Strategic Advisors | 0/1 | Planned | - |
 | 22. Dynamic Review Panels | 0/? | Not started | - |
 | 23. Plan Critique | 0/? | Not started | - |
 
@@ -97,5 +97,6 @@ Last activity: 2026-03-02 — Phase 19 execution complete
 
 ### Next Steps
 
-Phase 19 complete. Run `/gsd:plan-phase 20` to plan the Distribution phase.
-Phase 20 covers marketplace entry, README, CHANGELOG, and developer testing docs (DIST-01 through DIST-04).
+Phase 21 planned. `/agency:advise` command designed with three-layer read-only enforcement (command tools + Explore subagent + prompt instruction).
+Next: Run `/gsd:execute-phase 21` to execute.
+Remaining phases: 21 (Strategic Advisors — planned), 22 (Dynamic Review Panels), 23 (Plan Critique).
