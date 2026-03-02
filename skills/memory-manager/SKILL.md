@@ -602,3 +602,66 @@ The caller pattern from Section 6 applies identically to PATTERNS.md and ERRORS.
 - Only store operations create the file
 - Never block workflow execution on memory availability
 - Never warn the user when memory files are absent
+
+---
+
+## Section 11: Branch-Aware Memory
+
+Memory files live inside the git repository at `.planning/memory/`. This means they naturally branch and merge with `git checkout` and `git merge`. This section documents how agents should be branch-aware when storing and recalling memory.
+
+**Branch Detection:**
+```
+Get Current Branch:
+  Run: git branch --show-current
+  Result: branch name (e.g., "main", "feature/auth", "phase-33-execution")
+  Fallback: if command fails or returns empty, use "unknown"
+```
+
+**Branch Field in Records:**
+
+Add a `Branch` column to all three memory file schemas. For each store operation (OUTCOMES, PATTERNS, ERRORS), record the current git branch.
+
+Update the OUTCOMES.md table schema (Section 2) by adding a Branch column after Date:
+```
+| ID | Date | Branch | Phase | Plan | Agent | Task Type | Outcome | Importance | Tags | Summary |
+```
+
+Update the PATTERNS.md table schema (Section 8) by adding a Branch column after Date:
+```
+| ID | Date | Branch | Pattern | Context | Reuse Criteria | Source | Tags |
+```
+
+Update the ERRORS.md table schema (Section 9) by adding a Branch column after Date:
+```
+| ID | Date | Branch | Error Signature | Fix | Agent | Resolved | Tags |
+```
+
+**Branch-Scoped Recall:**
+```
+Branch-Scoped Recall (applies to all three recall operations):
+
+Input (additional parameter):
+  - branch_filter: specific branch name, "current", or "all" (default: "all")
+
+Behavior:
+  - "all": return records from all branches (default, backwards-compatible)
+  - "current": detect current branch via git, filter to matching Branch field
+  - specific name: filter to records where Branch matches the given name
+
+Why branch-scoped recall matters:
+  - Feature branches may have experimental patterns that don't apply to main
+  - Error fixes on a branch may not be relevant after the branch merges
+  - When recalling during /legion:plan on a feature branch, branch-specific
+    context is more relevant than global context
+
+Merge behavior:
+  - When branches merge, git merges the memory files naturally
+  - Append-only tables merge cleanly (no field-level conflicts)
+  - If a merge conflict occurs: keep both records (resolve by accepting both sides)
+  - After merge: records from both branches coexist, with their original Branch values preserved
+```
+
+**Backwards Compatibility:**
+- Existing records without a Branch field are treated as "main" (or whatever the default branch is)
+- All recall operations work identically when branch_filter is "all" (the default)
+- No migration needed — old records are valid, new records just have an extra column
