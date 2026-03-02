@@ -6,9 +6,9 @@ status: active
 last_updated: "2026-03-02"
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_requirements: 15
-  completed_requirements: 10
+  completed_requirements: 13
 ---
 
 # Project State
@@ -20,10 +20,10 @@ progress:
 ## Current Position
 
 Milestone: v4.0 — Inspiration Audit Adoption
-Status: Active — 4/6 phases complete, Phase 33 in progress (plan 1/2 complete)
-Last activity: 2026-03-02 — Plan 33-01 complete: memory-manager expanded with PATTERNS.md and ERRORS.md knowledge bases (KNW-01)
+Status: Active — 5/6 phases complete, Phase 34 pending
+Last activity: 2026-03-02 — Plan 33-02 complete: branch-aware memory and semantic compaction added to memory layer (KNW-02, KNW-03)
 
-Progress: [=======...] 67% (4/6 phases complete)
+Progress: [========..] 83% (5/6 phases complete)
 
 ## v4.0 Phase Map
 
@@ -33,7 +33,7 @@ Progress: [=======...] 67% (4/6 phases complete)
 | 30 | Review & Verification | REV-01, REV-02, REV-03 | — | **Complete** |
 | 31 | Behavioral Guardrails | DSC-01, DSC-02 | — | **Complete** |
 | 32 | Planning Intelligence | PLN-01, PLN-02 | Phase 29 | **Complete** |
-| 33 | Knowledge & Memory | KNW-01, KNW-02, KNW-03 | Phase 31 | **In Progress** (1/2 plans) |
+| 33 | Knowledge & Memory | KNW-01, KNW-02, KNW-03 | Phase 31 | **Complete** |
 | 34 | Execution Resilience | EXE-01, EXE-02, EXE-03 | Phase 30, 33 | Pending |
 
 **Parallel wave 1:** Phases 29, 30, 31 (no dependencies — can execute simultaneously)
@@ -58,9 +58,18 @@ Progress: [=======...] 67% (4/6 phases complete)
 
 ## Next Steps
 
-Phase 33 in progress — plan 1/2 complete (KNW-01 done). 4/6 phases complete.
-Run `/legion:build` to execute Phase 33 Plan 2: execution-tracker integration with the new memory knowledge bases.
-Phase 34 still blocked (needs 30 + 33 — 30 done, waiting on 33 completion).
+Phase 33 complete — all 3 plans done (KNW-01, KNW-02, KNW-03 satisfied). 5/6 phases complete.
+Phase 34 (Execution Resilience) is now unblocked — both dependencies satisfied (Phase 30 done, Phase 33 done).
+Run `/legion:plan 34` to plan Phase 34 with EXE-01, EXE-02, EXE-03 requirements.
+
+### Key Decisions Added (33-02)
+
+- Branch detection uses `git branch --show-current` with "unknown" fallback for detached HEAD / non-git environments
+- branch_filter defaults to "all" for full backwards compatibility — no existing workflows break
+- Existing records without Branch field treated as default branch — no migration required
+- Compaction target: 30-50% of original length, 100% decision-relevant information preserved
+- Compaction is always opt-in: never automatic, never deletes originals
+- execution-tracker Step 3.5 is informational only — never blocks phase completion
 
 ### Key Decisions Added (33-01)
 
