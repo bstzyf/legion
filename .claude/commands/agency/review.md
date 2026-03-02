@@ -15,6 +15,7 @@ Select appropriate review agents for the current phase, run a personality-inject
 @./.claude/skills/agency/review-loop.md
 @./.claude/skills/agency/execution-tracker.md
 @./.claude/skills/agency/memory-manager.md
+@./.claude/skills/agency/github-sync.md
 </execution_context>
 
 <context>
@@ -246,6 +247,12 @@ Select appropriate review agents for the current phase, run a personality-inject
       Reviewers: {comma-separated reviewer IDs}
 
       Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+
+   c1.5. GITHUB ISSUE CLOSE (optional — follows github-sync Section 8)
+         - Check GitHub availability: gh auth status && git remote get-url origin
+         - If github_available and STATE.md ## GitHub section has an issue number for this phase:
+           Close the issue: gh issue close {number} --comment "Phase {N}: {phase_name} review passed. All plans verified."
+         - If github_available is false: skip silently
 
    c2. RECORD REVIEW OUTCOME (optional — follows memory-manager Section 6):
        If .planning/memory/OUTCOMES.md exists or .planning/memory/ directory can be created:

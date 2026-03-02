@@ -15,6 +15,7 @@ Output: Milestone dashboard with actionable operations.
 @./.claude/skills/agency/workflow-common.md
 @./.claude/skills/agency/milestone-tracker.md
 @./.claude/skills/agency/execution-tracker.md
+@./.claude/skills/agency/github-sync.md
 </execution_context>
 
 <context>
@@ -153,6 +154,13 @@ Output: Milestone dashboard with actionable operations.
 
       Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
       ```
+   f2. CLOSE GITHUB MILESTONE (optional — follows github-sync Section 8)
+       - Check GitHub availability: gh auth status && git remote get-url origin
+       - If github_available and STATE.md ## GitHub section has a milestone number for this milestone:
+         Close the GitHub milestone: gh api "repos/{REPO_SLUG}/milestones/{number}" --method PATCH -f state=closed
+         (github-sync Section 4.2)
+       - If github_available is false: skip silently
+
    g. Display:
       "Milestone {N}: {name} — Complete!
        Summary written to .planning/milestones/MILESTONE-{N}.md

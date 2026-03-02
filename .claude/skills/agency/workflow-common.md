@@ -20,6 +20,7 @@ Shared constants, paths, and patterns used across all /agency: commands.
 | Milestone Summaries | `.planning/milestones/MILESTONE-{N}.md` | Completion summaries with metrics per milestone |
 | Milestone Archive | `.planning/archive/milestone-{N}/` | Archived phase directories from completed milestones |
 | Memory Outcomes | `.planning/memory/OUTCOMES.md` | Agent performance and task outcome records for cross-session learning |
+| Custom Agents | `agency-agents/{division}/{agent-id}.md` | User-created agent personality files (via `/agency:agent`) |
 
 ## Agent Personality Paths
 
@@ -29,7 +30,9 @@ All 51 agent personalities live under `agency-agents/` organized by division:
 agency-agents/{division}/{agent-id}.md
 ```
 
-**Divisions**: engineering, design, marketing, product, project-management, testing, support, spatial-computing, specialized
+**Divisions**: engineering, design, marketing, product, project-management, testing, support, spatial-computing, specialized, custom
+
+Custom agents created via `/agency:agent` follow the same personality path pattern. The `custom` division is created on first use if it doesn't exist.
 
 To load an agent personality: `Read agency-agents/{division}/{agent-id}.md`
 
@@ -202,3 +205,50 @@ All memory integration follows this pattern:
 2. If yes: use memory data to enhance the operation
 3. If no: skip silently, proceed with default behavior
 4. Never error, never block, never require memory for workflow completion
+
+## GitHub Conventions
+
+### GitHub Purpose
+Optional integration that connects Agency Workflows to GitHub — phases link to issues, completed work produces PRs, and milestones sync. All operations use the `gh` CLI and are entirely opt-in.
+
+### GitHub Prerequisites
+```
+1. gh CLI installed (checked via `which gh`)
+2. gh authenticated (checked via `gh auth status`)
+3. Git remote pointing to GitHub (checked via `git remote get-url origin`)
+All three must pass for GitHub operations to be available.
+```
+
+### GitHub Lifecycle
+```
+Unavailable → Available (prerequisites pass) → Active (first issue created) → Synced (milestones linked)
+```
+- **Unavailable**: No gh CLI, no auth, or no remote. All GitHub operations skip silently.
+- **Available**: Prerequisites pass. Operations can be performed.
+- **Active**: At least one GitHub issue has been created. STATE.md has a ## GitHub section.
+- **Synced**: ROADMAP milestones have corresponding GitHub milestones.
+
+### GitHub Paths
+| Artifact | Location | When Created |
+|----------|----------|-------------|
+| GitHub metadata | `.planning/STATE.md ## GitHub` section | On first issue or PR creation |
+| Agency label | GitHub repo labels | On first issue creation |
+| Phase issues | GitHub issues with "agency" label | During `/agency:plan` |
+| Phase PRs | GitHub pull requests | During `/agency:build` |
+| GitHub milestones | GitHub API milestones | During `/agency:plan` (if ROADMAP milestones defined) |
+
+### GitHub Integration Points
+| Workflow | Operation | When |
+|----------|-----------|------|
+| `/agency:plan` | Create phase issue, sync milestone | After plan files generated |
+| `/agency:build` | Update issue checklist, create PR | After plans execute and after phase completes |
+| `/agency:status` | Read-back live GitHub status | During dashboard display |
+| `/agency:review` | Close phase issue | After review passes |
+| `/agency:milestone` | Close GitHub milestone | After milestone completion |
+
+### Graceful Degradation Rule
+All GitHub integration follows this pattern:
+1. Run github-sync Section 1 prerequisites check
+2. If github_available is true: perform the operation
+3. If github_available is false: skip silently, proceed with default behavior
+4. Never error, never block, never require GitHub for workflow completion

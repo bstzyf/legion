@@ -14,6 +14,7 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
 @./.claude/skills/agency/agent-registry.md
 @./.claude/skills/agency/phase-decomposer.md
 @./.claude/skills/agency/memory-manager.md
+@./.claude/skills/agency/github-sync.md
 </execution_context>
 
 <context>
@@ -90,7 +91,25 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
    - Each task has detailed action instructions, verify commands, and done sentence
    - Context references include prior plan summaries for wave 2+ plans
 
-9. UPDATE STATE
+9. GITHUB ISSUE CREATION (optional)
+   Follow github-sync Section 8 (Graceful Degradation) caller pattern:
+   - Check GitHub availability: gh auth status && git remote get-url origin
+   - If github_available is false: skip to step 10
+
+   If github_available is true:
+   a. Ensure "agency" label exists (github-sync Section 2.1)
+   b. If ROADMAP.md has milestones and the current phase falls within a milestone range:
+      - Check if the GitHub milestone exists (github-sync Section 4.1)
+      - If not: create it
+   c. Create a GitHub issue for the phase (github-sync Section 2.2):
+      - Title: "Phase {N}: {phase_name}"
+      - Body: phase goal, plans checklist, requirements, success criteria
+      - Label: "agency"
+      - Milestone: GitHub milestone title (if available)
+   d. Store the issue number in STATE.md ## GitHub section (github-sync Section 6)
+   e. Confirm to user: "Created GitHub issue #{number} for Phase {N}: {phase_name}"
+
+10. UPDATE STATE
    - Read current .planning/STATE.md
    - Update:
      - Phase: {N} of {total} (planned)
@@ -99,7 +118,7 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
      - Next Action: Run `/agency:build` to execute Phase {N}: {phase_name}
    - Write updated STATE.md
 
-10. DISPLAY SUMMARY
+11. DISPLAY SUMMARY
     - Show the user a concise summary:
       - Phase: {N} -- {phase_name}
       - Plans: {count} plans across {wave_count} waves

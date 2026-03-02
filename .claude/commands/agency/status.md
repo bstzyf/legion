@@ -16,6 +16,7 @@ Output: Dashboard display with next-action routing.
 @./.claude/skills/agency/execution-tracker.md
 @./.claude/skills/agency/milestone-tracker.md
 @./.claude/skills/agency/memory-manager.md
+@./.claude/skills/agency/github-sync.md
 </execution_context>
 
 <context>
@@ -56,6 +57,12 @@ Output: Dashboard display with next-action routing.
       - top_agents: top 3 agents by task count and success rate
       - total_records: total count of all outcome records
       If .planning/memory/OUTCOMES.md does not exist: skip, set memory_available = false
+
+   g. STATE.md `## GitHub` section — if present, extract:
+      - Phase-to-issue mapping table
+      - Phase-to-PR mapping table
+      - Milestone mapping table (if present)
+      If ## GitHub section does not exist: skip, set github_metadata_available = false
 
 3. CALCULATE PROGRESS
    Follow execution-tracker Section 5 (Progress Calculation):
@@ -129,6 +136,28 @@ Output: Dashboard display with next-action routing.
 
    If memory is not available (no OUTCOMES.md, or file exists but is empty):
    Omit this section entirely. Do NOT show a placeholder, suggestion, or "no memory" message.
+
+   If github_metadata_available:
+
+   ## GitHub
+   Follow github-sync Section 5 (Status Readback):
+   - Fetch live issue/PR/milestone status via gh CLI
+   - Display:
+
+   | Phase | Issue | PR | Status |
+   |-------|-------|----|--------|
+   | Phase 1: {name} | #{n} ({state}) | #{n} ({state}) | {summary} |
+   ...
+
+   If milestones are linked:
+   | Milestone | GitHub | Open/Closed Issues |
+   |-----------|--------|--------------------|
+   | {name} | #{n} ({state}) | {open}/{total} |
+
+   If gh CLI is unavailable during readback: show STATE.md values with note "(cached — GitHub unreachable)"
+
+   If github_metadata_available is false:
+   Omit this section entirely. Do NOT show a placeholder.
 
    If there are pre-existing issues in STATE.md:
    ## Known Issues

@@ -15,6 +15,7 @@ Execute all plans for the current (or specified) phase. Spawn agents with full p
 @./.claude/skills/agency/wave-executor.md
 @./.claude/skills/agency/execution-tracker.md
 @./.claude/skills/agency/memory-manager.md
+@./.claude/skills/agency/github-sync.md
 </execution_context>
 
 <context>
@@ -192,6 +193,15 @@ Execute all plans for the current (or specified) phase. Spawn agents with full p
          will be included in the wave completion commit (step 4.h) via git add.
        If memory is not available: skip silently. Do not warn. Do not suggest setup.
 
+   g3. Update GitHub issue checklist (optional — follows github-sync Section 8)
+       If github_available (checked once at start of step 4):
+         - Read STATE.md ## GitHub section for the current phase's issue number
+         - If an issue number exists:
+           Update the issue body checklist (github-sync Section 2.4):
+           Change "- [ ] Plan {NN}-{PP}" to "- [x] Plan {NN}-{PP}" in the issue body
+         - If no issue number: skip
+       If github_available is false: skip silently.
+
    h. Track wave completion (execution-tracker Section 3):
       - Count plans succeeded vs. failed in the wave
       - Update ROADMAP.md progress table: Completed count and Status column
@@ -246,6 +256,27 @@ Execute all plans for the current (or specified) phase. Spawn agents with full p
       | Plan | Wave | Status | Summary |
       |------|------|--------|---------|
       | {NN}-{PP} | {W} | Pass/Fail | {one-line summary} |
+
+   e2. CREATE GITHUB PR (optional — follows github-sync Section 8)
+       Only if ALL plans passed (no PR for partial/failed phases):
+       - Check GitHub availability: gh auth status && git remote get-url origin
+       - If github_available is false: skip to step 6
+
+       If github_available is true:
+       a. Use AskUserQuestion: "Phase {N} complete. Create a GitHub PR?"
+          Options:
+          - "Create PR" — proceed with PR creation
+          - "Skip PR" — skip, proceed to step 6
+       b. If user chose "Create PR":
+          - Check current branch (github-sync Section 3.1)
+          - If on default branch: create feature branch agency/phase-{NN}-{slug}
+          - Push branch to remote: git push -u origin {branch}
+          - Create PR (github-sync Section 3.2):
+            Title: "Phase {N}: {phase_name}"
+            Body: phase goal, plan summaries table, files modified, requirements, "Closes #{issue_number}" if issue exists
+          - Store PR number in STATE.md ## GitHub section (github-sync Section 6)
+          - Confirm to user: "Created PR #{number}: {pr_url}"
+       c. If PR creation fails: report error, do not abort — the phase is still valid
 
 6. ROUTE TO NEXT ACTION
    - If all plans passed:

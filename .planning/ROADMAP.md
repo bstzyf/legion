@@ -11,8 +11,8 @@
 - [x] **Phase 7: Portfolio Management** — Multi-project tracking, Studio Producer coordination
 - [x] **Phase 8: Milestone Management** — Milestone completion, archiving, metrics
 - [x] **Phase 9: Cross-Session Learning** — Pattern memory, rich session context restoration
-- [ ] **Phase 10: Custom Agents** — Agent creation workflow, schema validation, registry auto-update
-- [ ] **Phase 11: GitHub Integration** — Issue linking, PR creation, status sync
+- [x] **Phase 10: Custom Agents** — Agent creation workflow, schema validation, registry auto-update
+- [x] **Phase 11: GitHub Integration** — Issue linking, PR creation, status sync
 - [ ] **Phase 12: Brownfield Support** — Codebase mapping, dependency detection, risk assessment
 - [ ] **Phase 13: Marketing Workflows** — Campaign planning, content calendars, cross-channel coordination
 - [ ] **Phase 14: Design Workflows** — Design systems, UX research, design-specific review cycles
@@ -122,8 +122,8 @@
 - New agents automatically appear in agent-registry recommendations
 **Plans**: 2
 Plans:
-- [ ] 10-01-PLAN.md — Agent-creator skill with guided conversation, schema validation, and file generation
-- [ ] 10-02-PLAN.md — /agency:agent command, agent-registry custom agent support, CLAUDE.md + REQUIREMENTS.md updates
+- [x] 10-01-PLAN.md — Agent-creator skill with guided conversation, schema validation, and file generation
+- [x] 10-02-PLAN.md — /agency:agent command, agent-registry custom agent support, CLAUDE.md + REQUIREMENTS.md updates
 
 ### Phase 11: GitHub Integration
 **Goal**: Project work connects to GitHub — phases link to issues, agents can create PRs, and progress syncs to GitHub milestones.
@@ -132,7 +132,10 @@ Plans:
 - Phases/tasks can be linked to GitHub issues
 - Agents create PRs for completed work (via `gh` CLI)
 - Project progress reflected in GitHub issues and milestones
-**Plans**: TBD
+**Plans**: 2
+Plans:
+- [x] 11-01-PLAN.md — github-sync skill with issue management, PR creation, milestone sync, status readback, and graceful degradation
+- [x] 11-02-PLAN.md — Workflow integration (plan, build, status, review, milestone commands) + execution-tracker + CLAUDE.md/REQUIREMENTS.md updates
 
 ### Phase 12: Brownfield Support
 **Goal**: Before planning phases on an existing codebase, the system maps what's already there — patterns, frameworks, dependencies, and risk areas.
@@ -174,8 +177,8 @@ Plans:
 | 7. Portfolio Management | 2 | 2 | Complete |
 | 8. Milestone Management | 2 | 2 | Complete |
 | 9. Cross-Session Learning | 3 | 3 | Complete |
-| 10. Custom Agents | 2 | 0 | Planned |
-| 11. GitHub Integration | TBD | 0 | Pending |
+| 10. Custom Agents | 2 | 2 | Complete |
+| 11. GitHub Integration | 2 | 2 | Complete |
 | 12. Brownfield Support | TBD | 0 | Pending |
 | 13. Marketing Workflows | TBD | 0 | Pending |
 | 14. Design Workflows | TBD | 0 | Pending |

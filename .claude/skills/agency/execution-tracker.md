@@ -236,6 +236,15 @@ Milestone archive commit (one per archived milestone):
   STATE.md and ROADMAP.md updated
 
   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+PR creation state update (one per phase PR):
+  chore(agency): create PR for phase {N} — {phase_name}
+
+  PR #{pr_number}: {pr_url}
+  Branch: {branch_name}
+  Issues: #{issue_number}
+
+  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
 Scope `(agency)` is always used — never use plan-specific scopes in state commits. The brief plan name in plan completion commits comes from the `name` field in the plan's YAML frontmatter.

@@ -70,15 +70,15 @@
 
 ### Custom Agents (CUSTOM)
 
-- [ ] CUSTOM-01: Agent creation workflow — guided flow to define new agent personalities
-- [ ] CUSTOM-02: Agent schema and validation — enforce frontmatter structure, required fields
-- [ ] CUSTOM-03: Registry auto-update — new agents automatically registered in agent-registry
+- [x] CUSTOM-01: Agent creation workflow — guided flow to define new agent personalities
+- [x] CUSTOM-02: Agent schema and validation — enforce frontmatter structure, required fields
+- [x] CUSTOM-03: Registry auto-update — new agents automatically registered in agent-registry
 
 ### GitHub Integration (GH)
 
-- [ ] GH-01: GitHub issue tracking — link phases/tasks to GitHub issues
-- [ ] GH-02: PR creation — agents can create PRs for their work
-- [ ] GH-03: GitHub status sync — reflect project progress in GitHub (issues, milestones)
+- [x] GH-01: GitHub issue tracking — link phases/tasks to GitHub issues
+- [x] GH-02: PR creation — agents can create PRs for their work
+- [x] GH-03: GitHub status sync — reflect project progress in GitHub (issues, milestones)
 
 ### Brownfield Support (BROWN)
 
@@ -119,8 +119,8 @@
 | PORT-01 through PORT-02 | Phase 7 |
 | MILE-01 through MILE-02 | Phase 8 |
 | LEARN-01 through LEARN-05 | Phase 9 |
-| CUSTOM-01 through CUSTOM-03 | TBD |
-| GH-01 through GH-03 | TBD |
+| CUSTOM-01 through CUSTOM-03 | Phase 10 |
+| GH-01 through GH-03 | Phase 11 |
 | BROWN-01 through BROWN-03 | TBD |
 | MKT-01 through MKT-03 | TBD |
 | DSN-01 through DSN-03 | TBD |

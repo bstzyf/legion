@@ -1,13 +1,13 @@
 # Project State
 
 ## Current Position
-- **Phase**: 9 of 14 (complete)
-- **Status**: Phase 9 complete — all 3 plans executed successfully
-- **Last Activity**: Phase 9 execution (2026-03-01)
+- **Phase**: 11 of 14 (executed, pending review)
+- **Status**: Phase 11 complete — all plans executed successfully
+- **Last Activity**: Phase 11 execution (2026-03-01)
 
 ## Progress
 ```
-[####################] 100% — 20/20 plans complete (phases 10-14 not yet planned)
+[########################] 100% — 24/24 plans complete (phases 12-14 not yet planned)
 ```
 
 ## Phase 1 Results
@@ -79,6 +79,53 @@
 - Decay computed at recall time (1.0/0.7/0.4/0.1 by age bracket), never destructively applied
 - Memory boosts supplement but never override agent-registry recommendation algorithm
 - All memory integration guarded by file existence checks — graceful degradation
+- Custom agents project-scoped in agency-agents/{division}/ — consistent with built-in agents
+- /agency:agent as single-word command — consistent with existing command naming convention
+- Custom Division table in agent-registry.md — custom agents auto-eligible for recommendation algorithm
+
+## Phase 10 Results
+- Plan 10-01 (Wave 1): Agent-creator skill (411 lines) — 7-section guided creation engine with schema validation, file generation, registry update + workflow-common custom division support
+- Plan 10-02 (Wave 2): Full /agency:agent command (119 lines) — 8-step process wiring agent-creator + agent-registry + workflow-common with git commit + CLAUDE.md/REQUIREMENTS.md updates
+
+## Phase 11 Results
+- Plan 11-01 (Wave 1): github-sync skill (678 lines) — 8-section GitHub operations engine with prerequisites, issue management, PR creation, milestone sync, status readback, state linking, error handling, graceful degradation + workflow-common GitHub Conventions section
+- Plan 11-02 (Wave 2): GitHub integration wired into 5 commands (plan, build, status, review, milestone) + execution-tracker PR convention + CLAUDE.md/REQUIREMENTS.md updates
+
+## Recent Decisions
+- Plugin format: Claude Code .claude/ directory structure
+- Full personality injection for all agent spawns
+- /agency: namespace for all commands
+- Minimal state: PROJECT.md + ROADMAP.md + STATE.md
+- Balanced cost: Opus planning, Sonnet execution
+- Hybrid agent selection: recommend → confirm
+- Adaptive questioning: vision-first, 3-stage flow, 5-8 exchanges target
+- Template-driven generation: skills produce data, templates define structure
+- Two-skill split for execution: wave-executor (spawning/coordination) + execution-tracker (progress/commits)
+- Parallel dispatch via Claude Code Teams (TeamCreate + team_name + SendMessage) — preserves coordinator context
+- Global portfolio registry at ~/.claude/agency/portfolio.md — outside project directories
+- /agency:portfolio as separate command from /agency:status — single-responsibility
+- Read-time state aggregation — no background sync, always fresh
+- Studio Producer analysis is opt-in on demand (Opus cost)
+- Milestones placed between Phase Details and Progress in ROADMAP.md
+- Plan percentage as primary milestone metric (finer than phase count)
+- 10-char milestone progress bar (vs 20-char project bar)
+- Milestone command follows portfolio.md structure with 7-step action loop
+- Status milestone section conditional — omitted when milestones not defined
+- Milestone boundary routing (e2) takes priority over generic next-phase routing
+- Memory stored as single markdown table at .planning/memory/OUTCOMES.md — consistent with all Agency state
+- Decay computed at recall time (1.0/0.7/0.4/0.1 by age bracket), never destructively applied
+- Memory boosts supplement but never override agent-registry recommendation algorithm
+- All memory integration guarded by file existence checks — graceful degradation
+- Custom agents project-scoped in agency-agents/{division}/ — consistent with built-in agents
+- /agency:agent as single-word command — consistent with existing command naming convention
+- Custom Division table in agent-registry.md — custom agents auto-eligible for recommendation algorithm
+- One issue per phase, one PR per phase — phases are the meaningful tracking unit
+- Issue creation automatic (plan.md), PR creation confirmable (build.md) — low-risk vs high-risk
+- STATE.md ## GitHub section stores linking metadata — centralized, not scattered in plan frontmatters
+- Live status queries for dashboard — never rely on stale STATE.md values for GitHub status
+- "agency" label auto-created on first issue — no setup required
+- Branch management: offer agency/phase-{NN}-{slug} if on default branch, respect existing feature branches
+- All GitHub operations use graceful degradation — identical to Memory Conventions pattern
 
 ## Next Action
-Run `/agency:review` to verify Phase 9: Cross-Session Learning.
+Run `/agency:review` to verify Phase 11: GitHub Integration.
