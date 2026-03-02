@@ -1,3 +1,16 @@
+---
+gsd_state_version: 1.0
+milestone: v3.0
+milestone_name: — Legion Rebrand
+status: unknown
+last_updated: "2026-03-02T18:19:48.430Z"
+progress:
+  total_phases: 1
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
+---
+
 # Project State
 
 ## Project Reference
