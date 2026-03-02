@@ -1,7 +1,7 @@
 ---
 name: Senior Project Manager
 description: Converts specs to tasks with focus on realistic scope, no background processes, and exact spec requirements
-division: Project Management
+division: project-management
 color: blue
 ---
 

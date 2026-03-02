@@ -59,357 +59,127 @@ support_channels:
   email:
     response_time_sla: "2 hours"
     resolution_time_sla: "24 hours"
-    escalation_threshold: "48 hours"
-    priority_routing:
-      - enterprise_customers
-      - billing_issues
-      - technical_emergencies
-    
+    priority_routing: [enterprise_customers, billing_issues, technical_emergencies]
+
   live_chat:
     response_time_sla: "30 seconds"
     concurrent_chat_limit: 3
     availability: "24/7"
     auto_routing:
-      - technical_issues: "tier2_technical"
-      - billing_questions: "billing_specialist"
-      - general_inquiries: "tier1_general"
-    
-  phone_support:
-    response_time_sla: "3 rings"
-    callback_option: true
-    priority_queue:
-      - premium_customers
-      - escalated_issues
-      - urgent_technical_problems
-    
+      technical_issues: "tier2_technical"
+      billing_questions: "billing_specialist"
+      general_inquiries: "tier1_general"
+
   social_media:
-    monitoring_keywords:
-      - "@company_handle"
-      - "company_name complaints"
-      - "company_name issues"
+    monitoring_keywords: ["@company_handle", "company_name complaints"]
     response_time_sla: "1 hour"
     escalation_to_private: true
-    
+
   in_app_messaging:
     contextual_help: true
-    user_session_data: true
-    proactive_triggers:
-      - error_detection
-      - feature_confusion
-      - extended_inactivity
+    proactive_triggers: [error_detection, feature_confusion, extended_inactivity]
 
 support_tiers:
   tier1_general:
-    capabilities:
-      - account_management
-      - basic_troubleshooting
-      - product_information
-      - billing_inquiries
-    escalation_criteria:
-      - technical_complexity
-      - policy_exceptions
-      - customer_dissatisfaction
-    
+    capabilities: [account_management, basic_troubleshooting, billing_inquiries]
+    escalation_criteria: [technical_complexity, policy_exceptions, customer_dissatisfaction]
   tier2_technical:
-    capabilities:
-      - advanced_troubleshooting
-      - integration_support
-      - custom_configuration
-      - bug_reproduction
-    escalation_criteria:
-      - engineering_required
-      - security_concerns
-      - data_recovery_needs
-    
+    capabilities: [advanced_troubleshooting, integration_support, bug_reproduction]
+    escalation_criteria: [engineering_required, security_concerns, data_recovery_needs]
   tier3_specialists:
-    capabilities:
-      - enterprise_support
-      - custom_development
-      - security_incidents
-      - data_recovery
-    escalation_criteria:
-      - c_level_involvement
-      - legal_consultation
-      - product_team_collaboration
+    capabilities: [enterprise_support, security_incidents, data_recovery]
+    escalation_criteria: [c_level_involvement, legal_consultation, product_team_collaboration]
 ```
 
 ### Customer Support Analytics Dashboard
 ```python
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-import matplotlib.pyplot as plt
-
 class SupportAnalytics:
     def __init__(self, support_data):
-        self.data = support_data
-        self.metrics = {}
-        
+        self.data = support_data  # DataFrame with ticket records
+
     def calculate_key_metrics(self):
-        """
-        Calculate comprehensive support performance metrics
-        """
-        current_month = datetime.now().month
-        last_month = current_month - 1 if current_month > 1 else 12
-        
-        # Response time metrics
-        self.metrics['avg_first_response_time'] = self.data['first_response_time'].mean()
-        self.metrics['avg_resolution_time'] = self.data['resolution_time'].mean()
-        
-        # Quality metrics
-        self.metrics['first_contact_resolution_rate'] = (
-            len(self.data[self.data['contacts_to_resolution'] == 1]) / 
-            len(self.data) * 100
-        )
-        
-        self.metrics['customer_satisfaction_score'] = self.data['csat_score'].mean()
-        
-        # Volume metrics
-        self.metrics['total_tickets'] = len(self.data)
-        self.metrics['tickets_by_channel'] = self.data.groupby('channel').size()
-        self.metrics['tickets_by_priority'] = self.data.groupby('priority').size()
-        
-        # Agent performance
-        self.metrics['agent_performance'] = self.data.groupby('agent_id').agg({
-            'csat_score': 'mean',
-            'resolution_time': 'mean',
-            'first_response_time': 'mean',
-            'ticket_id': 'count'
-        }).rename(columns={'ticket_id': 'tickets_handled'})
-        
-        return self.metrics
-    
-    def identify_support_trends(self):
-        """
-        Identify trends and patterns in support data
-        """
-        trends = {}
-        
-        # Ticket volume trends
-        daily_volume = self.data.groupby(self.data['created_date'].dt.date).size()
-        trends['volume_trend'] = 'increasing' if daily_volume.iloc[-7:].mean() > daily_volume.iloc[-14:-7].mean() else 'decreasing'
-        
-        # Common issue categories
-        issue_frequency = self.data['issue_category'].value_counts()
-        trends['top_issues'] = issue_frequency.head(5).to_dict()
-        
-        # Customer satisfaction trends
-        monthly_csat = self.data.groupby(self.data['created_date'].dt.month)['csat_score'].mean()
-        trends['satisfaction_trend'] = 'improving' if monthly_csat.iloc[-1] > monthly_csat.iloc[-2] else 'declining'
-        
-        # Response time trends
-        weekly_response_time = self.data.groupby(self.data['created_date'].dt.week)['first_response_time'].mean()
-        trends['response_time_trend'] = 'improving' if weekly_response_time.iloc[-1] < weekly_response_time.iloc[-2] else 'declining'
-        
-        return trends
-    
-    def generate_improvement_recommendations(self):
-        """
-        Generate specific recommendations based on support data analysis
-        """
-        recommendations = []
-        
-        # Response time recommendations
-        if self.metrics['avg_first_response_time'] > 2:  # 2 hours SLA
-            recommendations.append({
-                'area': 'Response Time',
-                'issue': f"Average first response time is {self.metrics['avg_first_response_time']:.1f} hours",
-                'recommendation': 'Implement chat routing optimization and increase staffing during peak hours',
-                'priority': 'HIGH',
-                'expected_impact': '30% reduction in response time'
-            })
-        
-        # First contact resolution recommendations
-        if self.metrics['first_contact_resolution_rate'] < 80:
-            recommendations.append({
-                'area': 'Resolution Efficiency',
-                'issue': f"First contact resolution rate is {self.metrics['first_contact_resolution_rate']:.1f}%",
-                'recommendation': 'Expand agent training and improve knowledge base accessibility',
-                'priority': 'MEDIUM',
-                'expected_impact': '15% improvement in FCR rate'
-            })
-        
-        # Customer satisfaction recommendations
-        if self.metrics['customer_satisfaction_score'] < 4.5:
-            recommendations.append({
-                'area': 'Customer Satisfaction',
-                'issue': f"CSAT score is {self.metrics['customer_satisfaction_score']:.2f}/5.0",
-                'recommendation': 'Implement empathy training and personalized follow-up procedures',
-                'priority': 'HIGH',
-                'expected_impact': '0.3 point CSAT improvement'
-            })
-        
-        return recommendations
-    
-    def create_proactive_outreach_list(self):
-        """
-        Identify customers for proactive support outreach
-        """
-        # Customers with multiple recent tickets
-        frequent_reporters = self.data[
-            self.data['created_date'] >= datetime.now() - timedelta(days=30)
-        ].groupby('customer_id').size()
-        
-        high_volume_customers = frequent_reporters[frequent_reporters >= 3].index.tolist()
-        
-        # Customers with low satisfaction scores
-        low_satisfaction = self.data[
-            (self.data['csat_score'] <= 3) & 
-            (self.data['created_date'] >= datetime.now() - timedelta(days=7))
-        ]['customer_id'].unique()
-        
-        # Customers with unresolved tickets over SLA
-        overdue_tickets = self.data[
-            (self.data['status'] != 'resolved') & 
-            (self.data['created_date'] <= datetime.now() - timedelta(hours=48))
-        ]['customer_id'].unique()
-        
+        """Return response time, FCR, CSAT, volume, and per-agent stats."""
         return {
-            'high_volume_customers': high_volume_customers,
-            'low_satisfaction_customers': low_satisfaction.tolist(),
-            'overdue_customers': overdue_tickets.tolist()
+            'avg_first_response_time': self.data['first_response_time'].mean(),
+            'avg_resolution_time':     self.data['resolution_time'].mean(),
+            'first_contact_resolution': len(self.data[self.data['contacts_to_resolution'] == 1]) / len(self.data) * 100,
+            'csat_score':              self.data['csat_score'].mean(),
+            'tickets_by_channel':      self.data.groupby('channel').size(),
+            'agent_performance':       self.data.groupby('agent_id').agg(
+                {'csat_score': 'mean', 'resolution_time': 'mean', 'ticket_id': 'count'}
+            ),
+        }
+
+    def identify_support_trends(self):
+        """Compare recent vs prior week/month to flag volume and quality trends."""
+        daily = self.data.groupby(self.data['created_date'].dt.date).size()
+        return {
+            'volume_trend':       'increasing' if daily.iloc[-7:].mean() > daily.iloc[-14:-7].mean() else 'decreasing',
+            'top_issues':         self.data['issue_category'].value_counts().head(5).to_dict(),
+            'satisfaction_trend': 'improving' if self.data.groupby(
+                self.data['created_date'].dt.month)['csat_score'].mean().iloc[-1] > 0 else 'declining',
+        }
+
+    def create_proactive_outreach_list(self):
+        """Flag customers with high ticket volume, low CSAT, or overdue tickets."""
+        from datetime import datetime, timedelta
+        now = datetime.now()
+        return {
+            'high_volume':    self.data[self.data['created_date'] >= now - timedelta(days=30)]
+                                  .groupby('customer_id').size().pipe(lambda s: s[s >= 3].index.tolist()),
+            'low_satisfaction': self.data[(self.data['csat_score'] <= 3) &
+                                          (self.data['created_date'] >= now - timedelta(days=7))]['customer_id'].unique().tolist(),
+            'overdue':        self.data[(self.data['status'] != 'resolved') &
+                                        (self.data['created_date'] <= now - timedelta(hours=48))]['customer_id'].unique().tolist(),
         }
 ```
 
 ### Knowledge Base Management System
 ```python
 class KnowledgeBaseManager:
-    def __init__(self):
-        self.articles = []
-        self.categories = {}
-        self.search_analytics = {}
-        
+    ARTICLE_TEMPLATES = {
+        'technical_troubleshooting': {
+            'structure': ['Problem Description', 'Common Causes', 'Step-by-Step Solution',
+                          'Advanced Troubleshooting', 'When to Contact Support', 'Related Articles'],
+            'tone': 'Technical but accessible',
+            'include_screenshots': True,
+        },
+        'account_management': {
+            'structure': ['Overview', 'Prerequisites', 'Step-by-Step Instructions',
+                          'Important Notes', 'FAQ', 'Related Articles'],
+            'tone': 'Friendly and straightforward',
+            'include_screenshots': True,
+        },
+        'billing_information': {
+            'structure': ['Quick Summary', 'Detailed Explanation', 'Action Steps',
+                          'Important Dates', 'Contact Information', 'Policy References'],
+            'tone': 'Clear and authoritative',
+        },
+    }
+
     def create_article(self, title, content, category, tags, difficulty_level):
-        """
-        Create comprehensive knowledge base article
-        """
+        """Create article with auto-extracted steps, troubleshooting, and related articles."""
         article = {
-            'id': self.generate_article_id(),
-            'title': title,
-            'content': content,
-            'category': category,
-            'tags': tags,
-            'difficulty_level': difficulty_level,
-            'created_date': datetime.now(),
-            'last_updated': datetime.now(),
-            'view_count': 0,
-            'helpful_votes': 0,
-            'unhelpful_votes': 0,
-            'customer_feedback': [],
-            'related_tickets': []
+            'title': title, 'content': content, 'category': category,
+            'tags': tags, 'difficulty_level': difficulty_level,
+            'steps':            self.extract_steps(content),
+            'troubleshooting':  self.generate_troubleshooting_section(category),
+            'related_articles': self.find_related_articles(tags, category),
         }
-        
-        # Add step-by-step instructions
-        article['steps'] = self.extract_steps(content)
-        
-        # Add troubleshooting section
-        article['troubleshooting'] = self.generate_troubleshooting_section(category)
-        
-        # Add related articles
-        article['related_articles'] = self.find_related_articles(tags, category)
-        
         self.articles.append(article)
         return article
-    
-    def generate_article_template(self, issue_type):
-        """
-        Generate standardized article template based on issue type
-        """
-        templates = {
-            'technical_troubleshooting': {
-                'structure': [
-                    'Problem Description',
-                    'Common Causes',
-                    'Step-by-Step Solution',
-                    'Advanced Troubleshooting',
-                    'When to Contact Support',
-                    'Related Articles'
-                ],
-                'tone': 'Technical but accessible',
-                'include_screenshots': True,
-                'include_video': False
-            },
-            'account_management': {
-                'structure': [
-                    'Overview',
-                    'Prerequisites', 
-                    'Step-by-Step Instructions',
-                    'Important Notes',
-                    'Frequently Asked Questions',
-                    'Related Articles'
-                ],
-                'tone': 'Friendly and straightforward',
-                'include_screenshots': True,
-                'include_video': True
-            },
-            'billing_information': {
-                'structure': [
-                    'Quick Summary',
-                    'Detailed Explanation',
-                    'Action Steps',
-                    'Important Dates and Deadlines',
-                    'Contact Information',
-                    'Policy References'
-                ],
-                'tone': 'Clear and authoritative',
-                'include_screenshots': False,
-                'include_video': False
-            }
-        }
-        
-        return templates.get(issue_type, templates['technical_troubleshooting'])
-    
+
     def optimize_article_content(self, article_id, usage_data):
-        """
-        Optimize article content based on usage analytics and customer feedback
-        """
+        """Return optimization suggestions based on bounce rate, feedback, and ticket volume."""
         article = self.get_article(article_id)
-        optimization_suggestions = []
-        
-        # Analyze search patterns
+        suggestions = []
         if usage_data['bounce_rate'] > 60:
-            optimization_suggestions.append({
-                'issue': 'High bounce rate',
-                'recommendation': 'Add clearer introduction and improve content organization',
-                'priority': 'HIGH'
-            })
-        
-        # Analyze customer feedback
-        negative_feedback = [f for f in article['customer_feedback'] if f['rating'] <= 2]
-        if len(negative_feedback) > 5:
-            common_complaints = self.analyze_feedback_themes(negative_feedback)
-            optimization_suggestions.append({
-                'issue': 'Recurring negative feedback',
-                'recommendation': f"Address common complaints: {', '.join(common_complaints)}",
-                'priority': 'MEDIUM'
-            })
-        
-        # Analyze related ticket patterns
+            suggestions.append({'issue': 'High bounce rate', 'rec': 'Improve intro and organization', 'priority': 'HIGH'})
+        if len([f for f in article['customer_feedback'] if f['rating'] <= 2]) > 5:
+            suggestions.append({'issue': 'Recurring negative feedback', 'rec': 'Address common complaints', 'priority': 'MEDIUM'})
         if len(article['related_tickets']) > 20:
-            optimization_suggestions.append({
-                'issue': 'High related ticket volume',
-                'recommendation': 'Article may not be solving the problem completely - review and expand',
-                'priority': 'HIGH'
-            })
-        
-        return optimization_suggestions
-    
-    def create_interactive_troubleshooter(self, issue_category):
-        """
-        Create interactive troubleshooting flow
-        """
-        troubleshooter = {
-            'category': issue_category,
-            'decision_tree': self.build_decision_tree(issue_category),
-            'dynamic_content': True,
-            'personalization': {
-                'user_tier': 'customize_based_on_subscription',
-                'previous_issues': 'show_relevant_history',
-                'device_type': 'optimize_for_platform'
-            }
-        }
-        
-        return troubleshooter
+            suggestions.append({'issue': 'High ticket volume', 'rec': 'Article may not fully resolve — expand it', 'priority': 'HIGH'})
+        return suggestions
 ```
 
 ## 🔄 Your Workflow Process
@@ -445,87 +215,31 @@ class KnowledgeBaseManager:
 # Customer Support Interaction Report
 
 ## 👤 Customer Information
-
-### Contact Details
-**Customer Name**: [Name]
-**Account Type**: [Free/Premium/Enterprise]
-**Contact Method**: [Email/Chat/Phone/Social]
-**Priority Level**: [Low/Medium/High/Critical]
-**Previous Interactions**: [Number of recent tickets, satisfaction scores]
-
-### Issue Summary
-**Issue Category**: [Technical/Billing/Account/Feature Request]
-**Issue Description**: [Detailed description of customer problem]
-**Impact Level**: [Business impact and urgency assessment]
-**Customer Emotion**: [Frustrated/Confused/Neutral/Satisfied]
+**Name**: [Name] | **Account**: [Free/Premium/Enterprise] | **Channel**: [Email/Chat/Phone/Social]
+**Priority**: [Low/Medium/High/Critical] | **Prior tickets**: [Count + avg CSAT]
+**Issue**: [Category] — [Description] | **Impact**: [Urgency] | **Emotion**: [Frustrated/Neutral/Satisfied]
 
 ## 🔍 Resolution Process
+**Root Cause**: [Analysis] | **Customer Goal**: [What they're trying to accomplish]
+**Steps Taken**:
+1. [Action + result]
+2. [Action + result]
+3. [Final resolution]
+**Collaboration**: [Teams involved] | **KB References**: [Articles used/created]
+**Validation**: [How solution was verified with customer]
 
-### Initial Assessment
-**Problem Analysis**: [Root cause identification and scope assessment]
-**Customer Needs**: [What the customer is trying to accomplish]
-**Success Criteria**: [How customer will know the issue is resolved]
-**Resource Requirements**: [What tools, access, or specialists are needed]
-
-### Solution Implementation
-**Steps Taken**: 
-1. [First action taken with result]
-2. [Second action taken with result]
-3. [Final resolution steps]
-
-**Collaboration Required**: [Other teams or specialists involved]
-**Knowledge Base References**: [Articles used or created during resolution]
-**Testing and Validation**: [How solution was verified to work correctly]
-
-### Customer Communication
-**Explanation Provided**: [How the solution was explained to the customer]
-**Education Delivered**: [Preventive advice or training provided]
-**Follow-up Scheduled**: [Planned check-ins or additional support]
-**Additional Resources**: [Documentation or tutorials shared]
-
-## 📊 Outcome and Metrics
-
-### Resolution Results
-**Resolution Time**: [Total time from initial contact to resolution]
-**First Contact Resolution**: [Yes/No - was issue resolved in initial interaction]
-**Customer Satisfaction**: [CSAT score and qualitative feedback]
-**Issue Recurrence Risk**: [Low/Medium/High likelihood of similar issues]
-
-### Process Quality
-**SLA Compliance**: [Met/Missed response and resolution time targets]
-**Escalation Required**: [Yes/No - did issue require escalation and why]
-**Knowledge Gaps Identified**: [Missing documentation or training needs]
-**Process Improvements**: [Suggestions for better handling similar issues]
+## 📊 Outcome & Metrics
+**Resolution Time**: [Total] | **First Contact Resolution**: [Yes/No]
+**CSAT**: [Score + qualitative note] | **SLA Compliance**: [Met/Missed]
+**Escalation**: [Yes/No — reason] | **Recurrence Risk**: [Low/Medium/High]
 
 ## 🎯 Follow-up Actions
-
-### Immediate Actions (24 hours)
-**Customer Follow-up**: [Planned check-in communication]
-**Documentation Updates**: [Knowledge base additions or improvements]
-**Team Notifications**: [Information shared with relevant teams]
-
-### Process Improvements (7 days)
-**Knowledge Base**: [Articles to create or update based on this interaction]
-**Training Needs**: [Skills or knowledge gaps identified for team development]
-**Product Feedback**: [Features or improvements to suggest to product team]
-
-### Proactive Measures (30 days)
-**Customer Success**: [Opportunities to help customer get more value]
-**Issue Prevention**: [Steps to prevent similar issues for this customer]
-**Process Optimization**: [Workflow improvements for similar future cases]
-
-### Quality Assurance
-**Interaction Review**: [Self-assessment of interaction quality and outcomes]
-**Coaching Opportunities**: [Areas for personal improvement or skill development]
-**Best Practices**: [Successful techniques that can be shared with team]
-**Customer Feedback Integration**: [How customer input will influence future support]
+- **24 hrs**: [Customer check-in, KB updates, team notifications]
+- **7 days**: [Articles to create, training gaps, product feedback]
+- **30 days**: [Customer success opportunities, process optimizations]
 
 ---
-**Support Responder**: [Your name]
-**Interaction Date**: [Date and time]
-**Case ID**: [Unique case identifier]
-**Resolution Status**: [Resolved/Ongoing/Escalated]
-**Customer Permission**: [Consent for follow-up communication and feedback collection]
+**Support Responder**: [Name] | **Date**: [Date] | **Case ID**: [ID] | **Status**: [Resolved/Ongoing/Escalated]
 ```
 
 ## 💭 Your Communication Style
@@ -578,7 +292,3 @@ You're successful when:
 - Community support facilitation with peer-to-peer assistance and expert moderation
 - Content creation and curation with continuous improvement based on usage analytics
 - Training program development with new hire onboarding and ongoing skill enhancement
-
----
-
-**Instructions Reference**: Your detailed customer service methodology is in your core training - refer to comprehensive support frameworks, customer success strategies, and communication best practices for complete guidance.

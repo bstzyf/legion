@@ -16,6 +16,11 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Agent frontmatter now includes `name`, `description`, and `division` fields
 
 ### Added
+- `/agency:advise` command — read-only expert consultation (10 commands total)
+- `skills/review-panel/SKILL.md` — dynamic multi-reviewer composition with domain-weighted rubrics
+- `skills/plan-critique/SKILL.md` — pre-mortem analysis and assumption hunting
+- Optional plan critique step in `/agency:plan` workflow (step 8.5)
+- Dynamic review panel mode in `/agency:review`
 - `.claude-plugin/plugin.json` — plugin manifest for Claude Code recognition
 - `.claude-plugin/marketplace.json` — marketplace entry for `claude plugin marketplace add`
 - `settings.json` — plugin settings file (empty — multi-agent system, not single-agent)

@@ -32,22 +32,33 @@ Complete schema for agent personality files. Every agent .md file must conform t
 |-------|--------|-----------------|
 | `tools` | Comma-separated list | When the agent needs specific tools beyond defaults (e.g., `WebFetch, WebSearch, Read, Write`) |
 
-### Required Body Sections
+### Canonical Agent Format
 
-Every agent file must contain substantive body content after the frontmatter. Minimum viable structure:
+All agents MUST use **Format A** — emoji headings with "Your" pronouns. The required sections are:
 
-| Section | Purpose | Heading Pattern |
-|---------|---------|-----------------|
-| Title heading | Agent identity | `# {AgentName} Agent Personality` |
-| Identity block | Who the agent is — personality, experience, domain | `## Your Identity` or equivalent |
-| Core mission | What the agent does — 3-5 key capabilities | `## Core Mission` or equivalent |
-| Critical rules | Hard rules the agent always follows | `## Critical Rules` or equivalent |
-| Success criteria | How the agent knows it succeeded | `## Success Criteria` or equivalent |
+| Section | Heading | Purpose |
+|---------|---------|---------|
+| Title | `# {AgentName} Agent Personality` | Agent identity |
+| Identity | `## 🧠 Your Identity & Memory` | Who you are — personality, experience, domain |
+| Mission | `## 🎯 Your Core Mission` | What you do — 3-5 key capabilities |
+| Rules | `## 🚨 Critical Rules You Must Follow` | Hard rules the agent always follows |
+| Deliverables | `## 🛠️ Your Technical Deliverables` | Concrete output artifacts |
+| Workflow | `## 🔄 Your Workflow Process` | Step-by-step task approach |
+| Communication | `## 💭 Your Communication Style` | Voice, tone, how the agent communicates |
+| Learning | `## 🔄 Learning & Memory` | What patterns to track across sessions |
+| Metrics | `## 🎯 Your Success Metrics` | Observable success criteria |
+
+**Conventions:**
+- Use second-person "You" pronouns throughout (e.g., "You are a..." not "This agent is...")
+- Every `##` canonical heading must include the emoji prefix
+- Additional domain-specific `##` sections are allowed after the canonical ones
+- Target size: 100-300 lines. Minimum 80 lines, maximum 350 lines
+- Code examples should be concise representative snippets, not full implementations
 
 ### Body Requirements
 
-- Minimum 50 lines of body content after the frontmatter closing `---`
-- Must contain at least one `#` or `##` heading
+- Minimum 80 lines of body content after the frontmatter closing `---`
+- Must contain at least the 🧠 and 🎯 emoji headings (Identity and Mission)
 - Must include the agent name somewhere in the body text
 - Body must be substantive prose — not placeholder templates or bullet-only lists
 

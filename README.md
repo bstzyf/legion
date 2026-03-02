@@ -52,28 +52,230 @@ claude --plugin-dir ./agency-agents
 | Command | Description | Usage |
 |---------|-------------|-------|
 | `/agency:start` | Initialize project with guided questioning | Run once at project start |
-| `/agency:plan <N>` | Plan phase N with agent recommendations | After start, or after completing a phase |
-| `/agency:build` | Execute current phase with parallel agents | After planning a phase |
-| `/agency:review` | Run QA review cycle | After building a phase |
-| `/agency:status` | Show progress and next action | Anytime — routes you to the right command |
-| `/agency:quick <task>` | Run ad-hoc task with agent selection | Anytime — for one-off tasks |
-| `/agency:portfolio` | Multi-project dashboard | When managing multiple projects |
-| `/agency:milestone` | Milestone completion and archiving | At project milestones |
-| `/agency:agent` | Create a new agent personality | When you need a specialist that doesn't exist |
+| `/agency:plan <N>` | Plan phase N with agent recommendations and wave-structured tasks | After start, or after completing a phase |
+| `/agency:build` | Execute current phase with parallel agent teams | After planning a phase |
+| `/agency:review` | Run QA review cycle with testing/QA agents | After building a phase |
+| `/agency:status` | Show progress dashboard and route to next action | Anytime — routes you to the right command |
+| `/agency:quick <task>` | Run ad-hoc task with intelligent agent selection | Anytime — for one-off tasks |
+| `/agency:advise <topic>` | Get read-only expert consultation from any agent | Anytime — standalone advisory, no phase context needed |
+| `/agency:portfolio` | Multi-project dashboard with dependency tracking | When managing multiple projects |
+| `/agency:milestone` | Milestone completion, archiving, and metrics | At project milestones |
+| `/agency:agent` | Create a new agent personality through guided workflow | When you need a specialist that doesn't exist |
 
 ## How It Works
 
 ```
-/agency:start          Guided questioning → PROJECT.md + ROADMAP.md
+/agency:start            Guided questioning → PROJECT.md + ROADMAP.md
        ↓
-/agency:plan 1         Phase decomposition → Wave-structured plans + agent teams
+/agency:plan 1           Phase decomposition → Wave-structured plans + agent teams
+       ↓                       ↓ (optional)
+       ↓                 Plan critique → Pre-mortem + assumption hunting
        ↓
-/agency:build          Parallel execution → Agents work in character, wave by wave
+/agency:build            Parallel execution → Agents work in character, wave by wave
        ↓
-/agency:review         Quality gate → Review → Fix → Re-review (max 3 cycles)
+/agency:review           Quality gate → Review → Fix → Re-review (max 3 cycles)
+       ↓                       ↓ (optional)
+       ↓                 Panel mode → 2-4 domain-weighted reviewers with rubrics
        ↓
-/agency:plan 2 → ...   Repeat for each phase until project complete
+/agency:plan 2 → ...     Repeat for each phase until project complete
+
+
+/agency:advise <topic>   Standalone → Read-only expert consultation (any time)
+/agency:quick <task>     Standalone → One-off task with agent selection (any time)
 ```
+
+## Workflows
+
+### Core Workflow: start → plan → build → review
+
+The main loop for any project. Run through these four commands in order, repeating plan → build → review for each phase.
+
+#### `/agency:start` — Project Initialization
+
+Guides you through an adaptive conversation (5-8 exchanges) to capture project vision, requirements, and constraints before generating any plans.
+
+**Key steps:**
+1. Pre-flight check — detects existing projects and offers to reinitialize or continue
+2. Brownfield detection — if an existing codebase is found, offers architecture analysis first
+3. Vision exploration — 3-stage conversation: vision → requirements → constraints
+4. Document generation — produces `PROJECT.md`, `ROADMAP.md`, and `STATE.md`
+5. Portfolio registration — optionally registers the project in the global portfolio
+
+**Produces:** `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`
+**User interaction:** Guided Q&A throughout; confirms generated documents before finalizing
+
+#### `/agency:plan <N>` — Phase Planning
+
+Decomposes a roadmap phase into wave-structured plans with max 3 tasks each. Recommends agents from the 51-agent registry for each plan and gets your confirmation.
+
+**Key steps:**
+1. Parse or auto-detect the next unplanned phase
+2. Generate phase context with goals, requirements, and success criteria
+3. Decompose into plans with wave groupings (parallel within waves, sequential between)
+4. Recommend agents per plan using the registry scoring algorithm (keyword match + division affinity + memory boost)
+5. Detect domain-specific workflows (marketing → campaign planning, design → design systems)
+6. *(Optional)* Run plan critique — pre-mortem analysis and assumption hunting with PASS/CAUTION/REWORK verdicts
+7. Generate plan files with full task instructions
+
+**Produces:** `.planning/phases/{NN}-{slug}/CONTEXT.md` and `{NN}-{PP}-PLAN.md` files
+**User interaction:** Confirms agent recommendations; chooses whether to run plan critique; reviews critique findings if applicable
+
+#### `/agency:build` — Phase Execution
+
+Spawns agents with full personality injection to execute all plans for the current phase. Runs waves in parallel, tracks progress, and commits completed work.
+
+**Key steps:**
+1. Determine target phase from STATE.md or `--phase N` flag
+2. Load all plan files for the phase
+3. Execute plans wave by wave — agents within a wave run in parallel
+4. Each agent receives its complete personality .md as system instructions plus task context
+5. Track progress and produce summaries per plan
+6. Commit completed work with atomic commits per plan
+
+**Produces:** Implementation artifacts (code, config, docs) plus `{NN}-{PP}-SUMMARY.md` files
+**User interaction:** Monitors progress; resolves blockers if agents get stuck
+
+#### `/agency:review` — Quality Review
+
+Selects appropriate review agents for the phase, runs a structured dev-QA loop (max 3 cycles), and marks the phase complete only after review passes.
+
+**Key steps:**
+1. Determine target phase and load build summaries
+2. Choose review mode: **classic** (static agent mapping) or **panel** (dynamic multi-reviewer composition)
+3. Select review agents — matched to what was built (code → Reality Checker, design → three-lens review, etc.)
+4. Run review cycle: review → fix → re-review (capped at 3 cycles)
+5. Mark phase complete on PASS; escalate to user after 3 failed cycles
+
+**Produces:** Review findings, fix summaries, updated STATE.md
+**User interaction:** Chooses review mode; reviews findings and approves fixes
+
+---
+
+### Navigation
+
+#### `/agency:status` — Progress Dashboard
+
+Single command to understand where the project is and what to do next. Reads all project state and displays a clear dashboard with session resume context.
+
+**Key steps:**
+1. Load project state (PROJECT.md, ROADMAP.md, STATE.md)
+2. Display milestone progress, phase status, and recent outcomes
+3. Route to the appropriate next command based on current state
+
+**Produces:** Dashboard display (no file changes)
+**User interaction:** Follow the suggested next action, or run any command
+
+---
+
+### Ad-hoc
+
+#### `/agency:quick <task>` — One-off Task Execution
+
+Run any task outside the normal phase workflow with automatic agent selection. No phase planning required.
+
+**Key steps:**
+1. Parse the task description from arguments
+2. Score agents using the registry algorithm and recommend the best match
+3. Spawn the selected agent with full personality injection
+4. Return results with an optional commit
+
+**Produces:** Task output plus optional commit
+**User interaction:** Confirms agent selection; approves commit
+
+#### `/agency:advise <topic>` — Expert Consultation
+
+Get read-only strategic advice from any of the 51 agent personalities. The advisor can explore your codebase and ask clarifying questions but cannot modify any files.
+
+**Key steps:**
+1. Parse the topic (architecture, UX, marketing strategy, etc.)
+2. Load project context from PROJECT.md if available (works without it too)
+3. Score and recommend the best advisor agent for the topic
+4. Spawn the advisor as a read-only Explore agent with full personality injection
+5. Display structured advice: Assessment → Recommendations → Trade-offs → Next Steps
+6. Offer interactive follow-up: ask another question, switch topics, or end session
+
+**Produces:** Advisory output (no file changes, no state updates)
+**User interaction:** Selects advisor agent; asks follow-up questions; ends session when satisfied
+
+---
+
+### Management
+
+#### `/agency:portfolio` — Multi-Project Dashboard
+
+Cross-project visibility when managing multiple Agency projects. Shows dependency tracking, agent allocation, and offers strategic coordination from the Studio Producer agent.
+
+**Key steps:**
+1. Load the global portfolio registry (`~/.claude/agency/portfolio.md`)
+2. Display all registered projects with phase progress and health indicators
+3. Show cross-project dependencies and shared agent allocation
+4. Offer Studio Producer consultation for strategic coordination
+
+**Produces:** Dashboard display; optional portfolio registry updates
+**User interaction:** Reviews dashboard; requests strategic coordination if needed
+
+#### `/agency:milestone` — Milestone Lifecycle
+
+Handles the full milestone lifecycle: define milestone groupings, track status, mark milestones complete with summaries, and archive completed artifacts.
+
+**Key steps:**
+1. Load project state and detect current milestone context
+2. Display milestone dashboard with phase-level progress
+3. Offer operations: define milestones, view status, complete (with summary generation), archive
+
+**Produces:** Updated ROADMAP.md, milestone summaries, archived phase directories
+**User interaction:** Selects milestone operation; confirms completion and archiving
+
+#### `/agency:agent` — Agent Creator
+
+Create a new specialist agent when the 51 existing personalities don't cover your needs. Guided conversation produces a validated agent .md file and registers it in the catalog.
+
+**Key steps:**
+1. Adaptive conversation to define the agent's role, expertise, communication style, and hard rules
+2. Show example agents for reference (engineering, testing, design)
+3. Validate the frontmatter schema (name, description, color, division)
+4. Generate the agent .md file in `agents/`
+5. Register the new agent in agent-registry so it appears in future recommendations
+
+**Produces:** New agent personality file in `agents/`, updated registry
+**User interaction:** Guided Q&A; reviews and confirms the generated personality
+
+## v2.0 Advisory Features
+
+Three capabilities shipped in v2.0 that extend the core workflow with read-only analysis and multi-perspective review.
+
+### Strategic Advisors (`/agency:advise`)
+
+Lightweight expert consultation without the overhead of phase workflows or the risk of code changes.
+
+- **Read-only by design** — advisors are spawned as Explore agents (tool-level enforcement: no Write, no Edit, no Bash)
+- **Topic-based agent selection** — the registry algorithm scores all 51 agents against the topic and recommends the best match
+- **Full personality injection** — the advisor operates in complete character with its specialist expertise, communication style, and hard rules
+- **Project-aware** — loads PROJECT.md context when available, but works without it for pure domain expertise
+- **Interactive follow-up** — after initial advice, continue with follow-up questions, switch topics, or end the session
+- **No state changes** — advisory sessions never update STATE.md, ROADMAP.md, or any project files
+
+### Dynamic Review Panels
+
+Context-aware multi-perspective review teams that replace static reviewer mapping with dynamic composition.
+
+- **2-4 reviewers** — panel size scales with domain complexity: 2 for single-domain, 3 for standard, 4 for cross-domain phases
+- **Domain-weighted rubrics** — each reviewer evaluates against 3-5 non-overlapping criteria specific to their specialty (Production Readiness, Verification Completeness, Brand Consistency, etc.)
+- **No criterion overlap** — rubric design ensures reviewers check different aspects of the work, not the same things from different angles
+- **Diversity enforcement** — max 2 reviewers from the same division; at least one Testing agent on every panel
+- **Cross-cutting synthesis** — findings are deduplicated across reviewers, hot spots identified (files flagged by 2+ reviewers), and an aggregate verdict computed
+- **Panel vs. classic mode** — users choose during `/agency:review`; classic mode uses the original static phase-type-to-agent mapping
+
+### Plan Critique
+
+Pre-execution stress testing that catches plan weaknesses before agents start building.
+
+- **Pre-mortem analysis** — assumes the phase has already failed and works backward to identify 3-5 specific failure scenarios with root causes, likelihood, and impact scores
+- **Assumption hunting** — extracts 5-10 implicit assumptions from the plan, rates each by impact and evidence strength, and flags critical ones (high impact + weak evidence)
+- **Three verdicts** — PASS (proceed), CAUTION (addressable risks, review mitigations), REWORK (plan needs revision)
+- **Maps to plan sections** — every finding traces to a specific task in a specific plan file with an actionable mitigation or challenge action
+- **Optional step** — activates when the user selects it during `/agency:plan`; does not run automatically
+- **Read-only agents** — critique agents are spawned as Explore subagents to prevent plan modification
 
 ## Standing on the Shoulders of Giants
 
@@ -151,8 +353,8 @@ Beyond combining these five systems, The Agency Workflows introduced several ori
 
 | Metric | GSD | Conductor | Shipyard | Best Practice | Daem0n | **Agency** |
 |--------|-----|-----------|----------|---------------|--------|------------|
-| Commands | 33+ | 15+ | 29 | 5 | N/A | **9** |
-| Workflow files | 33+ | 20+ | 15+ | 8 | 3 | **15 skills** |
+| Commands | 33+ | 15+ | 29 | 5 | N/A | **10** |
+| Workflow files | 33+ | 20+ | 15+ | 8 | 3 | **17 skills** |
 | Setup required | CLI install + config | Directory init | Hook setup | Copy files | MCP server | **`plugin install`** |
 | Custom tooling | Node.js CLI | None | Shell hooks | None | MCP server | **None** |
 | Agent personalities | None | None | None | Templates | None | **51 specialists** |
@@ -160,7 +362,7 @@ Beyond combining these five systems, The Agency Workflows introduced several ori
 | Domain workflows | Engineering only | Engineering only | Engineering only | Engineering only | N/A | **Eng + Marketing + Design** |
 | State format | Markdown | JSON + Markdown | Markdown + JSON | Markdown | SQLite | **Markdown only** |
 
-Nine commands. Fifteen skills. Zero custom tooling. Fifty-one personalities. Install the plugin and go.
+Ten commands. Seventeen skills. Zero custom tooling. Fifty-one personalities. Install the plugin and go.
 
 ## The 51 Agents
 
@@ -189,17 +391,18 @@ agency-agents/              <- Plugin root
 │   └── marketplace.json    <- Marketplace entry for `claude plugin marketplace add`
 ├── settings.json           <- Plugin settings (empty — multi-agent, not single-agent)
 ├── CLAUDE.md               <- Project instructions (injected into Claude Code context)
-├── commands/               <- 9 /agency: command entry points
+├── commands/               <- 10 /agency: command entry points
 │   ├── start.md
 │   ├── plan.md
 │   ├── build.md
 │   ├── review.md
 │   ├── status.md
 │   ├── quick.md
+│   ├── advise.md
 │   ├── portfolio.md
 │   ├── milestone.md
 │   └── agent.md
-├── skills/                 <- 15 reusable workflow skills
+├── skills/                 <- 17 reusable workflow skills
 │   ├── workflow-common/SKILL.md     <- Shared constants and conventions
 │   ├── agent-registry/SKILL.md     <- 51 agent catalog + recommendation
 │   ├── questioning-flow/SKILL.md   <- 3-stage adaptive conversation
@@ -207,6 +410,8 @@ agency-agents/              <- Plugin root
 │   ├── wave-executor/SKILL.md      <- Parallel execution with personality injection
 │   ├── execution-tracker/SKILL.md  <- Progress tracking + atomic commits
 │   ├── review-loop/SKILL.md        <- Dev-QA loop with structured feedback
+│   ├── review-panel/SKILL.md       <- Dynamic multi-reviewer composition with rubrics
+│   ├── plan-critique/SKILL.md      <- Pre-mortem analysis + assumption hunting
 │   └── + 8 more (portfolio, milestone, memory, agents, GitHub, brownfield, marketing, design)
 ├── agents/                 <- 51 personality .md files (flat, with division in frontmatter)
 │   ├── engineering-senior-developer.md
@@ -231,7 +436,9 @@ agency-agents/              <- Plugin root
 - **Max 3 tasks per plan**: Keeps work focused and reviewable
 - **Hybrid selection**: Workflow recommends agents, user confirms or overrides
 - **Wave execution**: Plans grouped by dependency; parallel within waves, sequential between
-- **Graceful degradation**: Optional features (GitHub, memory, marketing, design) activate when available, skip silently when not
+- **Graceful degradation**: Optional features (GitHub, memory, marketing, design, panels, critique) activate when available, skip silently when not
+- **Read-only advisory**: Consultation agents explore but never modify — tool-level enforcement via Explore subagent type
+- **Domain-weighted review**: Each reviewer evaluates against non-overlapping criteria scoped to their expertise, not generic checklists
 
 ## Optional Features
 
@@ -244,6 +451,8 @@ These activate automatically when their prerequisites are met:
 | **Brownfield Analysis** | Existing codebase detected during `/agency:start` | Maps architecture, frameworks, risks before planning |
 | **Marketing Workflows** | MKT-* requirements or marketing keywords in phase | Campaign planning, content calendars, channel coordination |
 | **Design Workflows** | DSN-* requirements or design keywords in phase | Design systems, UX research, three-lens review (brand + accessibility + usability) |
+| **Plan Critique** | User selects critique during `/agency:plan` | Pre-mortem analysis, assumption hunting, PASS/CAUTION/REWORK verdicts |
+| **Review Panels** | User selects panel mode in `/agency:review` | 2-4 domain-weighted reviewers with non-overlapping rubrics |
 
 ## Requirements
 

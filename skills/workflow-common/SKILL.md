@@ -33,7 +33,7 @@ All 51 agent personalities live under `agents/` in a flat directory (no division
 agents/{agent-id}.md
 ```
 
-Agent IDs include their division as a prefix (e.g., `engineering-senior-developer`, `testing-reality-checker`).
+Agent IDs include their division as a prefix (e.g., `engineering-senior-developer`, `testing-reality-checker`). Exceptions: Spatial Computing agents use descriptive prefixes (xr-, visionos-, macos-, terminal-) and Specialized agents use domain prefixes (agents-, data-, lsp-) for shorter, more readable filenames.
 
 **Divisions**: engineering, design, marketing, product, project-management, testing, support, spatial-computing, specialized, custom
 

@@ -12,6 +12,7 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
 <execution_context>
 skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
+skills/agent-registry/CATALOG.md
 skills/phase-decomposer/SKILL.md
 skills/memory-manager/SKILL.md
 skills/github-sync/SKILL.md
@@ -51,7 +52,8 @@ skills/plan-critique/SKILL.md
 3. READ PHASE DETAILS
    Follow phase-decomposer skill Section 2 (Phase Analysis):
    - Read ROADMAP.md and extract phase goal, requirements list, success criteria
-   - Read REQUIREMENTS.md and cross-reference full requirement descriptions
+   - If .planning/REQUIREMENTS.md exists, read it and cross-reference full requirement descriptions
+   - If REQUIREMENTS.md is absent (between milestones), rely on ROADMAP.md requirement summaries and note the limitation
    - Read PROJECT.md for broader context
    - Read STATE.md for current progress and completed phase outputs
    - If this phase builds on prior phases, read prior phase summaries

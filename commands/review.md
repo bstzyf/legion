@@ -12,6 +12,7 @@ Select appropriate review agents for the current phase, run a personality-inject
 <execution_context>
 skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
+skills/agent-registry/CATALOG.md
 skills/review-loop/SKILL.md
 skills/review-panel/SKILL.md
 skills/execution-tracker/SKILL.md

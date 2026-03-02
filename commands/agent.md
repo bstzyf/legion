@@ -16,6 +16,7 @@ Output: New agent .md file in agents/, updated agent-registry.md.
 <execution_context>
 skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
+skills/agent-registry/CATALOG.md
 skills/agent-creator/SKILL.md
 </execution_context>
 

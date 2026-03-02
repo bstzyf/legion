@@ -20,12 +20,12 @@ A Claude Code plugin for orchestrating 51 AI specialist personalities as coordin
 ## Project Structure
 
 ```
-.claude/
-  commands/agency/    — 10 /agency: command entry points
-  skills/agency/      — Reusable workflow skills (agent-registry, workflow-common)
+commands/             — 10 /agency: command entry points
+skills/               — 17 reusable workflow skills (SKILL.md per directory)
 agents/               — 51 agent personality .md files (flat, with division in frontmatter)
+.claude-plugin/       — Plugin manifest and marketplace entry
 .planning/            — Project state (PROJECT.md, ROADMAP.md, STATE.md)
-  templates/          — Schema for generated state files
+  milestones/         — Archived requirements and roadmaps
   phases/             — Phase plan and summary files
 ```
 

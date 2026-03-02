@@ -15,6 +15,7 @@ Output: Structured advice from a domain expert, with optional interactive follow
 <execution_context>
 skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
+skills/agent-registry/CATALOG.md
 </execution_context>
 
 <context>

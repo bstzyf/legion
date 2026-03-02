@@ -206,6 +206,17 @@ For autonomous plans (autonomous: true):
 - The personality content may be 200-500 lines. This is expected and intentional — full injection is the core mechanism that gives agents their specialist behavior.
 - Cross-reference agent-registry.md (Section 1: Agent Catalog) for the canonical file path when in doubt.
 
+### Future Optimization: Selective Personality Loading
+
+> **Note**: This documents a future optimization path. No behavioral change is implemented — full injection remains the current approach.
+
+For agents over 300 lines, a future version could split personality into two tiers:
+
+- **Core personality** (~100 lines, always injected): Identity & Memory, Core Mission, Critical Rules, Communication Style — the sections that shape the agent's voice, decision-making, and behavioral boundaries.
+- **Extended sections** (loaded conditionally): Technical Deliverables (code templates, report templates, framework configs) — loaded only when the task type matches the template domain.
+
+This would reduce context consumption for large agents (currently 600+ lines) during parallel wave execution, where multiple agents each receive full personality injection. The Wave 3 standardization effort (target: 100-350 lines per agent) is the immediate mitigation — trimming verbose code examples in the largest agents while expanding thin stubs.
+
 ---
 
 ## Section 4: Wave Execution

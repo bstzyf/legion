@@ -12,6 +12,7 @@ Execute all plans for the current (or specified) phase. Spawn agents with full p
 <execution_context>
 skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
+skills/agent-registry/CATALOG.md
 skills/wave-executor/SKILL.md
 skills/execution-tracker/SKILL.md
 skills/memory-manager/SKILL.md
