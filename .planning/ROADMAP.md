@@ -10,7 +10,7 @@
 - [x] **Phase 6: Status & Quick** — `/agency:status`, `/agency:quick`, session resume
 - [x] **Phase 7: Portfolio Management** — Multi-project tracking, Studio Producer coordination
 - [x] **Phase 8: Milestone Management** — Milestone completion, archiving, metrics
-- [ ] **Phase 9: Cross-Session Learning** — Pattern memory, rich session context restoration
+- [x] **Phase 9: Cross-Session Learning** — Pattern memory, rich session context restoration
 - [ ] **Phase 10: Custom Agents** — Agent creation workflow, schema validation, registry auto-update
 - [ ] **Phase 11: GitHub Integration** — Issue linking, PR creation, status sync
 - [ ] **Phase 12: Brownfield Support** — Codebase mapping, dependency detection, risk assessment
@@ -120,7 +120,10 @@
 - Guided workflow produces valid agent .md files with proper frontmatter
 - Schema validation enforces required fields and structure
 - New agents automatically appear in agent-registry recommendations
-**Plans**: TBD
+**Plans**: 2
+Plans:
+- [ ] 10-01-PLAN.md — Agent-creator skill with guided conversation, schema validation, and file generation
+- [ ] 10-02-PLAN.md — /agency:agent command, agent-registry custom agent support, CLAUDE.md + REQUIREMENTS.md updates
 
 ### Phase 11: GitHub Integration
 **Goal**: Project work connects to GitHub — phases link to issues, agents can create PRs, and progress syncs to GitHub milestones.
@@ -171,7 +174,7 @@
 | 7. Portfolio Management | 2 | 2 | Complete |
 | 8. Milestone Management | 2 | 2 | Complete |
 | 9. Cross-Session Learning | 3 | 3 | Complete |
-| 10. Custom Agents | TBD | 0 | Pending |
+| 10. Custom Agents | 2 | 0 | Planned |
 | 11. GitHub Integration | TBD | 0 | Pending |
 | 12. Brownfield Support | TBD | 0 | Pending |
 | 13. Marketing Workflows | TBD | 0 | Pending |
