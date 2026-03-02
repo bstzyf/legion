@@ -1,26 +1,26 @@
-# The Agency Workflows
+# Legion
 
-A Claude Code plugin for orchestrating 51 AI specialist personalities as coordinated teams.
+A Claude Code plugin for orchestrating 51 AI specialist personalities as a coordinated legion.
 
 ## Available Commands
 
 | Command | Description |
 |---------|-------------|
-| `/agency:start` | Initialize a new project with guided questioning flow |
-| `/agency:plan <N>` | Plan phase N with agent recommendations and wave-structured tasks |
-| `/agency:build` | Execute current phase plans with parallel agent teams |
-| `/agency:review` | Run quality review cycle with testing/QA agents |
-| `/agency:status` | Show progress dashboard and route to next action |
-| `/agency:quick <task>` | Run ad-hoc task with intelligent agent selection |
-| `/agency:advise` | Get read-only expert consultation from any of the 51 agent personalities |
-| `/agency:portfolio` | Multi-project dashboard with dependency tracking |
-| `/agency:milestone` | Milestone completion, archiving, and metrics |
-| `/agency:agent` | Create a new agent personality through a guided workflow |
+| `/legion:start` | Initialize a new project with guided questioning flow |
+| `/legion:plan <N>` | Plan phase N with agent recommendations and wave-structured tasks |
+| `/legion:build` | Execute current phase plans with parallel agent teams |
+| `/legion:review` | Run quality review cycle with testing/QA agents |
+| `/legion:status` | Show progress dashboard and route to next action |
+| `/legion:quick <task>` | Run ad-hoc task with intelligent agent selection |
+| `/legion:advise` | Get read-only expert consultation from any of the 51 agent personalities |
+| `/legion:portfolio` | Multi-project dashboard with dependency tracking |
+| `/legion:milestone` | Milestone completion, archiving, and metrics |
+| `/legion:agent` | Create a new agent personality through a guided workflow |
 
 ## Project Structure
 
 ```
-commands/             — 10 /agency: command entry points
+commands/             — 10 /legion: command entry points
 skills/               — 17 reusable workflow skills (SKILL.md per directory)
 agents/               — 51 agent personality .md files (flat, with division in frontmatter)
 .claude-plugin/       — Plugin manifest and marketplace entry
@@ -46,20 +46,20 @@ agents/               — 51 agent personality .md files (flat, with division in
 ## Workflow
 
 ```
-/agency:start → /agency:plan 1 → /agency:build → /agency:review → /agency:plan 2 → ...
+/legion:start → /legion:plan 1 → /legion:build → /legion:review → /legion:plan 2 → ...
 ```
 
 Each phase: plan (decompose + assign agents) → build (parallel execution) → review (QA loop)
 
-Advisory: `/agency:advise <topic>` — standalone consultation, no phase context needed
+Advisory: `/legion:advise <topic>` — standalone consultation, no phase context needed
 
-GitHub integration is opt-in — when a GitHub remote exists, `/agency:plan` creates issues, `/agency:build` creates PRs, and `/agency:status` shows GitHub status.
+GitHub integration is opt-in — when a GitHub remote exists, `/legion:plan` creates issues, `/legion:build` creates PRs, and `/legion:status` shows GitHub status.
 
-Brownfield support is automatic — when `/agency:start` detects an existing codebase, it offers to analyze architecture, frameworks, and risks before planning. The analysis produces `.planning/CODEBASE.md`, which `/agency:plan` injects into agent task context.
+Brownfield support is automatic — when `/legion:start` detects an existing codebase, it offers to analyze architecture, frameworks, and risks before planning. The analysis produces `.planning/CODEBASE.md`, which `/legion:plan` injects into agent task context.
 
-Marketing workflows activate when `/agency:plan` detects a marketing-focused phase (MKT-* requirements or marketing keywords). Campaign planning produces structured documents at `.planning/campaigns/`, with content calendars and cross-channel coordination across the 8 marketing agents.
+Marketing workflows activate when `/legion:plan` detects a marketing-focused phase (MKT-* requirements or marketing keywords). Campaign planning produces structured documents at `.planning/campaigns/`, with content calendars and cross-channel coordination across the 8 marketing agents.
 
-Design workflows activate when `/agency:plan` detects a design-focused phase (DSN-* requirements or design keywords). Design system creation produces structured documents at `.planning/designs/`, with component specifications and three-lens review (brand, accessibility, usability) across the 6 design agents.
+Design workflows activate when `/legion:plan` detects a design-focused phase (DSN-* requirements or design keywords). Design system creation produces structured documents at `.planning/designs/`, with component specifications and three-lens review (brand, accessibility, usability) across the 6 design agents.
 
 ## Memory Layer (Optional)
 
