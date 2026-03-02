@@ -15,6 +15,7 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
 @./.claude/skills/agency/phase-decomposer.md
 @./.claude/skills/agency/memory-manager.md
 @./.claude/skills/agency/github-sync.md
+@./.claude/skills/agency/codebase-mapper.md
 </execution_context>
 
 <context>
@@ -51,6 +52,25 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
    - Read PROJECT.md for broader context
    - Read STATE.md for current progress and completed phase outputs
    - If this phase builds on prior phases, read prior phase summaries
+
+   BROWNFIELD CONTEXT (optional — follows codebase-mapper Section 6.2):
+   - Check if .planning/CODEBASE.md exists
+   - If yes:
+     a. Read .planning/CODEBASE.md
+     b. Check the "Analyzed" date in the header
+        - If >30 days old: warn user "CODEBASE.md was analyzed {N} days ago. Consider running /agency:start to refresh the codebase map."
+        - Do NOT auto-re-analyze — let user decide. Continue with existing data.
+     c. Extract these sections for use in step 4 (decomposition) and step 5 (agent recommendation):
+        - Risk Areas table — flag risks that overlap with files this phase will modify
+        - Agent Guidance — Preferred/Avoid/Touch-with-care patterns for task instructions
+        - Conventions Detected — naming, structure, and config patterns agents should follow
+        - Detected Stack — framework and test suite context for agent instructions
+     d. When generating plan tasks in step 4, include codebase context:
+        - Note risk areas that tasks touch in the task action instructions
+        - Add "Follow codebase conventions" note referencing detected patterns
+        - Include "Touch with care" warnings for flagged files
+   - If no:
+     Skip silently (greenfield project or user declined analysis)
 
 4. DECOMPOSE INTO PLANS
    Follow phase-decomposer skill Section 3 (Task Decomposition):
