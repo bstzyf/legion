@@ -95,9 +95,9 @@ For each plan where autonomous: false:
 
 Step 1: Identify the assigned agent
   - Check the plan's <objective> or <context> block for "Agent: {agent-id}"
-  - Cross-reference agent-id against agent-registry.md to confirm division and file path
-  - Path format: agency-agents/{division}/{agent-id}.md
-  - Example: agency-agents/engineering/engineering-senior-developer.md
+  - Cross-reference agent-id against agent-registry.md to confirm file path
+  - Path format: agents/{agent-id}.md
+  - Example: agents/engineering-senior-developer.md
 
 Step 2: Read the complete personality file
   - Use the Read tool to load the ENTIRE agent .md file
@@ -386,7 +386,7 @@ Step 3: Generate the plan summary file
 
   ## What Was Done
   {Summary of actions taken, derived from the agent's return message.
-   Should be specific: "Created .claude/skills/agency/wave-executor.md (312 lines)
+   Should be specific: "Created skills/wave-executor/SKILL.md (312 lines)
    with 6 sections covering plan discovery, personality injection, wave execution,
    result processing, and error handling."}
 
@@ -489,7 +489,7 @@ How to handle common failure modes without retrying or hiding problems.
    - Suggest the user re-plan the phase to move one plan to a later wave
 
 5. MISSING PERSONALITY FILE
-   Symptom: The agent .md file does not exist at agency-agents/{division}/{agent-id}.md
+   Symptom: The agent .md file does not exist at agents/{agent-id}.md
    Action:
    - Fall back to autonomous execution — run the plan without personality injection
    - Log: "Warning: personality file not found for {agent-id} at {expected-path}.
@@ -559,18 +559,18 @@ This skill implements patterns defined in `workflow-common.md`:
 | Plan File Convention | workflow-common.md — Plan File Convention | Section 2, Section 5 |
 | State Update Pattern | workflow-common.md — State Update Pattern | Section 4, Step 8 |
 
-Agent file paths are resolved using the `agent-registry.md` Agent Catalog (Section 1), which maps every agent ID to its division and file path.
+Agent file paths are resolved using the `agent-registry.md` Agent Catalog (Section 1), which maps every agent ID to its file path.
 
 ### Quick Reference: Agent Path Format
 
 ```
-agency-agents/{division}/{agent-id}.md
+agents/{agent-id}.md
 
 Examples:
-  agency-agents/engineering/engineering-senior-developer.md
-  agency-agents/testing/testing-evidence-collector.md
-  agency-agents/design/design-ux-architect.md
-  agency-agents/specialized/agents-orchestrator.md
+  agents/engineering-senior-developer.md
+  agents/testing-evidence-collector.md
+  agents/design-ux-architect.md
+  agents/agents-orchestrator.md
 ```
 
-Division lookup: if an agent-id's division prefix is ambiguous, check agent-registry.md Section 1 for the canonical file path.
+If an agent-id is ambiguous, check agent-registry.md Section 1 for the canonical file path.

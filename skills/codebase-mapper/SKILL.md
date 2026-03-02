@@ -618,5 +618,5 @@ This is identical to the Memory Conventions and GitHub Conventions degradation p
 
 | Consumer | File | Integration Point |
 |----------|------|------------------|
-| `/agency:start` | `.claude/commands/agency/start.md` | Brownfield detection branch after pre-flight (Step 1b) |
-| `/agency:plan` | `.claude/commands/agency/plan.md` | Context injection during phase decomposition (Step 3) |
+| `/agency:start` | `commands/start.md` | Brownfield detection branch after pre-flight (Step 1b) |
+| `/agency:plan` | `commands/plan.md` | Context injection during phase decomposition (Step 3) |

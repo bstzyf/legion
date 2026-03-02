@@ -20,24 +20,26 @@ Shared constants, paths, and patterns used across all /agency: commands.
 | Milestone Summaries | `.planning/milestones/MILESTONE-{N}.md` | Completion summaries with metrics per milestone |
 | Milestone Archive | `.planning/archive/milestone-{N}/` | Archived phase directories from completed milestones |
 | Memory Outcomes | `.planning/memory/OUTCOMES.md` | Agent performance and task outcome records for cross-session learning |
-| Custom Agents | `agency-agents/{division}/{agent-id}.md` | User-created agent personality files (via `/agency:agent`) |
+| Custom Agents | `agents/{agent-id}.md` | User-created agent personality files (via `/agency:agent`) |
 | Codebase Map | `.planning/CODEBASE.md` | Structured map of existing codebase architecture, patterns, and risks (via codebase-mapper skill) |
 | Campaign Documents | `.planning/campaigns/{campaign-slug}.md` | Structured campaign plans with objectives, messaging, audience, channels, calendar, and agent assignments (via marketing-workflows skill) |
 | Design Documents | `.planning/designs/{project-slug}-system.md` | Structured design system specifications with tokens, components, accessibility, and agent assignments (via design-workflows skill) |
 
 ## Agent Personality Paths
 
-All 51 agent personalities live under `agency-agents/` organized by division:
+All 51 agent personalities live under `agents/` in a flat directory (no division subdirectories):
 
 ```
-agency-agents/{division}/{agent-id}.md
+agents/{agent-id}.md
 ```
+
+Agent IDs include their division as a prefix (e.g., `engineering-senior-developer`, `testing-reality-checker`).
 
 **Divisions**: engineering, design, marketing, product, project-management, testing, support, spatial-computing, specialized, custom
 
-Custom agents created via `/agency:agent` follow the same personality path pattern. The `custom` division is created on first use if it doesn't exist.
+Custom agents created via `/agency:agent` follow the same path pattern.
 
-To load an agent personality: `Read agency-agents/{division}/{agent-id}.md`
+To load an agent personality: `Read agents/{agent-id}.md`
 
 ## Personality Injection Pattern
 

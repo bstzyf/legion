@@ -22,7 +22,7 @@ Complete schema for agent personality files. Every agent .md file must conform t
 
 | Field | Format | Validation Rule |
 |-------|--------|-----------------|
-| `name` | Kebab-case string | Non-empty. Must match regex `^[a-z][a-z0-9-]+$`. No spaces, uppercase, or underscores. Must match the filename (without `.md`). Must be globally unique across all `agency-agents/` subdirectories. |
+| `name` | Kebab-case string | Non-empty. Must match regex `^[a-z][a-z0-9-]+$`. No spaces, uppercase, or underscores. Must match the filename (without `.md`). Must be globally unique across all agent files in `agents/`. |
 | `description` | Free text (single line) | Non-empty. At least 10 characters. No newlines within the value. |
 | `color` | Color keyword | Must be one of: `red`, `green`, `blue`, `purple`, `cyan`, `orange`, `yellow`, `pink`. |
 
@@ -61,7 +61,7 @@ Valid divisions: engineering, design, marketing, product,
   specialized, custom
 ```
 
-The `custom` division directory (`agency-agents/custom/`) is created on first use if it doesn't exist.
+The `agents/` directory holds all agent files (no division subdirectories). It is created on first use if it doesn't exist.
 
 ---
 
@@ -139,8 +139,8 @@ After tag confirmation, generate the full agent file content and registry row. P
 
 > "Here's what I'll create:
 >
-> **Agent file**: `agency-agents/{division}/{agent-name}.md`
-> **Registry row**: `| {agent-id} | agency-agents/{division}/{agent-id}.md | {specialty} | {tags} |`
+> **Agent file**: `agents/{agent-name}.md`
+> **Registry row**: `| {agent-id} | agents/{agent-id}.md | {specialty} | {tags} |`
 >
 > Ready to write?"
 
@@ -154,7 +154,7 @@ Run this validation checklist BEFORE writing any files. All checks must pass.
 Validation Checklist:
 
 1. Name uniqueness
-   - Search: grep -rl "^name: {proposed_name}$" agency-agents/
+   - Search: grep -rl "^name: {proposed_name}$" agents/
    - PASS: no output (name not found in any existing agent file)
    - FAIL: output lists files with the same name — name is taken
 
@@ -214,19 +214,17 @@ After all validation checks pass, generate and write the agent file.
 ### Step 1: Construct File Path
 
 ```
-agency-agents/{division}/{agent-name}.md
+agents/{agent-name}.md
 ```
 
-Example: `agency-agents/engineering/engineering-security-auditor.md`
+Example: `agents/engineering-security-auditor.md`
 
 ### Step 2: Create Division Directory (if needed)
 
-If the division is `custom` and `agency-agents/custom/` doesn't exist:
+If `agents/` doesn't exist, create it:
 ```bash
-mkdir -p agency-agents/custom
+mkdir -p agents
 ```
-
-For existing divisions, the directory already exists.
 
 ### Step 3: Write Agent File
 
@@ -293,7 +291,7 @@ The body must be substantive prose — not placeholder templates. Use the user's
 
 After writing, verify the file exists:
 ```bash
-test -f agency-agents/{division}/{agent-name}.md && echo "OK" || echo "FAIL"
+test -f agents/{agent-name}.md && echo "OK" || echo "FAIL"
 ```
 
 If verification fails: report the error and do NOT proceed to registry update.
@@ -306,7 +304,7 @@ After the agent file is written and verified, update `agent-registry.md` to incl
 
 ### Step 1: Read agent-registry.md
 
-Read the current content of `.claude/skills/agency/agent-registry.md`.
+Read the current content of `skills/agent-registry/SKILL.md`.
 
 ### Step 2: Find Target Division Table
 
@@ -320,7 +318,7 @@ Locate the division table heading in Section 1:
 - Find the last row in the division's table (the row before the next `###` heading or `---` separator)
 - Insert the new row immediately after the last existing row:
   ```
-  | {agent-id} | `agency-agents/{division}/{agent-id}.md` | {specialty description} | {tag1}, {tag2}, {tag3} |
+  | {agent-id} | `agents/{agent-id}.md` | {specialty description} | {tag1}, {tag2}, {tag3} |
   ```
 - Update the agent count in the heading: `### {Division} Division ({N+1} agents)`
 
@@ -359,9 +357,9 @@ Read agent-registry.md after the edit and confirm the new row appears in the cor
 - Return to the name confirmation step in Stage 1
 
 ### e3: Division Directory Doesn't Exist (custom)
-- Create it automatically: `mkdir -p agency-agents/custom`
+- Create it automatically: `mkdir -p agents`
 - This is not an error — it's expected on first custom agent creation
-- Log: "Created `agency-agents/custom/` directory."
+- Log: "Created `agents/` directory."
 
 ### e4: Agent File Write Fails
 - Report the error to the user
@@ -386,7 +384,7 @@ Agent created successfully!
 
 - **Name**: {agent-name}
 - **Division**: {division}
-- **File**: agency-agents/{division}/{agent-name}.md
+- **File**: agents/{agent-name}.md
 - **Task types**: {tag1}, {tag2}, {tag3}
 - **Registry**: Row added to agent-registry.md Section 1
 

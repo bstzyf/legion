@@ -62,12 +62,12 @@ Step 2: Select review agents based on phase type
 
 Step 3: Validate reviewer availability
   - Confirm each selected agent .md file exists at the expected path:
-    agency-agents/testing/testing-reality-checker.md
-    agency-agents/testing/testing-evidence-collector.md
-    agency-agents/testing/testing-api-tester.md
-    agency-agents/testing/testing-workflow-optimizer.md
-    agency-agents/testing/testing-performance-benchmarker.md
-    agency-agents/design/design-brand-guardian.md
+    agents/testing-reality-checker.md
+    agents/testing-evidence-collector.md
+    agents/testing-api-tester.md
+    agents/testing-workflow-optimizer.md
+    agents/testing-performance-benchmarker.md
+    agents/design-brand-guardian.md
   - If any personality file is missing: fall back to testing-reality-checker for that slot
   - Log the fallback: "Warning: {agent-id}.md not found. Using testing-reality-checker for
     {phase-type} review slot."
@@ -110,8 +110,8 @@ Step 1: Gather phase artifacts
   - Read .planning/ROADMAP.md to extract the phase success criteria
 
 Step 2: Read the reviewer's personality file
-  - Path: agency-agents/{division}/{agent-id}.md
-    (cross-reference agent-registry.md Section 1 for the canonical division and path)
+  - Path: agents/{agent-id}.md
+    (cross-reference agent-registry.md Section 1 for the canonical path)
   - Read the ENTIRE personality .md file — do not truncate or summarize
   - Capture this as: PERSONALITY_CONTENT
 
@@ -273,8 +273,8 @@ Step 1: Determine the fix agent
 
   | File Type                        | Fix Agent                          | Mode        |
   |----------------------------------|------------------------------------|-------------|
-  | .md skill files (.claude/skills/)| Autonomous (no personality needed) | autonomous  |
-  | .md command files (.claude/commands/) | Autonomous                    | autonomous  |
+  | .md skill files (skills/)       | Autonomous (no personality needed) | autonomous  |
+  | .md command files (commands/)    | Autonomous                        | autonomous  |
   | .md agent personality files      | Autonomous                         | autonomous  |
   | .md planning/docs files          | Autonomous                         | autonomous  |
   | .ts, .js, .jsx, .tsx             | engineering-frontend-developer or  | personality |
@@ -638,7 +638,7 @@ How to handle failures during the review loop itself.
    - If the re-reviewer downgrades from BLOCKER to WARNING: update severity for next cycle
 
 4. PERSONALITY FILE MISSING FOR REVIEWER
-   Symptom: Expected reviewer .md file not found at agency-agents/{division}/{agent-id}.md
+   Symptom: Expected reviewer .md file not found at agents/{agent-id}.md
    Action:
    - Fall back to testing-reality-checker for that review slot
    - Log: "Warning: personality file not found for {agent-id}. Using testing-reality-checker."
@@ -672,14 +672,14 @@ Agent file paths are resolved using `agent-registry.md` Section 1 (Agent Catalog
 ### Quick Reference: Review Agent Paths
 
 ```
-agency-agents/testing/testing-reality-checker.md
-agency-agents/testing/testing-evidence-collector.md
-agency-agents/testing/testing-api-tester.md
-agency-agents/testing/testing-test-results-analyzer.md
-agency-agents/testing/testing-performance-benchmarker.md
-agency-agents/testing/testing-workflow-optimizer.md
-agency-agents/testing/testing-tool-evaluator.md
-agency-agents/design/design-brand-guardian.md
-agency-agents/design/design-ux-researcher.md
-agency-agents/specialized/agents-orchestrator.md
+agents/testing-reality-checker.md
+agents/testing-evidence-collector.md
+agents/testing-api-tester.md
+agents/testing-test-results-analyzer.md
+agents/testing-performance-benchmarker.md
+agents/testing-workflow-optimizer.md
+agents/testing-tool-evaluator.md
+agents/design-brand-guardian.md
+agents/design-ux-researcher.md
+agents/agents-orchestrator.md
 ```
