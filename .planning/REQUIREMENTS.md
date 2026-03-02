@@ -29,7 +29,7 @@
 
 ### Knowledge & Memory (KNW)
 
-- [ ] **KNW-01**: `memory-manager` skill supports `.planning/memory/PATTERNS.md` and `.planning/memory/ERRORS.md` templates alongside `OUTCOMES.md` for structured knowledge capture
+- [x] **KNW-01**: `memory-manager` skill supports `.planning/memory/PATTERNS.md` and `.planning/memory/ERRORS.md` templates alongside `OUTCOMES.md` for structured knowledge capture
 - [ ] **KNW-02**: Agent context supports git-native branching — memory state can branch and merge alongside code branches
 - [ ] **KNW-03**: Completed work gets AI-summarized (semantic compaction) preserving reasoning and decisions while freeing context for active work
 
