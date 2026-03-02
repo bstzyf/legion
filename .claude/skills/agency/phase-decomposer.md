@@ -84,6 +84,28 @@ If ANY signal is positive:
 If no signals:
   → Standard decomposition (no impact)
 
+### Design Domain Detection
+
+After reading phase details (and after marketing detection), check if this is a design-focused phase:
+
+1. **Requirement check**: Any DSN-* requirement IDs in the phase requirements?
+2. **Keyword check**: Phase description contains design keywords?
+   Keywords: "design system", "component library", "UX research", "usability testing",
+   "accessibility audit", "brand guidelines", "design tokens", "wireframes", "prototypes",
+   "user testing", "design review", "user persona", "user journey", "information architecture",
+   "visual design"
+3. **Agent signal**: Does agent-registry recommend majority design-division agents?
+
+If ANY signal is positive:
+  → Flag phase as design-focused
+  → Read design-workflows skill for domain-specific patterns
+  → Use design wave pattern in Section 3 decomposition
+  → Trigger design brief questioning (design-workflows Section 2.1)
+  → Generate design documents (design-workflows Section 2.2)
+
+If no signals:
+  → Standard decomposition (no impact)
+
 ---
 
 ## Section 3: Task Decomposition
@@ -155,6 +177,32 @@ Replace the generic wave mapping with marketing-specific waves:
 Generate plan files following this wave structure instead of generic dependency-based waves.
 Each plan's context section references the campaign document:
   @.planning/campaigns/{campaign-slug}.md
+
+### Design-Specific Wave Pattern
+
+When phase is flagged as design-focused (Section 2 detection):
+
+Replace the generic wave mapping with design-specific waves:
+- **Wave 1: Research & Foundation**
+  Tasks: User research, brand audit, design principles definition, token foundation
+  Agents: design-ux-researcher (research lead), design-brand-guardian (brand audit)
+  Output: Research brief, user insights, brand foundation, design principles in design document
+
+- **Wave 2: Design System & Creation**
+  Tasks: Component library, token system, layout framework, visual assets
+  Agents: design-ui-designer (design lead) + design-ux-architect + design-visual-storyteller
+  Input: Wave 1 research + brand guidelines as context
+  Output: Design system document, component specifications, visual language
+
+- **Wave 3 (optional — only if phase scope includes polish/validation)**:
+  Tasks: Micro-interactions, delight elements, accessibility audit, usability validation
+  Agents: design-whimsy-injector + review agents
+  Input: Wave 2 design system + components
+  Output: Enhanced specifications with delight, audit reports
+
+Generate plan files following this wave structure instead of generic dependency-based waves.
+Each plan's context section references the design documents:
+  @.planning/designs/{project-slug}-system.md
 
 ### Naming Plans
 
@@ -252,6 +300,17 @@ When phase is marketing-focused, replace individual-agent-per-plan recommendatio
   Required: Strategy Lead (social-media-strategist) + Content Lead (content-creator)
   Per-channel: one specialist per selected channel (from marketing-workflows Section 1 Channel-Agent Mapping)
   Optional: growth-hacker (if acquisition/conversion focus), design-visual-storyteller (if visual-heavy)
+- Present team to user for confirmation (not individual agent per plan)
+
+### Design Team Assembly
+
+When phase is design-focused, replace individual-agent-per-plan recommendation with team assembly:
+- Read agent-registry Section 4 "Design Sprint" team pattern
+- Read design-workflows Section 2.3 for role definitions
+- Assemble team based on project's design scope:
+  Required: Design Lead (design-ui-designer) + Research Lead (design-ux-researcher)
+  Per-discipline: one specialist per relevant discipline (from design-workflows Section 1 Discipline-Agent Mapping)
+  Optional: design-brand-guardian (if established brand), design-ux-architect (if CSS/layout needed), engineering-frontend-developer (if design-to-code handoff)
 - Present team to user for confirmation (not individual agent per plan)
 
 ---

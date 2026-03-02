@@ -94,9 +94,9 @@
 
 ### Design Workflows (DSN)
 
-- [ ] DSN-01: Design system creation — structured design system workflow with design agents
-- [ ] DSN-02: UX research workflow — user research planning and synthesis
-- [ ] DSN-03: Design review cycle — design-specific quality gates (brand, accessibility, usability)
+- [x] DSN-01: Design system creation — structured design system workflow with design agents
+- [x] DSN-02: UX research workflow — user research planning and synthesis
+- [x] DSN-03: Design review cycle — design-specific quality gates (brand, accessibility, usability)
 
 ## Out of Scope
 
@@ -123,4 +123,4 @@
 | GH-01 through GH-03 | Phase 11 |
 | BROWN-01 through BROWN-03 | Phase 12 |
 | MKT-01 through MKT-03 | Phase 13 |
-| DSN-01 through DSN-03 | TBD |
+| DSN-01 through DSN-03 | Phase 14 |

@@ -1,13 +1,13 @@
 # Project State
 
 ## Current Position
-- **Phase**: 13 of 14 (executing — 2/2 plans complete)
-- **Status**: Phase 13 complete — marketing workflows integrated into planning lifecycle
-- **Last Activity**: Phase 13 Plan 02 execution (2026-03-02)
+- **Phase**: 14 of 14 (complete — 2/2 plans complete)
+- **Status**: Phase 14 complete — design-workflows skill created, all commands wired
+- **Last Activity**: Phase 14 execution (2026-03-01)
 
 ## Progress
 ```
-[##########################] 100% — 28/28 plans complete (phase 14 not yet planned)
+[############################] 100% — 30/30 plans complete
 ```
 
 ## Phase 1 Results
@@ -143,10 +143,24 @@
 - Plan 13-01 (Wave 1): Marketing-workflows skill (538 lines) — 6-section marketing campaign engine with channel-agent mapping, campaign planning, content calendar, cross-channel coordination, adaptation guidelines + workflow-common Marketing Workflow Conventions
 - Plan 13-02 (Wave 2): Marketing command integration — phase-decomposer.md domain detection + wave patterns + team assembly, plan.md marketing-workflows reference + MARKETING PHASE DETECTION step + CLAUDE.md/REQUIREMENTS.md updates
 
+## Phase 14 Results
+- Plan 14-01 (Wave 1): Design-workflows skill (706 lines) — 6-section design workflow engine with domain detection, design system creation (DSN-01), UX research workflow (DSN-02), three-lens design review (DSN-03), design document formats, integration patterns + workflow-common Design Workflow Conventions
+- Plan 14-02 (Wave 2): Design command integration — phase-decomposer.md design domain detection + design wave patterns + design team assembly, plan.md design-workflows reference + DESIGN PHASE DETECTION step, review.md three-lens DESIGN REVIEW ENHANCEMENT + CLAUDE.md/REQUIREMENTS.md updates
+
+## Recent Decisions
+- Design detection uses three-signal OR heuristic (DSN-* requirements, design keywords, agent signals) — mirrors marketing detection exactly
+- Design wave pattern (Research & Foundation, Design System & Creation, Polish & Validation) replaces generic decomposition for design phases
+- Team assembly replaces per-plan agent recommendation for design phases
+- All design integration uses graceful degradation — skip silently for non-design phases
+- Design documents generated at .planning/designs/{project-slug}-system.md during planning
+- Three-lens design review (brand, accessibility, usability) replaces single-reviewer design review
+- No new command — design workflows integrate into existing /agency:plan, /agency:build, /agency:review
+
 ## Verification Status
-All 13 completed phases have been verified with UAT reports:
+13 of 13 previously completed phases verified with UAT reports:
 - Phases 1, 2, 3, 4, 8, 12 — Verified 2026-03-01 (batch UAT)
 - Phases 5, 6, 7, 9, 10, 11 — Verified previously
+- Phase 13 — Verified 2026-03-01 (6/6 passed, 0 issues)
 
 ## Next Action
-Phase 13 complete. Run `/agency:plan 14` to plan Phase 14: Design Workflows.
+All 14 phases complete (30/30 plans). Run `/gsd:verify-work` to validate Phase 14, then `/gsd:complete-milestone` to wrap up Milestone 1.

@@ -16,6 +16,7 @@ Select appropriate review agents for the current phase, run a personality-inject
 @./.claude/skills/agency/execution-tracker.md
 @./.claude/skills/agency/memory-manager.md
 @./.claude/skills/agency/github-sync.md
+@./.claude/skills/agency/design-workflows.md
 </execution_context>
 
 <context>
@@ -102,6 +103,18 @@ Select appropriate review agents for the current phase, run a personality-inject
 
    e. If user selects "Other": accept custom agent IDs from user input and validate each one
       exists in agent-registry
+
+   DESIGN REVIEW ENHANCEMENT (optional — follows design-workflows Section 4):
+   - If phase type includes "design" AND design documents exist at .planning/designs/:
+     a. Use three-lens design review instead of default single-reviewer mapping
+     b. Select three design reviewers (within the max 3 reviewer limit):
+        - design-brand-guardian (brand lens — visual identity compliance, voice consistency)
+        - design-ux-architect (accessibility lens — WCAG compliance, keyboard nav, contrast)
+        - design-ux-researcher (usability lens — Nielsen's heuristics, IA, user flows)
+     c. Each reviewer uses design-specific checklists from design-workflows Section 4.3
+     d. Findings use design-specific categories (Brand Violation, Accessibility Failure, Usability Critical, etc.)
+   - If not a design phase or no design documents:
+     Use default review agent selection (no impact)
 
 4. EXECUTE REVIEW CYCLE
    Initialize: cycle_count = 0

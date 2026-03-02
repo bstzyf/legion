@@ -56,6 +56,8 @@ Brownfield support is automatic — when `/agency:start` detects an existing cod
 
 Marketing workflows activate when `/agency:plan` detects a marketing-focused phase (MKT-* requirements or marketing keywords). Campaign planning produces structured documents at `.planning/campaigns/`, with content calendars and cross-channel coordination across the 8 marketing agents.
 
+Design workflows activate when `/agency:plan` detects a design-focused phase (DSN-* requirements or design keywords). Design system creation produces structured documents at `.planning/designs/`, with component specifications and three-lens review (brand, accessibility, usability) across the 6 design agents.
+
 ## Memory Layer (Optional)
 
 After build/review cycles, outcomes are recorded to `.planning/memory/OUTCOMES.md`. During planning, past outcomes boost agent recommendations. During status, recent outcomes enrich the session briefing. All memory features degrade gracefully — the system works identically without them.

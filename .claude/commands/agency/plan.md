@@ -17,6 +17,7 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
 @./.claude/skills/agency/github-sync.md
 @./.claude/skills/agency/codebase-mapper.md
 @./.claude/skills/agency/marketing-workflows.md
+@./.claude/skills/agency/design-workflows.md
 </execution_context>
 
 <context>
@@ -93,6 +94,29 @@ Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Reco
         at .planning/campaigns/{campaign-slug}.md
      e. All plan files reference the campaign document in their context section
    - If not marketing phase:
+     Skip silently (standard decomposition applies)
+
+   DESIGN PHASE DETECTION (optional — follows design-workflows Section 1):
+   - Run design domain detection on the current phase:
+     a. Check if phase requirements include DSN-* IDs
+     b. Check if phase description contains design keywords
+        ("design system", "component library", "UX research", "usability testing",
+         "accessibility audit", "brand guidelines", "design tokens", "wireframes",
+         "user persona", "user journey", "information architecture", "visual design")
+   - If design phase detected:
+     a. Read design-workflows skill for domain-specific patterns
+     b. In step 4 (decomposition), use design-specific wave pattern:
+        Wave 1: Research & Foundation (UX Researcher + Brand Guardian)
+        Wave 2: Design System & Creation (UI Designer + UX Architect + Visual Storyteller)
+        Wave 3 (optional): Polish & Validation (Whimsy Injector + review agents)
+     c. In step 5 (agent recommendation), use design team assembly pattern:
+        Required: Design Lead (design-ui-designer) + Research Lead (design-ux-researcher)
+        Per-discipline: specialist per relevant discipline
+     d. Before generating plan files, run design brief questioning
+        (design-workflows Section 2.1) and generate design documents
+        at .planning/designs/{project-slug}-system.md
+     e. All plan files reference the design documents in their context section
+   - If not design phase:
      Skip silently (standard decomposition applies)
 
 4. DECOMPOSE INTO PLANS
