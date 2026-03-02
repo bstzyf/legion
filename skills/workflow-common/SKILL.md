@@ -1,6 +1,9 @@
 ---
 name: legion:workflow-common
 description: Shared constants, paths, and patterns for all /legion: commands
+triggers: [common, shared, paths, conventions, state, config]
+token_cost: medium
+summary: "Shared constants, paths, and patterns for all /legion: commands. Defines state file locations, personality injection pattern, wave execution pattern, cost profiles, and all workflow conventions."
 ---
 
 # Legion Workflow Common
@@ -20,10 +23,13 @@ Shared constants, paths, and patterns used across all /legion: commands.
 | Milestone Summaries | `.planning/milestones/MILESTONE-{N}.md` | Completion summaries with metrics per milestone |
 | Milestone Archive | `.planning/archive/milestone-{N}/` | Archived phase directories from completed milestones |
 | Memory Outcomes | `.planning/memory/OUTCOMES.md` | Agent performance and task outcome records for cross-session learning |
+| Memory Patterns | `.planning/memory/PATTERNS.md` | Successful patterns with reuse criteria — distilled from agent outcomes (via memory-manager skill) |
+| Memory Errors | `.planning/memory/ERRORS.md` | Error signatures mapped to known fixes — troubleshooting reference for agents (via memory-manager skill) |
 | Custom Agents | `agents/{agent-id}.md` | User-created agent personality files (via `/legion:agent`) |
 | Codebase Map | `.planning/CODEBASE.md` | Structured map of existing codebase architecture, patterns, and risks (via codebase-mapper skill) |
 | Campaign Documents | `.planning/campaigns/{campaign-slug}.md` | Structured campaign plans with objectives, messaging, audience, channels, calendar, and agent assignments (via marketing-workflows skill) |
 | Design Documents | `.planning/designs/{project-slug}-system.md` | Structured design system specifications with tokens, components, accessibility, and agent assignments (via design-workflows skill) |
+| Spec Documents | `.planning/specs/{NN}-{phase-slug}-spec.md` | Structured specification documents produced by spec-pipeline skill before coding phases |
 
 ## Agent Personality Paths
 
@@ -105,6 +111,68 @@ After any significant operation:
 | Lightweight Checks | Haiku | /legion:status, quick validations, simple queries |
 
 Set via `model` parameter on Agent tool calls.
+
+## Skill Loading Protocol
+
+Legion skills use progressive disclosure: lightweight metadata at startup, full content on activation.
+
+### Metadata Schema
+
+Every SKILL.md file has YAML frontmatter with these fields:
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `name` | string | Skill identifier (`legion:{skill-name}`) |
+| `description` | string | One-line description for catalog display |
+| `triggers` | string[] | 3-6 keywords that indicate this skill should be loaded |
+| `token_cost` | enum | `low` (<300 lines), `medium` (300-500), `high` (500+) |
+| `summary` | string | ≤100 token summary of purpose and activation conditions |
+
+### Loading Stages
+
+**Stage 1: Metadata Only (orchestrator startup)**
+When a `/legion:` command initializes, load ONLY the frontmatter block from each skill. This provides:
+- Skill names and summaries for routing decisions (~100 tokens per skill, ~1,700 total)
+- Trigger keywords for matching user intent to relevant skills
+- Token cost estimates for context budget planning
+
+**Stage 2: Full Injection (skill activation)**
+When a command determines it needs a specific skill, load the ENTIRE SKILL.md content. This happens when:
+- A command's workflow references the skill (e.g., `/legion:build` activates `wave-executor`)
+- Trigger keywords in user input match a skill's triggers array
+- An agent is spawned that requires the skill's instructions
+
+### Implementation Rules
+
+1. **Never load all skills at once** — only the orchestrating command's direct dependencies
+2. **Metadata is free** — reading frontmatter blocks adds negligible context (~100 tokens each)
+3. **Full load is expensive** — a high-cost skill adds 500+ lines to context; only load when needed
+4. **Commands know their skills** — each command declares which skills it needs (e.g., `/legion:build` always loads `wave-executor` and `execution-tracker`)
+5. **Trigger matching is secondary** — commands have fixed skill dependencies; trigger matching is for edge cases and `/legion:quick` routing
+
+### Command-to-Skill Mapping
+
+| Command | Always Loads | Conditionally Loads |
+|---------|-------------|-------------------|
+| `/legion:start` | questioning-flow, workflow-common | codebase-mapper (brownfield) |
+| `/legion:plan` | phase-decomposer, agent-registry, workflow-common | marketing-workflows, design-workflows, plan-critique, spec-pipeline |
+| `/legion:build` | wave-executor, execution-tracker, workflow-common | github-sync, spec-pipeline |
+| `/legion:review` | review-loop, review-panel, workflow-common | — |
+| `/legion:status` | execution-tracker, workflow-common | memory-manager |
+| `/legion:quick` | agent-registry, workflow-common | {matched by triggers} |
+| `/legion:portfolio` | portfolio-manager, workflow-common | — |
+| `/legion:milestone` | milestone-tracker, workflow-common | — |
+| `/legion:agent` | agent-creator, agent-registry, workflow-common | — |
+| `/legion:advise` | agent-registry, workflow-common | {matched by triggers} |
+
+### Context Budget Guideline
+
+Before loading a skill, check the estimated token impact:
+- `low` skills: load freely (negligible context impact)
+- `medium` skills: load when clearly needed (moderate context, ~300-500 lines)
+- `high` skills: load only when the command requires them (heavy context, 500+ lines)
+
+If multiple high-cost skills are needed in a single command, consider whether the orchestrator can delegate to sub-agents (each with their own context window) rather than loading all skills into the main context.
 
 ## Error Handling Pattern
 
@@ -195,13 +263,20 @@ Absent → Created (first store) → Growing (appending records) → Mature (200
 |----------|------|-------------|
 | Memory directory | `.planning/memory/` | On first store operation |
 | Outcome log | `.planning/memory/OUTCOMES.md` | On first store operation |
+| Pattern library | `.planning/memory/PATTERNS.md` | On first pattern store operation |
+| Error fixes | `.planning/memory/ERRORS.md` | On first error store operation |
 
 ### Memory Integration Points
 | Workflow | Operation | When |
 |----------|-----------|------|
 | `/legion:build` | Store outcome | After each plan completes (success, partial, or failed) |
+| `/legion:build` | Store error fix | When an agent resolves a non-trivial error during execution |
+| `/legion:build` | Recall error fixes | Before agent starts task — check if known fixes exist for relevant error patterns |
 | `/legion:review` | Store outcome | After review passes or escalates |
+| `/legion:review` | Store pattern | When review passes on first cycle (clean approach worth capturing) |
+| `/legion:review` | Store error fix | When review identifies and fixes a recurring issue |
 | `/legion:plan` | Recall agent scores | During agent recommendation (phase-decomposer Section 4) |
+| `/legion:plan` | Recall patterns | During phase decomposition — suggest proven approaches for similar task types |
 | `/legion:status` | Recall session briefing | During dashboard display |
 
 ### Graceful Degradation Rule
