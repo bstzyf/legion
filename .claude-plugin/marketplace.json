@@ -15,7 +15,7 @@
         "name": "9thLevelSoftware",
         "url": "https://github.com/9thLevelSoftware"
       },
-      "source": ".",
+      "source": "./",
       "category": "productivity",
       "homepage": "https://github.com/9thLevelSoftware/legion"
     }
