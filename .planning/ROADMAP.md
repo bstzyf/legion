@@ -5,7 +5,7 @@
 - [x] **v1.0** — Core plugin with 9 commands, 15 skills, 51 agents, multi-domain workflows (14 phases, 30 plans, 54 requirements) → [Archive](milestones/v1.0-ROADMAP.md)
 - [x] **v2.0** — Proper Claude Code plugin with advisory capabilities: manifest, restructured directories, installable via `claude plugin add`, plus strategic advisors, dynamic review panels, and plan critique (9 phases, 9 plans, 26 requirements) → [Archive](milestones/v2.0-ROADMAP.md)
 - [x] **v3.0** — Legion rebrand: `/legion:` namespace, plugin manifest, rewritten docs, attribution, and repo rename (5 phases, 6 plans, 13 requirements) → [Archive](milestones/v3.0-ROADMAP.md)
-- [ ] **v4.0** — Inspiration audit adoption: progressive disclosure, review quality, behavioral guardrails, planning intelligence, knowledge layer, execution resilience (6 phases, 15 requirements)
+- [ ] **v4.0** — Inspiration audit adoption: progressive disclosure, review quality, behavioral guardrails, planning intelligence, knowledge layer, execution resilience, consolidation audit (7 phases, 18 requirements)
 
 ## v4.0 — Inspiration Audit Adoption
 
@@ -71,6 +71,19 @@
 2. Missing dependencies detected during execution auto-generate remediation tasks (install, configure) instead of failing
 3. Commands known to produce verbose output (`npm install`, `pip install`, build tools) redirect stdout to temp files, check exit codes, and only surface errors
 
+### Phase 35: Consolidation Audit
+**Goal:** Comprehensive review of all commands, skills, and agent responsibilities to identify and resolve duplicative or conflicting functionalities — consolidate, merge, or remove anything that doesn't contribute to the plugin's overall quality.
+**Depends on:** Phase 34 (all v4.0 feature work complete before audit)
+**Requirements:** CON-01, CON-02, CON-03
+**Plans:** 2 plans
+Plans:
+- [ ] 35-01-PLAN.md — Apply all consolidation fixes (3 agent rewrites + metadata/boundary fixes)
+- [ ] 35-02-PLAN.md — Full re-scan verification and 35-AUDIT.md production
+**Success Criteria:**
+1. Complete inventory of all 10 commands, 18 skills, and 51 agents with functional overlap analysis documented
+2. Duplicative or conflicting functionalities identified, with resolution (merge, consolidate, or remove) applied for each
+3. No two skills or commands serve the same purpose without clear differentiation; agent responsibilities have no unintentional overlap
+
 ## Phase Dependencies
 
 ```
@@ -80,12 +93,15 @@ Phase 30 (Review Quality) ──────────┤
                                      ├── Phase 34 (Execution Resilience)
 Phase 31 (Behavioral Guardrails) ────┤
                                      └── Phase 33 (Knowledge & Memory) ── Phase 34
+                                                                              │
+                                                                              └── Phase 35 (Consolidation Audit)
 ```
 
 Phases 29, 30, 31 can execute in parallel (no dependencies).
 Phase 32 depends on 29.
 Phase 33 depends on 31.
 Phase 34 depends on 30 + 33.
+Phase 35 depends on 34 (full feature audit after all v4.0 work lands).
 
 ## Progress
 
@@ -97,3 +113,4 @@ Phase 34 depends on 30 + 33.
 | 32. Planning Intelligence | PLN-01, PLN-02 | **Complete** |
 | 33. Knowledge & Memory | KNW-01, KNW-02, KNW-03 | **Complete** |
 | 34. Execution Resilience | EXE-01, EXE-02, EXE-03 | **Executed (pending review)** |
+| 35. Consolidation Audit | CON-01, CON-02, CON-03 | **Planned** (2 plans) |
