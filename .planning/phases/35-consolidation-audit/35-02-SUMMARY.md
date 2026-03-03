@@ -97,16 +97,17 @@ None. The 35-AUDIT.md document was produced in a single pass with all required s
 
 None.
 
-## Self-Check
+## Self-Check: PASSED
 
 - [x] `.planning/phases/35-consolidation-audit/35-AUDIT.md` exists
 - [x] Line count: 320 (requirement: 100+)
 - [x] Contains "Command Inventory" section
 - [x] Contains "Agent Inventory" section
-- [x] Contains "Post-Fix Re-scan" section
+- [x] Contains "Post-Fix Re-scan" section (under "New Findings (Post-Fix Re-scan)")
 - [x] RESOLVED count: 10 (requirement: at least 9)
 - [x] Division check: 9 Title Case values, no lowercase-hyphenated
-- [x] Commit `3825dfb` exists
+- [x] Commit `3825dfb` exists (task commit)
+- [x] Commit `c04f1fd` exists (metadata commit)
 
 ## Next Phase Readiness
 
