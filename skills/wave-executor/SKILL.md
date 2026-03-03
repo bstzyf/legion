@@ -119,8 +119,8 @@ For each plan where autonomous: false:
 Step 1: Identify the assigned agent
   - Check the plan's <objective> or <context> block for "Agent: {agent-id}"
   - Cross-reference agent-id against agent-registry.md to confirm file path
-  - Path format: agents/{agent-id}.md
-  - Example: agents/engineering-senior-developer.md
+  - Path format: {AGENTS_DIR}/{agent-id}.md  (AGENTS_DIR resolved via workflow-common Agent Path Resolution Protocol)
+  - Example: {AGENTS_DIR}/engineering-senior-developer.md
 
 Step 2: Read the complete personality file
   - Use the Read tool to load the ENTIRE agent .md file
@@ -592,7 +592,7 @@ How to handle common failure modes without retrying or hiding problems.
    - Suggest the user re-plan the phase to move one plan to a later wave
 
 5. MISSING PERSONALITY FILE
-   Symptom: The agent .md file does not exist at agents/{agent-id}.md
+   Symptom: The agent .md file does not exist at {AGENTS_DIR}/{agent-id}.md
    Action:
    - Fall back to autonomous execution — run the plan without personality injection
    - Log: "Warning: personality file not found for {agent-id} at {expected-path}.
@@ -667,13 +667,15 @@ Agent file paths are resolved using the `agent-registry.md` Agent Catalog (Secti
 ### Quick Reference: Agent Path Format
 
 ```
-agents/{agent-id}.md
+{AGENTS_DIR}/{agent-id}.md
 
 Examples:
-  agents/engineering-senior-developer.md
-  agents/testing-evidence-collector.md
-  agents/design-ux-architect.md
-  agents/agents-orchestrator.md
+  {AGENTS_DIR}/engineering-senior-developer.md
+  {AGENTS_DIR}/testing-evidence-collector.md
+  {AGENTS_DIR}/design-ux-architect.md
+  {AGENTS_DIR}/agents-orchestrator.md
+
+AGENTS_DIR is resolved once per command via workflow-common Agent Path Resolution Protocol.
 ```
 
 If an agent-id is ambiguous, check agent-registry.md Section 1 for the canonical file path.

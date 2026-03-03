@@ -19,7 +19,7 @@ skills/agent-registry/SKILL.md
 
 <context>
 Portfolio registry: ~/.claude/legion/portfolio.md
-Studio Producer: agents/project-management-studio-producer.md
+Studio Producer: {AGENTS_DIR}/project-management-studio-producer.md (resolve AGENTS_DIR via workflow-common Agent Path Resolution Protocol)
 </context>
 
 <process>
@@ -182,8 +182,9 @@ Studio Producer: agents/project-management-studio-producer.md
    - Return to Step 6
 
    **Path C: Studio Producer analysis**
+   - RESOLVE AGENT PATH: Follow workflow-common Agent Path Resolution Protocol to resolve AGENTS_DIR
    - Read the Studio Producer personality file in full:
-     `agents/project-management-studio-producer.md`
+     `{AGENTS_DIR}/project-management-studio-producer.md`
    - Construct a prompt with full personality injection:
      ```
      {full Studio Producer personality content}

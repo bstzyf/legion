@@ -79,13 +79,14 @@ Step 2: Select review agents based on phase type
   - Present selected reviewers to the user for confirmation before spawning any agents
 
 Step 3: Validate reviewer availability
-  - Confirm each selected agent .md file exists at the expected path:
-    agents/testing-reality-checker.md
-    agents/testing-evidence-collector.md
-    agents/testing-api-tester.md
-    agents/testing-workflow-optimizer.md
-    agents/testing-performance-benchmarker.md
-    agents/design-brand-guardian.md
+  - Confirm each selected agent .md file exists at the expected path (using AGENTS_DIR
+    resolved via workflow-common Agent Path Resolution Protocol):
+    {AGENTS_DIR}/testing-reality-checker.md
+    {AGENTS_DIR}/testing-evidence-collector.md
+    {AGENTS_DIR}/testing-api-tester.md
+    {AGENTS_DIR}/testing-workflow-optimizer.md
+    {AGENTS_DIR}/testing-performance-benchmarker.md
+    {AGENTS_DIR}/design-brand-guardian.md
   - If any personality file is missing: fall back to testing-reality-checker for that slot
   - Log the fallback: "Warning: {agent-id}.md not found. Using testing-reality-checker for
     {phase-type} review slot."
@@ -128,8 +129,9 @@ Step 1: Gather phase artifacts
   - Read .planning/ROADMAP.md to extract the phase success criteria
 
 Step 2: Read the reviewer's personality file
-  - Path: agents/{agent-id}.md
-    (cross-reference agent-registry.md Section 1 for the canonical path)
+  - Path: {AGENTS_DIR}/{agent-id}.md
+    (AGENTS_DIR resolved via workflow-common Agent Path Resolution Protocol;
+     cross-reference agent-registry.md Section 1 for the canonical agent ID)
   - Read the ENTIRE personality .md file — do not truncate or summarize
   - Capture this as: PERSONALITY_CONTENT
 
@@ -797,7 +799,7 @@ How to handle failures during the review loop itself.
    - If the re-reviewer downgrades from BLOCKER to WARNING: update severity for next cycle
 
 4. PERSONALITY FILE MISSING FOR REVIEWER
-   Symptom: Expected reviewer .md file not found at agents/{agent-id}.md
+   Symptom: Expected reviewer .md file not found at {AGENTS_DIR}/{agent-id}.md
    Action:
    - Fall back to testing-reality-checker for that review slot
    - Log: "Warning: personality file not found for {agent-id}. Using testing-reality-checker."
@@ -832,14 +834,16 @@ Agent file paths are resolved using `agent-registry.md` Section 1 (Agent Catalog
 ### Quick Reference: Review Agent Paths
 
 ```
-agents/testing-reality-checker.md
-agents/testing-evidence-collector.md
-agents/testing-api-tester.md
-agents/testing-test-results-analyzer.md
-agents/testing-performance-benchmarker.md
-agents/testing-workflow-optimizer.md
-agents/testing-tool-evaluator.md
-agents/design-brand-guardian.md
-agents/design-ux-researcher.md
-agents/agents-orchestrator.md
+{AGENTS_DIR}/testing-reality-checker.md
+{AGENTS_DIR}/testing-evidence-collector.md
+{AGENTS_DIR}/testing-api-tester.md
+{AGENTS_DIR}/testing-test-results-analyzer.md
+{AGENTS_DIR}/testing-performance-benchmarker.md
+{AGENTS_DIR}/testing-workflow-optimizer.md
+{AGENTS_DIR}/testing-tool-evaluator.md
+{AGENTS_DIR}/design-brand-guardian.md
+{AGENTS_DIR}/design-ux-researcher.md
+{AGENTS_DIR}/agents-orchestrator.md
+
+AGENTS_DIR is resolved once per command via workflow-common Agent Path Resolution Protocol.
 ```

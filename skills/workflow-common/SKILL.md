@@ -35,10 +35,10 @@ Shared constants, paths, and patterns used across all /legion: commands.
 
 ## Agent Personality Paths
 
-All 51 agent personalities live under `agents/` in a flat directory (no division subdirectories):
+All 51 agent personalities live under `agents/` in the plugin root (not necessarily the user's CWD). The path must be resolved before use:
 
 ```
-agents/{agent-id}.md
+{AGENTS_DIR}/{agent-id}.md
 ```
 
 Agent IDs include their division as a prefix (e.g., `engineering-senior-developer`, `testing-reality-checker`). Exceptions: Spatial Computing agents use descriptive prefixes (xr-, visionos-, macos-, terminal-) and Specialized agents use domain prefixes (agents-, data-, lsp-) for shorter, more readable filenames.
@@ -47,7 +47,39 @@ Agent IDs include their division as a prefix (e.g., `engineering-senior-develope
 
 Custom agents created via `/legion:agent` follow the same path pattern.
 
-To load an agent personality: `Read agents/{agent-id}.md`
+To load an agent personality: `Read {AGENTS_DIR}/{agent-id}.md`
+
+### Agent Path Resolution Protocol
+
+Before loading ANY agent personality file, resolve `AGENTS_DIR` once per command invocation:
+
+```
+Step 1: Try local (CWD) path
+  - Attempt to Read agents/agents-orchestrator.md from the current working directory
+  - If the file exists and is readable:
+    → AGENTS_DIR = "agents"   (relative — local dev mode)
+    → Log: "AGENTS_DIR: agents (local)"
+
+Step 2: If Step 1 failed, discover plugin installation
+  - Run: Glob ~/.claude/plugins/**/legion/**/agents/agents-orchestrator.md
+  - If one or more matches are returned:
+    → Extract the parent directory of the first match
+      (e.g., ~/.claude/plugins/cache/legion/legion/3.0.0/agents/agents-orchestrator.md
+       → AGENTS_DIR = ~/.claude/plugins/cache/legion/legion/3.0.0/agents)
+    → Log: "AGENTS_DIR: {resolved_path} (plugin)"
+
+Step 3: If both Step 1 and Step 2 failed
+  - Error: "Could not locate agent personality files. Checked:
+    1. agents/ (current directory)
+    2. ~/.claude/plugins/**/legion/**/agents/ (plugin installation)
+    Ensure the Legion plugin is properly installed."
+  - Stop the command — do not proceed without agent access.
+```
+
+**Rules:**
+- Run this protocol ONCE at the start of each command, before any personality file is read
+- Store the resolved `AGENTS_DIR` value and reuse it for all subsequent agent file reads in the same command
+- All personality reads use `{AGENTS_DIR}/{agent-id}.md` — never bare `agents/{agent-id}.md`
 
 ## Personality Injection Pattern
 

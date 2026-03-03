@@ -80,8 +80,9 @@ skills/agent-registry/CATALOG.md
    Based on selection from Step 3:
 
    **Path A: Personality-injected agent**
-   a. Look up the agent's file path from agent-registry Section 1
-   b. Read the agent's full personality .md file
+   a. RESOLVE AGENT PATH: Follow workflow-common Agent Path Resolution Protocol to resolve AGENTS_DIR.
+      Look up the agent ID from agent-registry Section 1.
+   b. Read the agent's full personality .md file at {AGENTS_DIR}/{agent-id}.md
    c. Construct the execution prompt:
       """
       {full personality .md content}

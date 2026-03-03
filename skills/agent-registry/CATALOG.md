@@ -4,6 +4,12 @@ Complete catalog of all 51 built-in agents across 9 divisions, plus any custom a
 
 The recommendation algorithm and team assembly patterns are in `SKILL.md` in this directory.
 
+> **Path Note:** The `agents/` paths in the File column below are relative to the plugin root directory.
+> Consumers must NOT use bare `agents/{agent-id}.md` paths directly. Instead, resolve
+> `AGENTS_DIR` using the **Agent Path Resolution Protocol** from `workflow-common` and read
+> personality files as `{AGENTS_DIR}/{agent-id}.md`. This ensures correct resolution in both
+> local development (CWD = plugin root) and global plugin installations.
+
 ---
 
 ## Section 1: Agent Catalog

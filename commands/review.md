@@ -59,6 +59,10 @@ skills/design-workflows/SKILL.md
       Files to review: {count}
       {file list — one per line}"
 
+   2.1 RESOLVE AGENT PATH
+       Follow workflow-common Agent Path Resolution Protocol to resolve AGENTS_DIR.
+       Store the resolved value for all personality loading in Steps 3 and 4.
+
    2.5 DETECT MANUAL EDITS (preference capture — optional)
        Check for user manual edits to build-modified files before review begins:
        1. Build the files_modified list from plan YAML frontmatter (already done above)
@@ -117,7 +121,7 @@ skills/design-workflows/SKILL.md
       Always include testing-reality-checker as primary or secondary
 
    c. Validate each selected agent's personality file exists:
-      - Confirm file at: agents/{agent-id}.md
+      - Confirm file at: {AGENTS_DIR}/{agent-id}.md   (AGENTS_DIR resolved in Step 2.1)
       - If missing: fall back to testing-reality-checker for that slot
       - Log any fallback: "Warning: {agent-id}.md not found. Using testing-reality-checker."
 
@@ -202,7 +206,7 @@ skills/design-workflows/SKILL.md
    b. Spawn review agents (follow review-loop Section 3):
       For each selected reviewer:
       1. Read the reviewer's personality .md file in full
-         (path: agents/{agent-id}.md)
+         (path: {AGENTS_DIR}/{agent-id}.md — AGENTS_DIR resolved in Step 2.1)
       2. Construct the review prompt using the exact format in review-loop Section 3, Step 3:
          - Start with {PERSONALITY_CONTENT} (full file, no truncation)
          - Separator: "---"

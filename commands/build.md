@@ -86,6 +86,10 @@ skills/codebase-mapper/SKILL.md
    is handled transparently during prompt construction in the wave executor.
    If CODEBASE.md is absent: no injection occurs, agents receive standard prompts.
 
+   **RESOLVE AGENT PATH** (once, before wave loop):
+   Follow workflow-common Agent Path Resolution Protocol to resolve AGENTS_DIR.
+   Store the resolved value for all personality loading in this step.
+
    Follow wave-executor skill Section 4 (Wave Execution):
 
    **Team Setup** (once, before wave loop — wave-executor Section 4, Step 0):
@@ -113,8 +117,8 @@ skills/codebase-mapper/SKILL.md
       (wave-executor Section 3 — Personality Injection):
       - If autonomous: false
         1. Identify the assigned agent from "Agent: {agent-id}" in the plan
-        2. Cross-reference agent-registry.md to get the file path:
-           agents/{agent-id}.md
+        2. Cross-reference agent-registry.md to get the agent ID, then resolve the file path:
+           {AGENTS_DIR}/{agent-id}.md   (AGENTS_DIR resolved above)
         3. Read the ENTIRE personality .md file (no truncation, no excerpts)
         4. Read the ENTIRE plan .md file
         5. Construct the prompt:
@@ -154,7 +158,7 @@ skills/codebase-mapper/SKILL.md
              redirect output to a temp file, check exit code, only show last 20
              lines if the command failed. Keep test/lint/typecheck output visible.
         6. Agent name: "{agent-id}-{NN}-{PP}" (e.g., "engineering-senior-developer-04-01")
-        - If personality file is missing: fall back to autonomous mode, log the warning
+        - If personality file is missing at {AGENTS_DIR}/{agent-id}.md: fall back to autonomous mode, log the warning including the attempted path
 
       - If autonomous: true
         1. Read the ENTIRE plan .md file

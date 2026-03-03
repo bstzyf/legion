@@ -84,8 +84,9 @@ skills/agent-registry/CATALOG.md
       - If invalid: display available agent IDs for the closest division and re-prompt
 
 4. CONSTRUCT ADVISORY PROMPT
-   a. Look up the agent's file path from agent-registry Section 1
-   b. Read the agent's full personality .md file (no truncation)
+   a. RESOLVE AGENT PATH: Follow workflow-common Agent Path Resolution Protocol to resolve AGENTS_DIR
+   b. Look up the agent ID from agent-registry Section 1, then read the full personality
+      .md file at {AGENTS_DIR}/{agent-id}.md (no truncation)
    c. Construct the advisory prompt:
       """
       {full personality .md content}
