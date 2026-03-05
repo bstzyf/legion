@@ -846,6 +846,23 @@ Reusable protocol for any command to check CODEBASE.md freshness:
    c. Return { available: true, age: {days}, stale: age > STALE_THRESHOLD_DAYS }
 ```
 
+**Step 2d: Check directory mappings staleness**
+  - If `.planning/config/directory-mappings.yaml` exists:
+    - Compare stored directory list to current directories
+    - Run detectStructureChanges() (Section 16.1)
+    - If changes detected, report mappings staleness
+
+**Staleness output addition:**
+  ```json
+  {
+    "available": true,
+    "age": {days},
+    "stale": age > 30,
+    "mappingsStale": {true/false},
+    "mappingsChanges": {change summary or null}
+  }
+  ```
+
 Used by `/legion:status` (Step 2h) and `/legion:quick` (Step 2.5 routing).
 
 ---
@@ -1413,4 +1430,239 @@ Step 2: Extract directory mappings from Section 2.5 findings
 Step 3: Write to .planning/config/directory-mappings.yaml
 Step 4: Verify file is valid YAML
 Step 5: Log: "Directory mappings written to .planning/config/directory-mappings.yaml"
+
+---
+
+## Section 16: Auto-Update Protocol (ENV-05)
+
+Automatically detect when directory structure changes require updating
+CODEBASE.md and directory mappings.
+
+### 16.1: Change Detection
+
+Detect structural changes by comparing current state to stored mappings:
+
+```
+detectStructureChanges(currentMappings):
+  changes = {
+    newDirectories: [],
+    removedDirectories: [],
+    modifiedDirectories: [],
+    newCategories: [],
+    categoryMigrations: []
+  }
+
+  Step 1: Scan current directory structure
+    currentDirs = listDirectories(depth=3, exclude=[".git", "node_modules", ".planning"])
+
+  Step 2: Compare to stored mappings
+    storedDirs = flatten(currentMappings.mappings[*].paths)
+
+    for dir in currentDirs:
+      if dir not in storedDirs:
+        # New directory detected
+        inferredCategory = inferCategoryFromPath(dir)
+        changes.newDirectories.push({
+          path: dir,
+          inferredCategory: inferredCategory,
+          fileCount: countFiles(dir)
+        })
+
+    for dir in storedDirs:
+      if dir not in currentDirs:
+        # Directory no longer exists
+        changes.removedDirectories.push({
+          path: dir,
+          category: findCategoryForPath(dir, currentMappings)
+        })
+
+  Step 3: Detect category usage changes
+    for category, config in currentMappings.mappings:
+      currentFileCount = countFilesInPaths(config.paths)
+      storedFileCount = config.lastKnownFileCount || 0
+
+      if abs(currentFileCount - storedFileCount) > threshold (10% or 5 files):
+        changes.modifiedDirectories.push({
+          category: category,
+          paths: config.paths,
+          oldCount: storedFileCount,
+          newCount: currentFileCount,
+          change: currentFileCount > storedFileCount ? "growth" : "decline"
+        })
+
+  Step 4: Detect new categories
+    # Check for directories that suggest new categories
+    potentialCategories = scanForUncategorizedDirectories(currentDirs, currentMappings)
+    for dirInfo in potentialCategories:
+      if dirInfo.fileCount > 5:  # Significant enough to warrant a category
+        changes.newCategories.push(dirInfo)
+
+  return changes
+```
+
+### 16.2: Change Significance Assessment
+
+Determine if detected changes warrant a mappings update:
+
+| Change Type | Threshold | Action |
+|-------------|-----------|--------|
+| New directory in existing category | >= 3 files | Update mappings (add path) |
+| New directory (uncategorized) | >= 10 files | Suggest new category |
+| Removed directory | Any | Update mappings (remove path) |
+| Category growth/decline | >20% change | Update file counts |
+| Multiple changes | >= 3 categories affected | Recommend full re-analysis |
+
+```
+assessChangeSignificance(changes):
+  significance = {
+    level: "none",  # none | minor | moderate | major
+    updateRecommended: false,
+    fullReanalysisRecommended: false,
+    reasons: []
+  }
+
+  # Count significant changes
+  significantNewDirs = changes.newDirectories.filter(d => d.fileCount >= 3).length
+  significantUncategorized = changes.newCategories.filter(d => d.fileCount >= 10).length
+  significantModifications = changes.modifiedDirectories.length
+
+  if significantNewDirs >= 3 or significantUncategorized >= 2:
+    significance.level = "major"
+    significance.fullReanalysisRecommended = true
+    significance.reasons.push("Multiple new directories detected")
+  else if significantNewDirs > 0 or significantUncategorized > 0:
+    significance.level = "moderate"
+    significance.updateRecommended = true
+    significance.reasons.push("New directories in existing or new categories")
+  else if changes.removedDirectories.length > 0:
+    significance.level = "minor"
+    significance.updateRecommended = true
+    significance.reasons.push("Stale directory references detected")
+  else if significantModifications > 0:
+    significance.level = "minor"
+    significance.updateRecommended = true
+    significance.reasons.push("Category usage has changed significantly")
+
+  return significance
+```
+
+### 16.3: Update Protocol
+
+Process for updating mappings when changes are detected:
+
+```
+updateMappings(changes, currentMappings, significance):
+  Step 1: Create backup
+    backupPath = `.planning/config/directory-mappings-backup-{timestamp}.yaml`
+    copy(currentMappings, backupPath)
+
+  Step 2: Apply updates based on change type
+
+    # Add new directories to existing categories
+    for newDir in changes.newDirectories:
+      category = newDir.inferredCategory
+      if category != "general" and currentMappings.mappings[category]:
+        currentMappings.mappings[category].paths.push(newDir.path)
+        # Sort paths by priority (explicit paths first)
+        sortPathsByPriority(currentMappings.mappings[category].paths)
+
+    # Remove deleted directories
+    for removedDir in changes.removedDirectories:
+      category = removedDir.category
+      if category and currentMappings.mappings[category]:
+        paths = currentMappings.mappings[category].paths
+        paths = paths.filter(p => p != removedDir.path)
+        currentMappings.mappings[category].paths = paths
+
+    # Update file counts
+    for mod in changes.modifiedDirectories:
+      currentMappings.mappings[mod.category].lastKnownFileCount = mod.newCount
+
+    # Handle new categories (manual review recommended)
+    for newCat in changes.newCategories:
+      # Add with low priority, mark for review
+      currentMappings.mappings[newCat.inferredCategory] = {
+        paths: [newCat.path],
+        priority: 1,  # default
+        pattern: "**/*",
+        description: f"Auto-detected: {newCat.inferredCategory}",
+        autoDetected: true,
+        reviewRecommended: true
+      }
+
+  Step 3: Update metadata
+    currentMappings.generated = currentDate()
+    currentMappings.lastUpdated = currentDate()
+    currentMappings.updateReason = significance.reasons.join("; ")
+
+  Step 4: Write updated mappings
+    write(currentMappings, `.planning/config/directory-mappings.yaml`)
+
+  Step 5: Report updates
+    return {
+      updated: true,
+      backupPath: backupPath,
+      changes: changes,
+      significance: significance
+    }
+```
+
+### 16.4: Integration Triggers
+
+When to run change detection:
+
+| Trigger | Frequency | Action |
+|---------|-----------|--------|
+| `/legion:status` | Every run | Detect changes, report staleness |
+| `/legion:build` | Pre-execution | Detect changes, warn if significant |
+| `/legion:plan` | Pre-planning | Detect changes, suggest update |
+| Post-execution | After wave completion | Auto-detect if enabled |
+
+### 16.5: User Notification
+
+Format for reporting detected changes:
+
+```markdown
+## Directory Structure Changes Detected
+
+**Significance:** {minor | moderate | major}
+**Recommendation:** {Update mappings | Full re-analysis}
+
+### New Directories
+| Directory | Inferred Category | Files | Action |
+|-----------|------------------|-------|--------|
+| {path} | {category} | {count} | Added to mappings |
+
+### Removed Directories
+| Directory | Was Category | Action |
+|-----------|-------------|--------|
+| {path} | {category} | Removed from mappings |
+
+### Modified Categories
+| Category | Change | Old Count | New Count |
+|----------|--------|-----------|-----------|
+| {category} | {growth/decline} | {old} | {new} |
+
+### Suggested Actions
+- [ ] Review auto-detected categories
+- [ ] Run `/legion:quick analyze codebase` for full re-analysis
+- [ ] Update mappings: `Directory mappings auto-updated `
+```
+
+### 16.6: Configuration
+
+Auto-update behavior configuration in directory-mappings.yaml:
+
+```yaml
+autoUpdate:
+  enabled: true              # Enable/disable auto-detection
+  mode: "prompt"             # prompt | auto | disabled
+  threshold:
+    newDirectoryFiles: 3     # Min files to add to existing category
+    newCategoryFiles: 10     # Min files to suggest new category
+    categoryChangePercent: 20  # % change to flag modification
+  backup:
+    enabled: true
+    keepCount: 5             # Number of backups to retain
+```
 ```
