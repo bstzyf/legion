@@ -18,6 +18,30 @@ Used by `/legion:review` when panel mode is selected. Replaces the static phase-
 
 How to assemble a review panel dynamically based on what's being reviewed.
 
+### 1.2 Intent-Based Panel Filtering
+
+When review command specifies intent (e.g., --just-security):
+
+1. **Load Intent Domains**
+   - From intent-teams.yaml security-only template
+   - Domains: security, owasp, stride, authentication, authorization
+
+2. **Filter Agents by Domain**
+   - For each candidate agent:
+     - Check agent's primary domains in authority-matrix.yaml
+     - Include only if domains overlap with intent domains
+   - Example: engineering-security-engineer (security domain) → INCLUDE
+   - Example: engineering-frontend-developer (ui domain) → EXCLUDE
+
+3. **Override Recommendations**
+   - If intent mode: Use intent template agents, skip registry recommendation
+   - If full mode: Use existing recommendation algorithm
+
+4. **Domain-Only Review Scope**
+   - Agents review ONLY their intent-matching domains
+   - Non-security findings deferred or excluded
+   - Prevents out-of-domain opinions (already filtered by authority in Phase 37)
+
 ```
 Input: Phase CONTEXT.md content, SUMMARY.md content, files_modified list
 Output: Ordered list of 2-4 reviewer agents with assigned rubrics
@@ -426,21 +450,59 @@ Algorithm:
    - Finding spans multiple domains: Split into separate findings per domain
    - Domain detection uncertain (confidence < 70%): Keep finding, flag as "uncertain domain"
 
-Example:
-```
-Panel: [security-engineer, code-reviewer, ux-architect]
-Findings:
-- security-engineer: src/auth.ts:45 "Missing input sanitization" [BLOCKER, security]
-- code-reviewer: src/auth.ts:45 "Auth logic should use bcrypt" [WARNING, security]
-- code-reviewer: src/auth.ts:50 "Variable naming unclear" [SUGGESTION, general]
-- ux-architect: src/auth.ts:45 "Form lacks aria-label" [WARNING, accessibility]
+   Example:
+   ```
+   Panel: [security-engineer, code-reviewer, ux-architect]
+   Findings:
+   - security-engineer: src/auth.ts:45 "Missing input sanitization" [BLOCKER, security]
+   - code-reviewer: src/auth.ts:45 "Auth logic should use bcrypt" [WARNING, security]
+   - code-reviewer: src/auth.ts:50 "Variable naming unclear" [SUGGESTION, general]
+   - ux-architect: src/auth.ts:45 "Form lacks aria-label" [WARNING, accessibility]
 
-After filtering:
-- Keep: security-engineer (owner of security domain)
-- Filter: code-reviewer on security domain (security-engineer present)
-- Keep: code-reviewer on general domain (no owner)
-- Keep: ux-architect on accessibility domain (owner present, is owner)
-```
+   After filtering:
+   - Keep: security-engineer (owner of security domain)
+   - Filter: code-reviewer on security domain (security-engineer present)
+   - Keep: code-reviewer on general domain (no owner)
+   - Keep: ux-architect on accessibility domain (owner present, is owner)
+   ```
+
+---
+
+## Step 2.5: INTENT FILTERING (conditional)
+
+If REVIEW_MODE === "security-only":
+
+1. **Filter Findings by Domain**
+   - For each finding from all agents:
+     - Check finding.category or finding.domain
+     - Include only if matches security domains:
+       - security, owasp, stride, authentication, authorization
+       - vulnerability, injection, xss, csrf, etc.
+   - Exclude: performance, accessibility, code-style, ui-ux findings
+
+2. **Apply Authority Filtering**
+   - Per AUTH-04 from Phase 37
+   - If engineering-security-engineer provided finding → KEEP
+   - If testing-api-tester provided security finding → KEEP
+   - If design-ui-designer provided security opinion → DISCARD (out-of-domain)
+
+3. **Generate Intent Filter Report**
+   ```markdown
+   ## Intent Filtering Report
+   
+   **Mode:** security-only
+   **Domains:** security, owasp, stride, authentication, authorization
+   
+   **Filtering Applied:**
+   - Raw findings: 47
+   - Security domain findings: 12
+   - After authority filtering: 10
+   - Excluded: 37 (non-security domains)
+   ```
+
+4. **Proceed with filtered findings to Step 3 (Deduplication)**
+
+---
 
 Step 4: Group by domain lens
   Organize findings by each reviewer's rubric focus area.
@@ -519,9 +581,17 @@ Step 7: Produce consolidated report
   |----------|------|-------|------------------|
   | code-reviewer | src/auth.ts:45 | "Auth logic" | security-engineer is domain owner |
 
-  The aggregate verdict and must-fix list then feed back into the standard
-  review-loop cycle (Section 5: Fix Cycle if NEEDS WORK, Section 7 if PASS,
-  Section 8 if escalated after 3 cycles).
+   The aggregate verdict and must-fix list then feed back into the standard
+   review-loop cycle (Section 5: Fix Cycle if NEEDS WORK, Section 7 if PASS,
+   Section 8 if escalated after 3 cycles).
+
+### 3.6 Security-Only Output Generation
+
+If REVIEW_MODE === "security-only":
+- Write: .planning/security-review-{timestamp}.md
+- Include: Security findings only, prioritized by severity
+- Format: Standard finding blocks with OWASP/STRIDE categorization
+- Cross-reference: Map each finding to OWASP Top 10 category and STRIDE threat type
 ```
 
 ---
