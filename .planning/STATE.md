@@ -4,12 +4,12 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: building
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 38-00 plan (Intent-Driven Execution Test Scaffolding)"
+last_session: "2026-03-05 — Completed 38-01 plan (Intent Teams Registry)"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 9
-  completed_plans: 9
+  completed_plans: 10
   total_requirements: 32
   completed_requirements: 18
 ---
@@ -68,9 +68,35 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 - Test coverage: flag parsing, filtering, validation, teams, review
 - Requirements satisfied: INTENT-01, INTENT-02, INTENT-03, INTENT-04, INTENT-05, INTENT-06
 
-**Next:** Phase 38 Plan 01 — Build intent-teams.yaml registry and intent-router skill
+- Plan 01 complete (Intent Teams Registry)
+- Created intent-teams.yaml with 5 intent templates
+- Created intent-router skill with parsing, validation, resolution functions
+- Updated agent-registry CATALOG.md with intent metadata
+- Requirements satisfied: INTENT-05, INTENT-06
+
+**Next:** Phase 38 Plan 02 — Integrate intent-router into /legion:build command
 
 ## Recent Activity
+
+### Completed: Plan 38-01 — Intent Teams Registry
+- Created `.planning/config/intent-teams.yaml` — Team template registry with 5 intents
+  - harden: Security audit with Testing + Security divisions (ad_hoc mode)
+  - document: Documentation-only generation (filter_plans mode)
+  - skip-frontend: Exclude frontend/UI tasks (filter_plans mode)
+  - skip-backend: Exclude backend/API tasks (filter_plans mode)
+  - security-only: Security review audit (filter_review mode)
+- Created `skills/intent-router/SKILL.md` — Routing and validation skill
+  - Section 1: Intent Flag Parsing with parseIntentFlags()
+  - Section 2: Validation Engine with validateFlagCombination()
+  - Section 3: Team Template Resolution with resolveTeamTemplate()
+  - Section 4: Execution Mode Detection
+  - Section 5: Filter Predicates for agents, files, tasks
+  - Section 6: Integration Guide for /legion:build and /legion:review
+- Updated `skills/agent-registry/CATALOG.md` with intent_mappings frontmatter
+  - Intent Routing section with team composition table
+  - Cross-reference with divisions and dynamic composition notes
+- Status: ✓ Complete, 3 commits, all 123 tests passing
+- Requirements satisfied: INTENT-05, INTENT-06
 
 ### Completed: Plan 38-00 — Intent-Driven Execution Test Scaffolding
 - Created `tests/intent-flag-parsing.test.js` — 28 tests for flag detection
