@@ -2,6 +2,7 @@
 cli: copilot-cli
 cli_display_name: "GitHub Copilot CLI"
 version: "1.0"
+support_tier: "experimental"
 capabilities:
   parallel_execution: false
   agent_spawning: true
@@ -69,3 +70,4 @@ Copilot CLI has tight GitHub integration. When a GitHub remote exists:
 - Issue creation: `gh issue create`
 - PR creation: `gh pr create`
 - The built-in GitHub MCP server provides direct access to repos, issues, and PRs
+

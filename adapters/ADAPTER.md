@@ -19,7 +19,7 @@ Adapters bridge Legion's generic workflow concepts to the specific tools and con
 |-------|------|-------------|
 | `cli` | string | Machine-readable CLI identifier (e.g., `claude-code`, `codex-cli`) |
 | `cli_display_name` | string | Human-readable name (e.g., "Claude Code", "OpenAI Codex CLI") |
-| `version` | string | Adapter version |
+| `version` | string | Adapter version |`n| `support_tier` | string | One of `certified`, `beta`, `experimental` for disclosure and diagnostics |
 
 ### Capabilities (YAML frontmatter)
 
@@ -107,3 +107,4 @@ To add support for a new AI CLI:
 5. Write the Execution Protocol section
 6. Add a detection entry in `skills/workflow-common/SKILL.md` under '## CLI Detection and Adapter Loading → ### Detection Protocol' (Steps 2 and 3)
 7. Test by running `/legion:quick <simple task>` on the target CLI
+

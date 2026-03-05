@@ -23,6 +23,19 @@ Extract key terms from the task description. Match terms against the `task_types
 
 **Custom agents:** Custom agents added to the Section 1 catalog via `/legion:agent` are automatically eligible for recommendation. Their task type tags are matched identically to built-in agents. No changes to the scoring algorithm are needed.
 
+### Step 1.5: Normalize Semantic Terms (Synonym Map)
+Normalize common synonyms before scoring so semantically similar requests can match the right `task_types` tags.
+
+Use these mappings as a baseline:
+- `scalability`, `latency`, `throughput` -> `performance`
+- `harden`, `exploit`, `vulnerability` -> `security`
+- `a11y`, `wcag`, `screen reader` -> `accessibility`
+- `funnel`, `conversion`, `growth loop` -> `growth`
+- `refactor`, `cleanup`, `maintainability` -> `code-quality`
+- `onboarding`, `activation`, `retention` -> `product`
+
+If a term has no exact map, keep the original term and continue with normal scoring.
+
 ### Step 2: Match Agents to Task Types
 For each extracted term, find all agents whose task types contain a match. Weight matches:
 - **Exact match** on a task type tag: 3 points
@@ -33,6 +46,17 @@ For each extracted term, find all agents whose task types contain a match. Weigh
 1. **Primary division match** ranks highest -- agents whose division directly maps to the task domain
 2. **Cross-division support** ranks second -- agents from other divisions whose task types overlap
 3. Break ties by specificity: prefer agents with narrower specializations over generalists
+
+### Step 3.5: Confidence Classification
+After ranking, classify recommendation confidence from the top score:
+- **High confidence**: top score >= 8
+- **Medium confidence**: top score 5-7
+- **Low confidence**: top score <= 4
+
+If confidence is low:
+1. Explicitly label the recommendation as low confidence.
+2. Offer 2-3 alternative agents from different divisions.
+3. Ask the user for guidance before locking the assignment.
 
 ### Step 4: Cap Team Size
 - **2 agents** for single-domain tasks (e.g., "fix a CSS bug")
@@ -149,3 +173,5 @@ Pre-configured team compositions for common project scenarios.
 | Interaction Design | xr-interface-architect | spatial-computing |
 | Immersive Dev | xr-immersive-developer | spatial-computing |
 | QA | testing-performance-benchmarker | testing |
+
+

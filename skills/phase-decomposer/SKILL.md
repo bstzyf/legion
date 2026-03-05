@@ -14,7 +14,7 @@ Engine for `/legion:plan`. Takes a ROADMAP.md phase entry and transforms it into
 
 ## Section 1: Decomposition Principles
 
-1. **Max 3 tasks per plan** — if a plan needs more work, split it into additional plans. Plans stay focused and reviewable.
+1. **Max tasks per plan comes from settings** — read `settings.json` key `planning.max_tasks_per_plan` (default: 3). If a plan needs more work than that limit, split it into additional plans. Plans stay focused and reviewable.
 2. **Wave-structured execution** — Wave 1 plans have no internal dependencies. Wave 2 plans depend on Wave 1 outputs. Parallel within waves, sequential between waves.
 3. **Per-plan agent assignment** — different plans in the same phase may use different agents. A frontend plan gets a frontend agent; a testing plan gets a testing agent.
 4. **Self-contained plans** — each plan must be executable with only its `<context>` references. An agent should never need to read a file not listed in context.
@@ -22,7 +22,17 @@ Engine for `/legion:plan`. Takes a ROADMAP.md phase entry and transforms it into
    - `> verification:` inline lines after the task description — machine-checkable commands that can be extracted and run automatically by the wave-executor
    - A `<verify>` block with the same commands in executable form
    No "manually check" or "visually inspect" instructions. If you cannot script the check, the task is too vague.
-6. **Fewer plans over more** — 2 focused plans beats 4 thin ones. Combine related work when it fits within the 3-task limit. Only create additional plans when dependency ordering or agent specialization requires separation.
+6. **Fewer plans over more** — 2 focused plans beats 4 thin ones. Combine related work when it fits within the configured task limit. Only create additional plans when dependency ordering or agent specialization requires separation.
+
+---
+
+## Section 1.5: Settings Input
+
+Before decomposition, resolve planning limits from `settings.json`:
+- Try Read `settings.json`
+- If present, use `planning.max_tasks_per_plan` as the hard cap for tasks per plan
+- If missing or invalid, default to `3`
+- Carry this value as `{max_tasks_per_plan}` for all rules and templates below
 
 ---
 
@@ -258,7 +268,7 @@ How to break a phase's requirements into plans and tasks.
    - Within a wave, work can happen in parallel (no internal dependencies)
 
 4. GROUP deliverables into plans within each wave
-   - Max 3 tasks per plan
+   - Max {max_tasks_per_plan} tasks per plan (from settings, default 3)
    - Group by: same file being modified, same skill/pattern, same agent specialty
    - Name plans by their primary output: "Create {X} skill", "Update {Y} command"
 
@@ -274,7 +284,7 @@ How to break a phase's requirements into plans and tasks.
 | Signal | Action |
 |--------|--------|
 | Two deliverables modify the same file | Same plan |
-| Two deliverables use the same skill pattern | Same plan (if <= 3 tasks) |
+| Two deliverables use the same skill pattern | Same plan (if <= configured max tasks) |
 | One deliverable produces a file another reads | Different waves |
 | Two deliverables share no files or patterns | Can be separate plans in same wave |
 | Deliverable is a skill/markdown file only | Consider autonomous (no agent needed) |
@@ -637,7 +647,7 @@ After completion, create `.planning/phases/{NN}-{phase-slug}/{NN}-{PP}-SUMMARY.m
 | `must_haves.artifacts` | Primary output files with min_lines and contains checks |
 | `must_haves.key_links` | How this plan's output connects to other files (grep-able patterns) |
 | `<context>` | Always include PROJECT.md, ROADMAP.md, and the phase CONTEXT.md. Add source files relevant to the plan's tasks. For wave 2+ plans, include prior plan summaries. |
-| `<tasks>` | Max 3 tasks. Each with name, files, action, verify, done. |
+| `<tasks>` | Max `{max_tasks_per_plan}` tasks (default 3). Each with name, files, action, verify, done. |
 | `<verify>` inside tasks | Bash commands only — `wc -l`, `grep`, `test -f`, etc. |
 | `<verification>` | Checklist of all conditions for plan completion |
 | `<success_criteria>` | Bulleted testable outcomes |
@@ -817,3 +827,6 @@ If a ROADMAP.md phase has no requirement IDs listed, or the IDs do not exist in 
 
 1. Warn the user: "Phase {N} references requirements {IDs} but they were not found in REQUIREMENTS.md."
 2. Ask whether to proceed using the phase Goal and Success Criteria as guidance, or fix REQUIREMENTS.md first.
+
+
+

@@ -1,1 +1,29 @@
-{}
+{
+  "$schema": "./docs/settings.schema.json",
+  "models": {
+    "planning": "adapter_default",
+    "execution": "adapter_default",
+    "check": "adapter_default"
+  },
+  "planning": {
+    "max_tasks_per_plan": 3,
+    "architecture_proposals_default": "prompt",
+    "spec_pipeline_default": "prompt"
+  },
+  "execution": {
+    "auto_commit": true,
+    "commit_prefix": "legion",
+    "agent_personality_verbosity": "full"
+  },
+  "review": {
+    "default_mode": "panel",
+    "max_cycles": 3
+  },
+  "memory": {
+    "enabled": true,
+    "project_scoped_only": true
+  },
+  "integrations": {
+    "github": "prompt"
+  }
+}

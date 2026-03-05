@@ -2,6 +2,7 @@
 cli: claude-code
 cli_display_name: "Claude Code"
 version: "1.0"
+support_tier: "certified"
 capabilities:
   parallel_execution: true
   agent_spawning: true
@@ -102,3 +103,4 @@ TeamDelete()
 ```
 
 This MUST run on both success and failure paths. Never leave orphaned agents or stale Team configurations.
+

@@ -6,7 +6,7 @@ allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Agent, TeamCreate, TeamDele
 ---
 
 <objective>
-Select appropriate review agents for the current phase, run a personality-injected dev-QA review loop (max 3 cycles), route fixes to the right agents, and mark the phase complete only after review passes. Escalate to the user if 3 cycles fail to resolve all blockers.
+Select appropriate review agents for the current phase, run a personality-injected dev-QA review loop using `settings.review.max_cycles` (default 3), route fixes to the right agents, and mark the phase complete only after review passes. Escalate to the user if the configured cycle limit fails to resolve all blockers.
 </objective>
 
 <execution_context>
@@ -16,9 +16,6 @@ skills/agent-registry/CATALOG.md
 skills/review-loop/SKILL.md
 skills/review-panel/SKILL.md
 skills/execution-tracker/SKILL.md
-skills/memory-manager/SKILL.md
-skills/github-sync/SKILL.md
-skills/design-workflows/SKILL.md
 </execution_context>
 
 <context>
@@ -28,6 +25,12 @@ skills/design-workflows/SKILL.md
 </context>
 
 <process>
+0. CONDITIONAL SKILL LOADING (context budget)
+   Load optional skills only when prerequisites are present:
+   - `skills/memory-manager/SKILL.md` only if `.planning/memory/` exists or this review stores outcomes/preferences.
+   - `skills/github-sync/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
+   - `skills/design-workflows/SKILL.md` only for design-phase review or if `.planning/designs/` docs exist.
+   If a condition is not met, skip that skill silently and continue.
 1. DETERMINE TARGET PHASE
    - Check $ARGUMENTS for --phase N flag (e.g., `/legion:review --phase 4`)
    - If no flag: read STATE.md to determine current phase
@@ -500,3 +503,5 @@ skills/design-workflows/SKILL.md
    - Do NOT automatically trigger /legion:plan — let the user decide when to proceed.
 </process>
 </output>
+
+

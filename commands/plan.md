@@ -6,7 +6,7 @@ allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
 ---
 
 <objective>
-Decompose a roadmap phase into wave-structured plans with max 3 tasks each. Recommend agents from the registry for each plan and get user confirmation. Generate plan files to `.planning/phases/{NN}-{slug}/`.
+Decompose a roadmap phase into wave-structured plans using `settings.planning.max_tasks_per_plan` (default 3). Recommend agents from the registry for each plan and get user confirmation. Generate plan files to `.planning/phases/{NN}-{slug}/`.
 </objective>
 
 <execution_context>
@@ -14,13 +14,6 @@ skills/workflow-common/SKILL.md
 skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
 skills/phase-decomposer/SKILL.md
-skills/memory-manager/SKILL.md
-skills/github-sync/SKILL.md
-skills/codebase-mapper/SKILL.md
-skills/marketing-workflows/SKILL.md
-skills/design-workflows/SKILL.md
-skills/plan-critique/SKILL.md
-skills/spec-pipeline/SKILL.md
 </execution_context>
 
 <context>
@@ -31,6 +24,16 @@ skills/spec-pipeline/SKILL.md
 </context>
 
 <process>
+0. CONDITIONAL SKILL LOADING (context budget)
+   Load optional skills only if their activation condition is true:
+   - `skills/memory-manager/SKILL.md` only if `.planning/memory/OUTCOMES.md` exists.
+   - `skills/github-sync/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
+   - `skills/codebase-mapper/SKILL.md` only if `.planning/CODEBASE.md` exists.
+   - `skills/marketing-workflows/SKILL.md` only for MKT-* requirements or marketing keyword detection.
+   - `skills/design-workflows/SKILL.md` only for DSN-* requirements or design keyword detection.
+   - `skills/plan-critique/SKILL.md` only when user opts into plan critique.
+   - `skills/spec-pipeline/SKILL.md` only when user opts into spec creation or an existing spec is present.
+   If a condition is not met, skip that skill silently and continue.
 1. PARSE PHASE NUMBER
    - Read $ARGUMENTS for a phase number (e.g., "3" from `/legion:plan 3`)
    - If no phase number given: auto-detect the next unplanned phase
@@ -196,7 +199,7 @@ skills/spec-pipeline/SKILL.md
      direction for decomposition decisions
    - Identify dependency layers
    - Map layers to waves
-   - Group deliverables into plans (max 3 tasks per plan)
+   - Group deliverables into plans (max tasks from `settings.planning.max_tasks_per_plan`, default 3)
    - Validate: every requirement covered, no circular dependencies
 
 5. RECOMMEND AGENTS
@@ -303,3 +306,5 @@ skills/spec-pipeline/SKILL.md
     - Do NOT dump full plan file contents -- summary only
 </process>
 </output>
+
+

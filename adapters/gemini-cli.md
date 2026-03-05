@@ -2,6 +2,7 @@
 cli: gemini-cli
 cli_display_name: "Google Gemini CLI"
 version: "1.0"
+support_tier: "beta"
 capabilities:
   parallel_execution: false
   agent_spawning: true
@@ -70,3 +71,4 @@ Gemini CLI extensions can bundle Legion as a custom extension with:
 - Custom slash commands (`.toml` files)
 - GEMINI.md context files
 - MCP server connections
+

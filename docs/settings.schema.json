@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Legion Settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "planning": { "type": "string" },
+        "execution": { "type": "string" },
+        "check": { "type": "string" }
+      },
+      "required": ["planning", "execution", "check"]
+    },
+    "planning": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_tasks_per_plan": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "architecture_proposals_default": { "type": "string", "enum": ["always", "prompt", "never"] },
+        "spec_pipeline_default": { "type": "string", "enum": ["always", "prompt", "never"] }
+      },
+      "required": ["max_tasks_per_plan", "architecture_proposals_default", "spec_pipeline_default"]
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "auto_commit": { "type": "boolean" },
+        "commit_prefix": { "type": "string", "minLength": 1 },
+        "agent_personality_verbosity": { "type": "string", "enum": ["full", "condensed"] }
+      },
+      "required": ["auto_commit", "commit_prefix", "agent_personality_verbosity"]
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default_mode": { "type": "string", "enum": ["classic", "panel"] },
+        "max_cycles": { "type": "integer", "minimum": 1, "maximum": 5 }
+      },
+      "required": ["default_mode", "max_cycles"]
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "project_scoped_only": { "type": "boolean", "const": true }
+      },
+      "required": ["enabled", "project_scoped_only"]
+    },
+    "integrations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "github": { "type": "string", "enum": ["enabled", "disabled", "prompt"] }
+      },
+      "required": ["github"]
+    }
+  },
+  "required": ["models", "planning", "execution", "review", "memory", "integrations"]
+}

@@ -32,8 +32,8 @@ claude --plugin-dir ./legion --plugin-dir ./other-plugin
 ## Plugin Structure
 
 ```
-commands/           10 command entry points (/legion:*)
-skills/             17 workflow skills (SKILL.md format)
+commands/           11 command entry points (/legion:*)
+skills/             18 workflow skills (SKILL.md format)
 agents/             51 agent personality files (.md)
 scripts/            Validation and maintenance scripts
 .claude-plugin/     Plugin manifest + marketplace entry
@@ -47,7 +47,7 @@ Each command is a `.md` file that serves as an entry point for a `/legion:*` sla
 
 ### Skills (`skills/{name}/SKILL.md`)
 
-Skills are reusable workflow components. Each skill lives in a directory with a `SKILL.md` file and optional supporting files (templates, references). Skills have `name` and `description` frontmatter.
+Skills are reusable workflow components. Each skill lives in a directory with a `SKILL.md` file and optional supporting files (templates, references). Skills use frontmatter with `name`, `description`, `triggers`, `token_cost`, and `summary`.
 
 ### Agents (`agents/{name}.md`)
 
@@ -68,7 +68,7 @@ The easiest way is `/legion:agent` — it guides you through creation and handle
    ```
    - `color` must be one of: red, green, blue, purple, cyan, orange, yellow, pink
    - `division` must be one of: engineering, design, marketing, product, project-management, testing, support, spatial-computing, specialized, custom
-2. Write the personality using Format A emoji headings (80-350 lines). Required sections: `## 🧠 Your Identity & Memory`, `## 🎯 Your Core Mission`, `## 🚨 Critical Rules You Must Follow`, `## 🛠️ Your Technical Deliverables`, `## 🔄 Your Workflow Process`, `## 💭 Your Communication Style`, `## 🔄 Learning & Memory`, `## 🎯 Your Success Metrics`
+2. Write the personality using Format A emoji headings (target 80-350 lines, hard minimum 80 lines). Required sections: `## 🧠 Your Identity & Memory`, `## 🎯 Your Core Mission`, `## 🚨 Critical Rules You Must Follow`, `## 🛠️ Your Technical Deliverables`, `## 🔄 Your Workflow Process`, `## 💭 Your Communication Style`, `## 🔄 Learning & Memory`, `## 🎯 Your Success Metrics`
 3. Add the agent to the catalog in `skills/agent-registry/CATALOG.md`
 4. Run `bash scripts/validate.sh` to verify schema compliance
 5. Test with `/legion:quick "task for your agent"`
@@ -94,10 +94,10 @@ The easiest way is `/legion:agent` — it guides you through creation and handle
 ## Code Style
 
 - **Markdown only** — no custom tooling, no build steps (validation script is the exception)
-- **Format A for agents** — emoji headings, "Your" pronouns, 80-350 line range
+- **Format A for agents** — emoji headings, "Your" pronouns, target 80-350 line range (hard minimum 80)
 - **Named colors only** — red, green, blue, purple, cyan, orange, yellow, pink
 - **Kebab-case divisions** — spatial-computing, project-management, not Title Case
-- **Max 3 tasks per plan** — keeps work focused and reviewable
+- **Default max 3 tasks per plan (configurable)** — keeps work focused and reviewable
 - **Full personality injection** — agent files are complete, not fragments
 - **Human-readable state** — `.planning/` files are plain markdown
 
@@ -107,6 +107,12 @@ Run the validation script to check codebase health:
 
 ```bash
 bash scripts/validate.sh
+node scripts/release-check.js
+node --test
 ```
 
-This checks: agent frontmatter schema, registry sync, heading format, skill path resolution, and minimum agent size.
+This checks: version/changelog sync, agent schema + registry sync, heading format, execution-context paths, agent size contract, README metrics sync, and release consistency checks.
+
+
+
+

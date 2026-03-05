@@ -30,6 +30,20 @@ Replace `--claude` with your runtime of choice:
 | `--opencode` | OpenCode |
 | `--aider` | Aider |
 
+### Runtime Support Tiers
+
+| Runtime | Status | Notes |
+|---------|--------|-------|
+| Claude Code | Certified | Fully validated agent-team workflow including TeamCreate/SendMessage paths |
+| OpenAI Codex CLI | Beta | Validated sequential/subagent workflow; advanced coordination differs from Claude |
+| Cursor | Beta | Validated async subagent flow; structured inter-agent messaging not native |
+| Google Gemini CLI | Beta | Validated sequential adapter path; feature parity depends on CLI version |
+| GitHub Copilot CLI | Experimental | Adapter provided; behavior and env markers vary by installation |
+| Amazon Q Developer | Experimental | Single-session fallback model; no native subagent orchestration |
+| Windsurf | Experimental | Single-session fallback model; automation behavior may vary |
+| OpenCode | Experimental | Task-based parallel support expected; diagnostics recommended on first run |
+| Aider | Experimental | Single-agent fallback mode with reduced orchestration capabilities |
+
 ### Local development
 
 ```bash
@@ -40,7 +54,7 @@ node bin/install.js --claude
 ### Prerequisites
 
 - Node.js 18+
-- One of the 9 supported AI CLI runtimes listed above
+- One of the 9 AI CLI runtimes listed above (support tier varies by runtime)
 
 ## Getting Started
 
@@ -80,7 +94,7 @@ node bin/install.js --claude
        ↓
 /legion:build            Parallel execution → Agents work in character, wave by wave
        ↓
-/legion:review           Quality gate → Review → Fix → Re-review (max 3 cycles)
+/legion:review           Quality gate → Review → Fix → Re-review (default max 3 cycles, configurable)
        ↓                       ↓ (optional)
        ↓                 Panel mode → 2-4 domain-weighted reviewers with rubrics
        ↓
@@ -116,7 +130,7 @@ Guides you through an adaptive conversation (5-8 exchanges) to capture project v
 
 #### `/legion:plan <N>` — Phase Planning
 
-Decomposes a roadmap phase into wave-structured plans with max 3 tasks each. Recommends agents from the 51-agent registry for each plan and gets your confirmation.
+Decomposes a roadmap phase into wave-structured plans with a default max of 3 tasks each (configurable via settings). Recommends agents from the 51-agent registry for each plan and gets your confirmation.
 
 **Key steps:**
 1. Parse or auto-detect the next unplanned phase from STATE.md
@@ -124,7 +138,7 @@ Decomposes a roadmap phase into wave-structured plans with max 3 tasks each. Rec
 3. Detect domain-specific workflows — `marketing-workflows` activates for MKT-* requirements (campaign briefs, content calendars), `design-workflows` activates for DSN-* requirements (design systems, three-lens review)
 4. *(Optional)* Architecture proposals — spawns 2-3 read-only Explore agents with competing philosophies (Minimal, Clean, Pragmatic) for complex phases; user selects an approach
 5. *(Optional)* Spec pipeline — 5-stage specification process (gather → research → write → critique → assess) producing a structured spec at `.planning/specs/`
-6. Decompose into plans via `phase-decomposer` — max 3 tasks per plan, grouped into dependency waves (parallel within, sequential between)
+6. Decompose into plans via `phase-decomposer` — default max 3 tasks per plan (configurable), grouped into dependency waves (parallel within, sequential between)
 7. Recommend agents per plan using `agent-registry` scoring (keyword match 3pts, division affinity 2pts, partial match 1pt, memory boost from past outcomes)
 8. *(Optional)* Plan critique — spawns 2 read-only Explore agents (`testing-reality-checker` for pre-mortem, `product-sprint-prioritizer` for assumption hunting) with PASS/CAUTION/REWORK verdicts
 9. Generate plan files with full task instructions, verification commands, and YAML frontmatter
@@ -159,7 +173,7 @@ Spawns agents with full personality injection to execute all plans for the curre
 
 #### `/legion:review` — Quality Review
 
-Selects appropriate review agents for the phase, runs a structured dev-QA loop (max 3 cycles), and marks the phase complete only after review passes.
+Selects appropriate review agents for the phase, runs a structured dev-QA loop (default max 3 cycles, configurable), and marks the phase complete only after review passes.
 
 **Key steps:**
 1. Determine target phase and load build summaries — reads CONTEXT.md, all PLAN.md and SUMMARY.md files, builds deduplicated file list for review
@@ -172,7 +186,7 @@ Selects appropriate review agents for the phase, runs a structured dev-QA loop (
 6. Collect findings via SendMessage — parse severity (BLOCKER/WARNING/SUGGESTION), deduplicate across reviewers, triage into must-fix and nice-to-have
 7. Panel synthesis (panel mode only) — cross-cutting themes, hot spots (files flagged by 2+ reviewers), aggregate verdict
 8. Route fixes — group findings by file type, spawn appropriate fix agents (frontend → `engineering-frontend-developer`, backend → `engineering-backend-architect`, etc.), create fix commits
-9. Re-review — scoped to modified files, max 3 cycles total; escalate to user if blockers persist
+9. Re-review — scoped to modified files, bounded by configured max cycles (default 3); escalate to user if blockers persist
 10. On PASS: write `{NN}-REVIEW.md`, mark phase complete in STATE.md + ROADMAP.md, close GitHub issue (optional)
 11. On ESCALATE: present remaining blockers with fix attempt history, offer manual fix / accept-as-is / investigate options
 12. Shutdown team via SendMessage + TeamDelete
@@ -340,7 +354,7 @@ Legion didn't invent its patterns from scratch. It cherry-picked the best ideas 
 
 #### The 51 Agent Personalities — [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents)
 
-The 51 specialist personalities that power Legion originated in the agency-agents repository by msitarzewski. These are not generic role labels — they are 80-350 line character sheets with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. Legion builds orchestration, planning, and review workflows on top of these personalities, but the personalities themselves are the foundation everything else stands on.
+The 51 specialist personalities that power Legion originated in the agency-agents repository by msitarzewski. These are not generic role labels — they are 37-434 line character sheets (target band: 80-350 lines) with deep expertise, communication styles, hard rules, and personality quirks across 9 divisions. Legion builds orchestration, planning, and review workflows on top of these personalities, but the personalities themselves are the foundation everything else stands on.
 
 #### From [GSD (Get Shit Done)](https://github.com/gsd-build/get-shit-done)
 
@@ -446,7 +460,7 @@ Puzld.ai's DPO (Direct Preference Optimization) extraction pattern — capturing
 
 Beyond combining these twelve projects, Legion introduced several original patterns:
 
-- **Personality-first agents**: The 51 agent personalities aren't just role labels — they're 80-350 line character sheets with expertise, communication style, hard rules, and personality quirks, all in a standardized emoji-headed format. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
+- **Personality-first agents**: The 51 agent personalities aren't just role labels — they're 37-434 line character sheets (target band: 80-350 lines) with expertise, communication style, hard rules, and personality quirks, all in a standardized emoji-headed format. When an agent is spawned, it receives its *complete personality* as system instructions, not a generic "you are a backend developer" prompt.
 
 - **Hybrid agent selection**: The workflow recommends agents based on task analysis (keyword matching, division affinity, past performance), but the user always confirms or overrides. No black-box assignment.
 
@@ -456,22 +470,20 @@ Beyond combining these twelve projects, Legion introduced several original patte
 
 - **Cross-session memory with decay**: After each build/review cycle, outcomes are recorded with importance scores. During future planning, past outcomes boost agent recommendations — but with time-based decay (recent outcomes matter more), so the system doesn't get stuck in historical patterns.
 
-### The Result
+### Design Choices and Tradeoffs
 
-The first six are complete orchestration systems that shaped Legion's architecture. The remaining six contributed specific patterns and principles. This comparison focuses on the full orchestration systems:
+Legion intentionally optimizes for orchestration ergonomics (few commands, markdown-first state, personality injection) over strict uniformity across all runtimes. The table below summarizes the tradeoffs against other orchestration systems:
 
-| Metric | GSD | Conductor | Shipyard | Best Practice | Daem0n | **Legion** |
-|--------|-----|-----------|----------|---------------|--------|------------|
-| Commands | 33+ | 15+ | 29 | 5 | N/A | **11** |
-| Workflow files | 33+ | 20+ | 15+ | 8 | 3 | **17 skills** |
-| Setup required | CLI install + config | Directory init | Hook setup | Copy files | MCP server | **`npx`** |
-| Custom tooling | Node.js CLI | None | Shell hooks | None | MCP server | **None** |
-| Agent personalities | None | None | None | Templates | None | **51 specialists** |
-| Cross-session memory | None | None | None | None | Hook-driven | **Explicit, opt-in** |
-| Domain workflows | Engineering only | Engineering only | Engineering only | Engineering only | N/A | **Eng + Marketing + Design** |
-| State format | Markdown | JSON + Markdown | Markdown + JSON | Markdown | SQLite | **Markdown only** |
+| Design Axis | Typical Alternative | Legion Choice | Tradeoff |
+|-------------|---------------------|---------------|----------|
+| Command surface | 15-33+ command sets | 11 commands | Faster onboarding, but less granular command specialization |
+| State storage | JSON/DB/hybrid state | Markdown-only `.planning/` | Human-readable and git-native, but less strict schema enforcement |
+| Setup model | CLI bootstrap + config | `npx` installer | Simpler install path, but runtime capabilities can vary more |
+| Agent model | Generic role prompts | 51 full personalities | Higher domain specificity, but larger context footprint |
+| Runtime coverage | Single-runtime focus | 9 runtime adapters | Broader portability, but feature parity differs by runtime tier |
+| Memory strategy | Hook-based/global memory | Project-local explicit memory | Better project isolation, but requires explicit integration points |
 
-Eleven commands. Seventeen skills. Zero custom tooling. Fifty-one personalities. Nine CLIs supported. Install with npx and go.
+Current repository metrics: 11 commands, 18 skills, 51 agent personalities, and 9 runtime adapters.
 
 ## The 51 Agents
 
@@ -511,7 +523,7 @@ legion/                     <- Project root
 │   ├── milestone.md
 │   ├── agent.md
 │   └── update.md
-├── skills/                 <- 17 reusable workflow skills
+├── skills/                 <- 18 reusable workflow skills
 │   ├── workflow-common/SKILL.md     <- Shared constants and conventions
 │   ├── agent-registry/
 │   │   ├── SKILL.md               <- Recommendation algorithm + team patterns
@@ -523,7 +535,7 @@ legion/                     <- Project root
 │   ├── review-loop/SKILL.md        <- Dev-QA loop with structured feedback
 │   ├── review-panel/SKILL.md       <- Dynamic multi-reviewer composition with rubrics
 │   ├── plan-critique/SKILL.md      <- Pre-mortem analysis + assumption hunting
-│   └── + 8 more (portfolio, milestone, memory, agents, GitHub, brownfield, marketing, design)
+│   └── + 9 more (portfolio, milestone, memory, agents, GitHub, brownfield, marketing, design, spec pipeline)
 ├── agents/                 <- 51 personality .md files (flat, with division in frontmatter)
 │   ├── engineering-senior-developer.md
 │   ├── design-ui-designer.md
@@ -542,12 +554,12 @@ legion/                     <- Project root
 ## Design Principles
 
 - **Personality-first**: Agent .md files are the source of truth for behavior
-- **CLI-agnostic**: Works with 9 AI CLI runtimes — skills, commands, and agents adapt via per-runtime adapters
+- **CLI-agnostic**: Works with 9 AI CLI runtimes — skills, commands, and agents adapt via per-runtime adapters (support tiers listed below)
 - **Human-readable state**: All planning files are markdown, readable without tools
 - **Full personality injection**: Agents are spawned with their complete .md as instructions
-- **Standardized format**: All 51 agents use Format A — emoji section headings, "Your" pronouns, 80-350 line range
+- **Standardized format**: All 51 agents use Format A — emoji section headings, "Your" pronouns, current range 37-434 lines (target 80-350)
 - **Balanced cost**: Opus for planning, Sonnet for execution, Haiku for checks
-- **Max 3 tasks per plan**: Keeps work focused and reviewable
+- **Default max 3 tasks per plan (configurable)**: Keeps work focused and reviewable
 - **Hybrid selection**: Workflow recommends agents, user confirms or overrides
 - **Wave execution**: Plans grouped by dependency; parallel within waves, sequential between
 - **Graceful degradation**: Optional features (GitHub, memory, marketing, design, panels, critique) activate when available, skip silently when not
@@ -568,6 +580,13 @@ These activate automatically when their prerequisites are met:
 | **Plan Critique** | User selects critique during `/legion:plan` | Pre-mortem analysis, assumption hunting, PASS/CAUTION/REWORK verdicts |
 | **Review Panels** | User selects panel mode in `/legion:review` | 2-4 domain-weighted reviewers with non-overlapping rubrics |
 
+<!-- legion-metrics:start -->
+- Commands: 11
+- Skills: 18
+- Agents: 51
+- Agent personality line range (current): 89-492
+<!-- legion-metrics:end -->
+
 ## Requirements
 
 - Node.js 18+ (install-time only — zero runtime dependencies)
@@ -581,3 +600,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and agent design gu
 ## License
 
 MIT
+
+
+
+

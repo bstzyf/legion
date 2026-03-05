@@ -1,16 +1,27 @@
 {
   "name": "@9thlevelsoftware/legion",
-  "version": "1.0.1",
+  "version": "3.0.1",
   "description": "Orchestrate 51 AI specialist personalities as a coordinated legion — project initialization, phase planning, parallel execution, quality review, and portfolio management.",
   "bin": {
     "legion": "bin/install.js"
+  },
+  "scripts": {
+    "validate": "bash scripts/validate.sh",
+    "release:check": "node scripts/release-check.js",
+    "checksums:generate": "node scripts/generate-checksums.js",
+    "test": "node --test",
+    "prepublishOnly": "bash scripts/validate.sh && node scripts/release-check.js && node --test"
   },
   "files": [
     "bin/",
     "agents/",
     "commands/",
     "skills/",
-    "adapters/"
+    "adapters/",
+    "settings.json",
+    "checksums.sha256",
+    "docs/security/",
+    "docs/settings.schema.json"
   ],
   "engines": {
     "node": ">=18.0.0"

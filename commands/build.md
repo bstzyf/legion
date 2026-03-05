@@ -15,9 +15,6 @@ skills/agent-registry/SKILL.md
 skills/agent-registry/CATALOG.md
 skills/wave-executor/SKILL.md
 skills/execution-tracker/SKILL.md
-skills/memory-manager/SKILL.md
-skills/github-sync/SKILL.md
-skills/codebase-mapper/SKILL.md
 </execution_context>
 
 <context>
@@ -27,6 +24,12 @@ skills/codebase-mapper/SKILL.md
 </context>
 
 <process>
+0. CONDITIONAL SKILL LOADING (context budget)
+   Load optional high-cost skills only when needed:
+   - `skills/memory-manager/SKILL.md` only if `.planning/memory/` exists OR this run creates memory outcomes.
+   - `skills/github-sync/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
+   - `skills/codebase-mapper/SKILL.md` only if `.planning/CODEBASE.md` exists.
+   If a condition is not met, skip that skill silently and continue.
 1. DETERMINE TARGET PHASE
    - Check $ARGUMENTS for --phase N flag (e.g., `/legion:build --phase 2`)
    - If no flag: read STATE.md to determine current phase
@@ -298,3 +301,4 @@ skills/codebase-mapper/SKILL.md
    - Do NOT automatically trigger /legion:review — let the user decide when to proceed.
 </process>
 </output>
+

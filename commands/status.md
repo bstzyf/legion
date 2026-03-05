@@ -15,9 +15,6 @@ Output: Dashboard display with next-action routing.
 skills/workflow-common/SKILL.md
 skills/execution-tracker/SKILL.md
 skills/milestone-tracker/SKILL.md
-skills/memory-manager/SKILL.md
-skills/github-sync/SKILL.md
-skills/codebase-mapper/SKILL.md
 </execution_context>
 
 <context>
@@ -27,6 +24,12 @@ skills/codebase-mapper/SKILL.md
 </context>
 
 <process>
+0. CONDITIONAL SKILL LOADING (context budget)
+   Load optional skills only when their inputs exist:
+   - `skills/memory-manager/SKILL.md` only if `.planning/memory/OUTCOMES.md` exists.
+   - `skills/github-sync/SKILL.md` only if STATE.md contains a GitHub section and `gh` is available.
+   - `skills/codebase-mapper/SKILL.md` only if `.planning/CODEBASE.md` exists.
+   If a condition is not met, skip that skill silently and continue.
 1. CHECK PROJECT EXISTS
    - Attempt to read .planning/PROJECT.md
    - If not found:
@@ -220,3 +223,4 @@ skills/codebase-mapper/SKILL.md
 
    Tip: Run `/legion:quick <task>` anytime for ad-hoc tasks outside the phase workflow.
 </process>
+

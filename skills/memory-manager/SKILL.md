@@ -28,6 +28,7 @@ Core rules governing all memory operations:
 4. **Append-only records** — outcome records are added, never modified or deleted automatically. Decay happens at recall time through scoring, not through deletion.
 5. **Supplement, not override** — memory boosts agent recommendations but cannot override mandatory roles, division alignment, or the core recommendation algorithm in agent-registry.md.
 6. **Minimal footprint** — one directory (`.planning/memory/`), four files (`OUTCOMES.md`, `PATTERNS.md`, `ERRORS.md`, `PREFERENCES.md`). Each file has a distinct schema and purpose — no duplication across files.
+7. **Strict project scope** — memory recall and scoring are project-local by default. Agent outcomes from one project MUST NOT be used to boost or penalize recommendations in another project unless an explicit future opt-in feature is added.
 
 ---
 
@@ -1040,3 +1041,4 @@ Step 3: Combine signals
 | Block on Claude Code memory absence | No | Graceful degradation always applies |
 | Read Legion memory (standard behavior) | Yes | Core functionality of this skill |
 | Store to Legion memory (standard behavior) | Yes | Core functionality of this skill |
+

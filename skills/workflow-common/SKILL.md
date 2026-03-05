@@ -96,6 +96,25 @@ Commands reference `adapter.ask_user` in their process body. The `allowed-tools`
 | Design Documents | `.planning/designs/{project-slug}-system.md` | Structured design system specifications with tokens, components, accessibility, and agent assignments (via design-workflows skill) |
 | Spec Documents | `.planning/specs/{NN}-{phase-slug}-spec.md` | Structured specification documents produced by spec-pipeline skill before coding phases |
 
+
+## Settings Resolution Protocol
+
+Legion commands MAY be configured via `settings.json` in the repository root. This file is optional.
+
+```
+Step 1: Try to read ./settings.json from current working directory.
+Step 2: If the file is missing or invalid JSON, continue with built-in defaults.
+Step 3: Resolve these runtime settings once per command invocation:
+  - planning.max_tasks_per_plan (default: 3)
+  - review.max_cycles (default: 3)
+  - execution.agent_personality_verbosity (default: full)
+  - integrations.github (default: prompt)
+  - memory.enabled (default: true)
+  - memory.project_scoped_only (default: true)
+Step 4: Log resolved values in command notes before execution.
+```
+
+When settings are present, command skills must honor them instead of hardcoded values.
 ## Agent Personality Paths
 
 All 51 agent personalities live under `agents/` in the plugin root (not necessarily the user's CWD). The path must be resolved before use:
@@ -317,10 +336,10 @@ When a command determines it needs a specific skill, load the ENTIRE SKILL.md co
 | Command | Always Loads | Conditionally Loads |
 |---------|-------------|-------------------|
 | `/legion:start` | questioning-flow, workflow-common | codebase-mapper (brownfield) |
-| `/legion:plan` | phase-decomposer, agent-registry, workflow-common | marketing-workflows, design-workflows, plan-critique, spec-pipeline |
-| `/legion:build` | wave-executor, execution-tracker, workflow-common | github-sync, spec-pipeline |
-| `/legion:review` | review-loop, review-panel, workflow-common | — |
-| `/legion:status` | execution-tracker, workflow-common | memory-manager |
+| `/legion:plan` | workflow-common, agent-registry, phase-decomposer | memory-manager, github-sync, codebase-mapper, marketing-workflows, design-workflows, plan-critique, spec-pipeline |
+| `/legion:build` | workflow-common, agent-registry, wave-executor, execution-tracker | memory-manager, github-sync, codebase-mapper |
+| `/legion:review` | workflow-common, agent-registry, review-loop, review-panel, execution-tracker | memory-manager, github-sync, design-workflows |
+| `/legion:status` | workflow-common, execution-tracker, milestone-tracker | memory-manager, github-sync, codebase-mapper |
 | `/legion:quick` | agent-registry, workflow-common | {matched by triggers} |
 | `/legion:portfolio` | portfolio-manager, workflow-common | — |
 | `/legion:milestone` | milestone-tracker, workflow-common | — |
@@ -751,3 +770,7 @@ All design workflow integration follows this pattern:
 2. If yes: use design-specific decomposition, wave patterns, and three-lens review
 3. If no: standard decomposition -- no impact whatsoever
 4. Never error, never block, never require design workflows for non-design phases
+
+
+
+

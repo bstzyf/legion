@@ -2,6 +2,7 @@
 cli: opencode
 cli_display_name: "OpenCode"
 version: "1.0"
+support_tier: "experimental"
 capabilities:
   parallel_execution: true
   agent_spawning: true
@@ -81,3 +82,4 @@ Read `.planning/phases/{NN}/{NN}-{PP}-RESULT.md` for each plan. Parse Status fie
 ### Phase Cleanup
 
 No cleanup needed — subagents complete naturally. Update WAVE-CHECKLIST.md to mark phase as Finalized.
+

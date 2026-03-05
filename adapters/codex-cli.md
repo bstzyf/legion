@@ -2,6 +2,7 @@
 cli: codex-cli
 cli_display_name: "OpenAI Codex CLI"
 version: "1.0"
+support_tier: "beta"
 capabilities:
   parallel_execution: false
   agent_spawning: true
@@ -97,3 +98,4 @@ Before executing a plan with `depends_on`, verify that the referenced `{NN}-{PP}
 ### Phase Cleanup
 
 No cleanup needed — no agents spawned persistently, no teams created. Update WAVE-CHECKLIST.md to mark phase as Finalized.
+

@@ -8,7 +8,7 @@ summary: "Iterative review cycle: test -> review -> fix -> re-test. Spawns testi
 
 # Review Loop
 
-Engine for `/legion:review`. Takes the output of a completed `/legion:build` phase and drives it through a structured dev-QA cycle: personality-injected review agents evaluate artifacts, findings are triaged by severity, fix agents resolve issues, and the cycle repeats up to 3 times. A phase is never marked complete by exhaustion — only by reviewer approval.
+Engine for `/legion:review`. Takes the output of a completed `/legion:build` phase and drives it through a structured dev-QA cycle: personality-injected review agents evaluate artifacts, findings are triaged by severity, fix agents resolve issues, and the cycle repeats up to the configured maximum (`settings.review.max_cycles`, default 3). A phase is never marked complete by exhaustion — only by reviewer approval.
 
 ---
 
@@ -33,12 +33,22 @@ These rules govern all review decisions. Do not deviate from them.
 1. **Review the output, not the plan** — review agents evaluate files created/modified during `/legion:build`, not the plan documents themselves. The plan is the specification; the output is what gets reviewed.
 2. **Full personality injection** — each review agent receives the ENTIRE contents of its assigned `.md` file as system instructions. No summaries, no excerpts, no paraphrasing.
 3. **Structured feedback only** — review agents must use the exact Finding format defined in Section 3. Vague assessments like "looks good" or letter grades are rejected.
-4. **Max 3 cycles total** — the loop is: review → collect findings → fix → re-review. If blockers remain after 3 full cycles, escalate to the user (Section 8).
+4. **Max cycle count comes from settings** — use `settings.review.max_cycles` (default: 3). The loop is: review → collect findings → fix → re-review. If blockers remain after that many full cycles, escalate to the user (Section 8).
 5. **Adapter model for all agents** — review agents and fix agents both use `adapter.model_execution`. This matches the Cost Profile Convention from `workflow-common.md`.
 6. **Approval required, not exhaustion** — a phase is NOT marked complete when cycles run out. It is marked complete only when review agents give a PASS verdict with no remaining BLOCKERs or WARNINGs.
 7. **Skeptical by default** — "no issues found" on a first review is a yellow flag. Review agents should expect to find at least something on an initial pass. If a reviewer returns PASS on cycle 1, their reasoning must explain what was checked and why confidence is warranted.
 8. **Confidence-gated reporting** — every finding must include a confidence level: HIGH (80-100%), MEDIUM (50-79%), or LOW (<50%). Only HIGH-confidence findings appear in the default report. MEDIUM findings are collected but only surfaced if the user explicitly requests the full report. LOW findings are discarded — if you are not at least 50% confident, it is not a finding.
-9. **Do not auto-proceed after escalation** — if 3 cycles are exhausted, stop and wait for user decision. Do NOT mark the phase complete or advance to the next phase without explicit user confirmation.
+9. **Do not auto-proceed after escalation** — if the configured cycle budget is exhausted, stop and wait for user decision. Do NOT mark the phase complete or advance to the next phase without explicit user confirmation.
+
+---
+
+## Section 1.2: Settings Input
+
+Before starting cycle 1, resolve review limits from `settings.json`:
+- Try Read `settings.json`
+- If present, use `review.max_cycles` as `{max_cycles}`
+- If missing or invalid, set `{max_cycles} = 3`
+- Use `{max_cycles}` for every loop boundary, status message, and escalation check
 
 ---
 
@@ -255,7 +265,7 @@ Step 4: Spawn the review agent per adapter protocol
 
   Initialize coordination before spawning (one context for the entire review lifecycle):
   - Per adapter.coordinate_parallel or write WAVE-CHECKLIST.md
-  - One coordination context per phase review — not per cycle. Reuse across all 3 cycles.
+  - One coordination context per phase review — not per cycle. Reuse across all configured cycles.
 ```
 
 ---
@@ -370,7 +380,7 @@ Step 3: Construct the fix prompt
   # Fix Task
 
   You are fixing issues found during a quality review of Phase {N}: {phase_name}.
-  Review cycle: {C} of 3.
+  Review cycle: {C} of {max_cycles}.
 
   ## Findings to Fix
 
@@ -405,7 +415,7 @@ Step 3: Construct the fix prompt
   # Fix Task
 
   You are fixing issues found during a quality review of Phase {N}: {phase_name}.
-  Review cycle: {C} of 3.
+  Review cycle: {C} of {max_cycles}.
 
   ## Findings to Fix
 
@@ -459,7 +469,7 @@ After fix agents complete:
 
 Step 1: Increment cycle counter
   - cycle_count += 1
-  - If cycle_count > 3: go to Section 8 (Escalation) — do not spawn more agents
+  - If cycle_count > {max_cycles}: go to Section 8 (Escalation) — do not spawn more agents
 
 Step 1.5: Check for stale loop (no-delta detection)
   Compare the current cycle's must-fix findings with the previous cycle's must-fix findings:
@@ -498,7 +508,7 @@ Step 3: Spawn review agents for re-review
     """
     ## Re-review Context — Cycle {C}
 
-    This is re-review cycle {C} of 3. The following findings from cycle {C-1} were
+    This is re-review cycle {C} of {max_cycles}. The following findings from cycle {C-1} were
     reported as fixed. Verify the fixes are correct and check for regressions.
 
     ### Reported as Fixed
@@ -524,7 +534,7 @@ Step 4: Process re-review results
 
 Step 5: Track cycle progress in STATE.md
   After each re-review cycle, update STATE.md:
-  - Status: "Phase {N} under review — cycle {C}/3, {blocker_count} blocker(s) remaining"
+  - Status: "Phase {N} under review — cycle {C}/{max_cycles}, {blocker_count} blocker(s) remaining"
   - Last Activity: "Phase {N} review cycle {C} ({date})"
   Follow the State Update Pattern from workflow-common.md (Read → Update → Write).
 ```
@@ -544,7 +554,7 @@ Step 1: Generate review summary file
   # Phase {N}: {phase_name} — Review Summary
 
   ## Result: PASSED
-  **Cycles Used**: {total_cycles_used} of 3
+  **Cycles Used**: {total_cycles_used} of {max_cycles}
   **Reviewers**: {list of reviewer agent IDs}
   **Completed**: {date}
 
@@ -622,10 +632,10 @@ Step 5: Route to next action
 
 ## Section 8: Escalation
 
-What happens when 3 cycles are exhausted without resolving all blockers.
+What happens when the configured cycle limit is exhausted without resolving all blockers.
 
 ```
-When cycle_count exceeds 3 AND BLOCKERs remain unresolved:
+When cycle_count exceeds {max_cycles} AND BLOCKERs remain unresolved:
 
 Step 1: Generate escalation report
   Write .planning/phases/{NN}-{slug}/{NN}-REVIEW.md:
@@ -633,12 +643,12 @@ Step 1: Generate escalation report
   # Phase {N}: {phase_name} — Review Summary
 
   ## Result: ESCALATED
-  **Cycles Used**: 3 (maximum reached)
+  **Cycles Used**: {max_cycles} (maximum reached)
   **Remaining Blockers**: {count}
   **Remaining Warnings**: {count}
 
   ## Unresolved Findings
-  {For each finding that is still unresolved after 3 cycles:}
+  {For each finding that is still unresolved after {max_cycles} cycles:}
   ### Finding {N} (Unresolved)
   - **File**: {file path}
   - **Severity**: {BLOCKER | WARNING}
@@ -655,7 +665,7 @@ Step 1: Generate escalation report
   {Specific guidance on what the user should investigate or change}
 
 Step 2: Update STATE.md
-  - Status: "Phase {N} review escalated — {count} unresolved blocker(s) after 3 cycles"
+  - Status: "Phase {N} review escalated — {count} unresolved blocker(s) after {max_cycles} cycles"
   - Last Activity: "Phase {N} review escalated ({date})"
   - Next Action: "Review .planning/phases/{NN}-{slug}/{NN}-REVIEW.md for full details.
     Options: fix manually then re-run /legion:review, or accept as-is and proceed."
@@ -669,7 +679,7 @@ Step 4: Present escalation report to user
 
   ## Phase {N}: {phase_name} — Review Escalated
 
-  3 review cycles completed. {count} blocker(s) remain unresolved.
+  {max_cycles} review cycles completed. {count} blocker(s) remain unresolved.
 
   ### Remaining Blockers
   | # | File          | Issue                 | Fix Attempts |
@@ -704,7 +714,7 @@ Step 1: Generate stale loop report
   # Phase {N}: {phase_name} — Review Summary
 
   ## Result: STALE LOOP ABORTED
-  **Cycles Used**: {current_cycle} of 3
+  **Cycles Used**: {current_cycle} of {max_cycles}
   **Stale Cycles**: 2 consecutive cycles with no delta
   **Remaining Findings**: {count}
 
@@ -851,3 +861,6 @@ Agent file paths are resolved using `agent-registry.md` Section 1 (Agent Catalog
 
 AGENTS_DIR is resolved once per command via workflow-common Agent Path Resolution Protocol.
 ```
+
+
+

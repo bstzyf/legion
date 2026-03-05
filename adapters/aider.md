@@ -2,6 +2,7 @@
 cli: aider
 cli_display_name: "Aider"
 version: "1.0"
+support_tier: "experimental"
 capabilities:
   parallel_execution: false
   agent_spawning: false
@@ -77,3 +78,4 @@ Read result files after each plan. Parse Status field.
 ### Phase Cleanup
 
 No cleanup needed. Update checklist.
+

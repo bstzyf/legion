@@ -2,6 +2,7 @@
 cli: windsurf
 cli_display_name: "Windsurf (Codeium)"
 version: "1.0"
+support_tier: "experimental"
 capabilities:
   parallel_execution: false
   agent_spawning: false
@@ -65,3 +66,4 @@ No cleanup needed. Update checklist.
 ## Rules Integration
 
 Windsurf Rules files in `.windsurf/rules/` can be configured to load Legion conventions automatically. Consider creating a `legion.rule` that references key workflow-common patterns.
+

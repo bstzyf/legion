@@ -5,6 +5,19 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2026-03-04
+
+### Changed
+- Synced package versioning with CHANGELOG and added release consistency checks.
+- Added runtime support tiers and clearer installer/runtime diagnostics.
+- Updated README metrics and support disclosures to match the repository state.
+- Promoted minimum agent size enforcement to a hard validation failure (80-line floor).
+
+### Added
+- Installer integrity verification with `--verify` using `checksums.sha256`.
+- New release guardrails (`scripts/release-check.js`) for docs/version/skill-map consistency.
+- Default `settings.json` configuration and JSON schema.
+- Baseline CI and smoke tests for installer workflows.
 ## [3.0.0] - 2026-03-02
 
 ### Changed
@@ -73,3 +86,4 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Design workflows — design systems, UX research, three-lens review (brand, accessibility, usability)
 - Multi-project portfolio management
 - Milestone tracking and archiving
+

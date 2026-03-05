@@ -23,6 +23,7 @@ const RUNTIMES = {
     allowedTools: null, // null = keep original (already Claude Code tool names)
     supportsAtRefs: true,
     adapterFile: 'claude-code.md',
+    supportTier: 'certified',
   },
   codex: {
     flag: '--codex',
@@ -35,6 +36,7 @@ const RUNTIMES = {
     allowedTools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob'],
     supportsAtRefs: false,
     adapterFile: 'codex-cli.md',
+    supportTier: 'beta',
   },
   cursor: {
     flag: '--cursor',
@@ -47,6 +49,7 @@ const RUNTIMES = {
     allowedTools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob', 'Agent'],
     supportsAtRefs: false,
     adapterFile: 'cursor.md',
+    supportTier: 'beta',
   },
   copilot: {
     flag: '--copilot',
@@ -59,6 +62,7 @@ const RUNTIMES = {
     allowedTools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob'],
     supportsAtRefs: false,
     adapterFile: 'copilot-cli.md',
+    supportTier: 'experimental',
   },
   gemini: {
     flag: '--gemini',
@@ -71,6 +75,7 @@ const RUNTIMES = {
     allowedTools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob'],
     supportsAtRefs: false,
     adapterFile: 'gemini-cli.md',
+    supportTier: 'beta',
   },
   'amazon-q': {
     flag: '--amazon-q',
@@ -83,6 +88,7 @@ const RUNTIMES = {
     allowedTools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob'],
     supportsAtRefs: false,
     adapterFile: 'amazon-q.md',
+    supportTier: 'experimental',
   },
   windsurf: {
     flag: '--windsurf',
@@ -95,6 +101,7 @@ const RUNTIMES = {
     allowedTools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob'],
     supportsAtRefs: false,
     adapterFile: 'windsurf.md',
+    supportTier: 'experimental',
   },
   opencode: {
     flag: '--opencode',
@@ -107,6 +114,7 @@ const RUNTIMES = {
     allowedTools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob', 'Agent'],
     supportsAtRefs: false,
     adapterFile: 'opencode.md',
+    supportTier: 'experimental',
   },
   aider: {
     flag: '--aider',
@@ -119,6 +127,7 @@ const RUNTIMES = {
     allowedTools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob'],
     supportsAtRefs: false,
     adapterFile: 'aider.md',
+    supportTier: 'experimental',
   },
 };
 
@@ -127,7 +136,7 @@ const RUNTIMES = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function parseArgs(argv) {
-  const result = { runtime: null, scope: 'global', action: 'install' };
+  const result = { runtime: null, scope: 'global', action: 'install', verify: false };
 
   for (const arg of argv) {
     // Runtime flags
@@ -137,6 +146,7 @@ function parseArgs(argv) {
     // Scope
     if (arg === '--global') result.scope = 'global';
     if (arg === '--local')  result.scope = 'local';
+    if (arg === '--verify') result.verify = true;
     // Actions
     if (arg === '--uninstall') result.action = 'uninstall';
     if (arg === '--update')    result.action = 'update';
@@ -175,7 +185,7 @@ function promptRuntimeSelection() {
 
 function printHelp() {
   console.log(`
-Legion Installer — Orchestrate 51 AI specialist personalities
+
 
 Usage:
   npx @9thlevelsoftware/legion [options]
@@ -196,6 +206,7 @@ Runtime (pick one):
 Scope:
   --global      Install to home directory (default)
   --local       Install to current project directory
+  --verify      Verify package file hashes before installation
 
 Actions:
   --uninstall   Remove all Legion files
@@ -276,6 +287,88 @@ function resolveSourceRoot() {
 function readPackageJson() {
   const root = normalizePath(path.resolve(__dirname, '..'));
   return JSON.parse(fs.readFileSync(joinPath(root, 'package.json'), 'utf8'));
+}
+function detectSourceProvenance(sourceRoot) {
+  const gitDir = joinPath(sourceRoot, '.git');
+  const checksumsFile = joinPath(sourceRoot, 'checksums.sha256');
+  const source = fs.existsSync(gitDir) ? 'local-git' : 'npm-package';
+  return { source, checksumsFile };
+}
+
+function parseChecksumLine(line) {
+  const match = line.match(/^([a-fA-F0-9]{64})\s{2}(.+)$/);
+  if (!match) return null;
+  return { hash: match[1].toLowerCase(), relPath: match[2] };
+}
+
+function sha256File(filePath) {
+  const crypto = require('crypto');
+  const data = fs.readFileSync(filePath);
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+function verifyPackageIntegrity(sourceRoot) {
+  const checksumsFile = joinPath(sourceRoot, 'checksums.sha256');
+  if (!fs.existsSync(checksumsFile)) {
+    throw new Error(`Integrity verification failed: checksums file not found at ${checksumsFile}`);
+  }
+
+  const lines = fs.readFileSync(checksumsFile, 'utf8')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length === 0) {
+    throw new Error(`Integrity verification failed: ${checksumsFile} is empty`);
+  }
+
+  const failures = [];
+
+  for (const line of lines) {
+    const parsed = parseChecksumLine(line);
+    if (!parsed) {
+      failures.push(`Malformed checksum line: ${line}`);
+      continue;
+    }
+
+    const filePath = joinPath(sourceRoot, parsed.relPath);
+    if (!fs.existsSync(filePath)) {
+      failures.push(`Missing file: ${parsed.relPath}`);
+      continue;
+    }
+
+    const actual = sha256File(filePath);
+    if (actual !== parsed.hash) {
+      failures.push(`Hash mismatch: ${parsed.relPath}`);
+    }
+  }
+
+  if (failures.length > 0) {
+    throw new Error(`Integrity verification failed:\n- ${failures.join('\n- ')}`);
+  }
+}
+
+function runRuntimeDiagnostics(runtimeKey) {
+  const expectedEnv = {
+    codex: 'CODEX_VERSION',
+    cursor: 'CURSOR_VERSION',
+    copilot: 'COPILOT_CLI_VERSION',
+    gemini: 'GEMINI_CLI_VERSION',
+    'amazon-q': 'Q_CLI_VERSION',
+    windsurf: 'WINDSURF_VERSION',
+    opencode: 'OPENCODE_CONFIG_DIR',
+    aider: 'AIDER_VERSION',
+  };
+
+  const key = expectedEnv[runtimeKey];
+  if (!key) return;
+
+  if (process.env[key]) {
+    console.log(`  Diagnostic: ${key} detected.`);
+  } else {
+    console.log(`  Diagnostic warning: ${key} is not set in this shell.`);
+    console.log('  The runtime may still work, but adapter auto-detection can be less reliable.');
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -444,7 +537,7 @@ function hasLegionFrontmatter(content) {
 // SECTION 6: Manifest Read/Write
 // ─────────────────────────────────────────────────────────────────────────────
 
-function writeManifest(paths, runtimeKey, agentFiles, scope) {
+function writeManifest(paths, runtimeKey, agentFiles, scope, source, verified) {
   const pkg = readPackageJson();
   const manifest = {
     name: pkg.name,
@@ -452,7 +545,8 @@ function writeManifest(paths, runtimeKey, agentFiles, scope) {
     installedAt: new Date().toISOString(),
     runtime: runtimeKey,
     scope,
-    source: 'npm',
+    source,
+    verified,
     paths: {
       agents: paths.agentsDir,
       commands: paths.commandsDir,
@@ -477,13 +571,25 @@ function readManifest(manifestFile) {
 // SECTION 7: Install Pipeline
 // ─────────────────────────────────────────────────────────────────────────────
 
-function install(runtimeKey, scope) {
+function install(runtimeKey, scope, verify = false) {
   const home = resolveHome();
   const paths = resolvePaths(runtimeKey, scope, home);
   const src = resolveSourceRoot();
   const rt = RUNTIMES[runtimeKey];
+  const sourceInfo = detectSourceProvenance(src.root);
+  const pkg = readPackageJson();
 
-  console.log(`\nInstalling Legion for ${rt.label} (${scope} mode)...\n`);
+  if (verify) {
+    verifyPackageIntegrity(src.root);
+    console.log('Integrity verification passed (checksums.sha256).');
+  }
+
+  if (sourceInfo.source === 'local-git' && !verify) {
+    console.log('WARNING: Installing from a local git source without --verify.');
+    console.log('         Use --verify to validate file integrity before install.');
+  }
+
+  console.log(`\nInstalling Legion for ${rt.label} (${scope} mode, ${rt.supportTier} runtime)...\n`);
 
   // Create all destination directories
   ensureDirs([paths.agentsDir, paths.commandsDir, paths.skillsDir,
@@ -579,11 +685,10 @@ function install(runtimeKey, scope) {
 
   // ── Manifest ──
   console.log('\n=== Manifest ===');
-  writeManifest(paths, runtimeKey, installedAgents, scope);
+  writeManifest(paths, runtimeKey, installedAgents, scope, sourceInfo.source, verify);
   console.log(`  Written to ${paths.manifestFile}`);
 
   // ── Summary ──
-  const pkg = readPackageJson();
   console.log(`
 ${'='.repeat(48)}
   Legion v${pkg.version} installed successfully!
@@ -592,8 +697,16 @@ ${'='.repeat(48)}
   Agents:   ${installedAgents.length} -> ${paths.agentsDir}
   Commands: ${commandFiles.length} -> ${paths.commandsDir}
   Skills:   ${skillCount} -> ${paths.skillsDir}
-  Scope:    ${scope}`);
+  Scope:    ${scope}
+  Support:  ${rt.supportTier}
+  Source:   ${sourceInfo.source}
+  Verified: ${verify ? 'yes' : 'no'}`);
 
+  if (rt.supportTier !== 'certified') {
+    console.log(`\n  NOTE: ${rt.label} is currently marked ${rt.supportTier} in Legion.`);
+    console.log('  Advanced coordination features may vary by CLI runtime and version.');
+    runRuntimeDiagnostics(runtimeKey);
+  }
   if (conflicts.length > 0) {
     console.log(`
   WARNING: ${conflicts.length} agent file(s) conflicted.
@@ -756,7 +869,7 @@ async function fetchNpmLatest(packageName) {
   });
 }
 
-async function update(runtimeKey, scope) {
+async function update(runtimeKey, scope, verify = false) {
   const home = resolveHome();
   const paths = resolvePaths(runtimeKey, scope, home);
   const manifest = readManifest(paths.manifestFile);
@@ -791,7 +904,7 @@ async function update(runtimeKey, scope) {
 
     console.log(`Update available: v${installedVersion} -> v${targetVersion}`);
     console.log('Re-installing...\n');
-    install(runtimeKey, scope);
+    install(runtimeKey, scope, verify);
   } catch (err) {
     console.error(`Update check failed: ${err.message}`);
     console.error('Your installed version is still functional.');
@@ -831,10 +944,10 @@ async function main() {
         uninstall(runtime, args.scope);
         break;
       case 'update':
-        await update(runtime, args.scope);
+        await update(runtime, args.scope, args.verify);
         break;
       default:
-        install(runtime, args.scope);
+        install(runtime, args.scope, args.verify);
     }
   } catch (err) {
     console.error(`\nLegion installer failed: ${err.message}`);
@@ -844,3 +957,14 @@ async function main() {
 }
 
 main();
+
+
+
+
+
+
+
+
+
+
+

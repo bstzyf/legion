@@ -2,6 +2,7 @@
 cli: cursor
 cli_display_name: "Cursor"
 version: "1.0"
+support_tier: "beta"
 capabilities:
   parallel_execution: true
   agent_spawning: true
@@ -73,3 +74,4 @@ Read `.planning/phases/{NN}/{NN}-{PP}-RESULT.md` for each plan. Parse Status fie
 ### Phase Cleanup
 
 No cleanup needed. Update WAVE-CHECKLIST.md to mark phase as Finalized.
+
