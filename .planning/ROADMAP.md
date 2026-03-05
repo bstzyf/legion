@@ -81,7 +81,7 @@ Plans:
 Plans:
 - [x] 38-00-PLAN.md — Create test scaffolding for intent flag parsing and validation
 - [x] 38-01-PLAN.md — Build intent-teams.yaml registry and intent-router skill
-- [ ] 38-02-PLAN.md — Integrate intents into /legion:build command
+- [x] 38-02-PLAN.md — Integrate intents into /legion:build command
 - [ ] 38-03-PLAN.md — Integrate --just-security into /legion:review command
 
 ---

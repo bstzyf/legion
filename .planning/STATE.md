@@ -4,14 +4,14 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: building
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 38-01 plan (Intent Teams Registry)"
+last_session: "2026-03-05 — Completed 38-02 plan (Intent-Driven Build Integration)"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 9
-  completed_plans: 10
+  completed_plans: 11
   total_requirements: 32
-  completed_requirements: 18
+  completed_requirements: 21
 ---
 
 # Project State
@@ -74,9 +74,39 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 - Updated agent-registry CATALOG.md with intent metadata
 - Requirements satisfied: INTENT-05, INTENT-06
 
-**Next:** Phase 38 Plan 02 — Integrate intent-router into /legion:build command
+- Plan 02 complete (Intent-Driven Build Integration)
+- Updated `commands/build.md` with intent flag detection and validation
+  - Step 0.5: Parse and validate intent flags (--just-harden, --just-document, etc.)
+  - Step 4-ADHOC: Spawn intent-specific teams for ad_hoc mode
+  - USAGE section: Documented all intent flags with examples
+- Updated `skills/wave-executor/SKILL.md` with plan filtering
+  - Section 6: Intent-based filtering with agent, file, and task predicates
+  - Step 3.5: Apply intent filters before wave execution
+- Requirements satisfied: INTENT-01, INTENT-02, INTENT-03
+
+**Next:** Phase 38 Plan 03 — Integrate --just-security into /legion:review command
 
 ## Recent Activity
+
+### Completed: Plan 38-02 — Intent-Driven Build Integration
+- Updated `commands/build.md` with intent-driven execution support
+  - Step 0.5: INTENT DETECTION AND VALIDATION
+    - Parse intent flags using intent-router skill
+    - Validate flag combinations with error suggestions
+    - Determine execution mode (ad_hoc vs filter_plans)
+  - Intent-Driven Execution USAGE section
+    - Documented 4 intent flags: --just-harden, --just-document, --skip-frontend, --skip-backend
+    - Usage examples for common scenarios
+  - Step 4-ADHOC: Spawn intent-specific teams for ad_hoc mode
+    - Load templates from intent-teams.yaml
+    - Spawn Testing + Security agents for --just-harden
+    - Generate security-audit-{timestamp}.md reports
+- Updated `skills/wave-executor/SKILL.md` with Section 6
+  - 6.1 Filter Predicates: agent-based, file-based, task-type filters
+  - 6.2 Filter Execution: Step 3.5 for applying filters
+  - 6.3 Task Type Detection for plan content analysis
+- Status: ✓ Complete, 3 commits, all 55 tests passing
+- Requirements satisfied: INTENT-01, INTENT-02, INTENT-03
 
 ### Completed: Plan 38-01 — Intent Teams Registry
 - Created `.planning/config/intent-teams.yaml` — Team template registry with 5 intents
