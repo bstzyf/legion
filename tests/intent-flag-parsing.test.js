@@ -129,6 +129,9 @@ function parseSimpleYaml(content) {
         intent[currentSection][key] = [];
       } else if (!value) {
         currentSubsection = key;
+      } else if (value) {
+        // Key-value pair (e.g., severity_threshold: WARNING)
+        intent[currentSection][key] = value.replace(/"/g, '');
       }
       continue;
     }
