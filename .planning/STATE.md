@@ -4,12 +4,12 @@ milestone: v5.0
 milestone_name: — Production-Grade Architecture
 status: building
 last_updated: "2026-03-05"
-last_session: "2026-03-05 — Completed 39-00 plan (Environment Mapping Test Scaffolding)"
+last_session: "2026-03-05 — Completed 39-03 plan (File Placement Validation in Wave Executor)"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 13
+  completed_plans: 14
   total_requirements: 32
   completed_requirements: 24
 ---
@@ -117,12 +117,38 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
   - Added Section 8: Path Enforcement Utilities with helper functions
   - All 45 path-enforcement tests passing
   - Requirements satisfied: ENV-03
-- Plan 03: Add file placement validation to wave executor (ENV-04)
+- Plan 03 complete (File Placement Validation in Wave Executor)
+  - Added Step 3.8 to wave-executor skill: Validate file placement against directory mappings
+  - Added FILE_PLACEMENT_CONTEXT to agent prompts
+  - Added Section 10: File Placement Utilities with helper functions
+  - All 45 path-enforcement tests passing
+  - Requirements satisfied: ENV-04
 - Plan 04: Implement auto-update mechanism for mappings (ENV-05)
 
-**Phase Status:** In Progress — 3/5 plans complete (39-00, 39-01, 39-02)
+**Phase Status:** In Progress — 4/5 plans complete (39-00, 39-01, 39-02, 39-03)
 
 ## Recent Activity
+
+### Completed: Plan 39-03 — File Placement Validation in Wave Executor
+- Enhanced `skills/wave-executor/SKILL.md` with file placement validation (ENV-04)
+  - Step 3.8: Validate file placement against directory mappings before agent spawn
+    - Load directory mappings from `.planning/config/directory-mappings.yaml`
+    - Validate each file in files_modified frontmatter
+    - Infer categories from file patterns (tests, routes, components, etc.)
+    - Support strict/warn/off enforcement modes
+    - Plan-level path_override mechanism for exceptions
+  - FILE_PLACEMENT_CONTEXT: Added guidance block to agent prompts
+    - Directory guidance table for files to be created
+    - Important notes about creating directories if needed
+  - Updated Step 5 validation checklist with file placement check
+  - Section 10: File Placement Utilities (175 lines)
+    - 10.1: File Category Inference function
+    - 10.2: Directory Validation function
+    - 10.3: Validation Result Handler
+    - 10.4: Validation Report Format
+    - 10.5: Cross-reference with spec pipeline
+- All 45 path-enforcement tests passing
+- Requirements satisfied: ENV-04
 
 ### Completed: Plan 39-02 — Path Enforcement Integration
 - Added Step 3.5 to `skills/spec-pipeline/SKILL.md` — Validate deliverable paths against directory mappings
