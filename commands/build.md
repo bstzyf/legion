@@ -103,6 +103,23 @@ When two-wave mode is NOT activated:
 Options can combine:
 `/legion:build 37 --two-wave --skip-gates`
 
+## Intent-Driven Execution
+
+Semantic flags for targeted operations:
+
+| Flag | Description | Mode |
+|------|-------------|------|
+| `--just-harden` | Security audit (Testing + Security divisions) | ad_hoc |
+| `--just-document` | Documentation only, no implementation | filter_plans |
+| `--skip-frontend` | Exclude UI/frontend tasks | filter_plans |
+| `--skip-backend` | Exclude API/backend tasks | filter_plans |
+
+Examples:
+- `/legion:build --just-harden` — Run security audit across codebase
+- `/legion:build --just-document` — Generate docs for current phase
+- `/legion:build --skip-frontend` — Backend-only implementation
+- `/legion:build --skip-frontend --skip-backend` — Invalid (error)
+
 <process>
 DRY-RUN MODE (deterministic, no side effects)
    - If `$ARGUMENTS` contains `--dry-run`, DO NOT write files, spawn agents, open Teams, create Tasks, send messages, commit, or call external side-effecting integrations.
@@ -117,12 +134,38 @@ DRY-RUN MODE (deterministic, no side effects)
 
 0. CONDITIONAL SKILL LOADING (context budget)
    Load optional high-cost skills only when needed:
-   
+
    - `skills/workflow-common-memory/SKILL.md` only if `.planning/memory/` exists OR this run creates memory outcomes.
-   
+
    - `skills/workflow-common-github/SKILL.md` only if `gh auth status` succeeds and a git remote exists.
    - `skills/codebase-mapper/SKILL.md` only if `.planning/CODEBASE.md` exists.
    If a condition is not met, skip that skill silently and continue.
+
+## Step 0.5: INTENT DETECTION AND VALIDATION
+
+If $ARGUMENTS contains intent flags (--just-* or --skip-*):
+
+1. **Parse Intent Flags**
+   - Load skill: intent-router
+   - Call: parseIntentFlags($ARGUMENTS)
+   - Returns: array of intent objects [{name, value}]
+
+2. **Validate Combinations**
+   - Call: validateFlagCombination(intents, "build")
+   - If invalid: Display errors and suggestions, EXIT
+   - If valid: Log detected intents for user confirmation
+
+3. **Determine Execution Mode**
+   - For each intent, lookup mode in intent-teams.yaml:
+     - "ad_hoc" → Skip plan discovery, spawn intent team directly (see Step 4-ADHOC)
+     - "filter_plans" → Filter existing plans, then execute (see Step 3.5)
+   - Multiple intents: combine filter predicates with AND logic
+
+4. **User Confirmation (yolo mode skip)**
+   - Display: "Detected intents: harden, skip-frontend"
+   - Display: "Execution mode: ad_hoc" or "Execution mode: filter_plans"
+   - Prompt: "Proceed? [Y/n]"
+
 1. DETERMINE TARGET PHASE
    - Check $ARGUMENTS for --phase N flag (e.g., `/legion:build --phase 2`)
    - If no flag: read STATE.md to determine current phase
