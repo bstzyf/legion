@@ -256,6 +256,108 @@ Step 3: Validate spec completeness
   - [ ] Open questions are categorized as Blocking or Deferrable
 
   The spec is a draft at this stage — Section 4 will critique it.
+
+---
+
+Step 3.5: Validate deliverable paths against directory mappings (ENV-03)
+
+Before finalizing the spec, validate that all deliverable paths follow the
+project's established directory structure.
+
+3.5.1: Load directory mappings
+
+Check if `.planning/config/directory-mappings.yaml` exists:
+- If yes: Load mappings and enforcement configuration
+- If no: Skip path validation (greenfield or no analysis yet)
+
+3.5.2: Validate each deliverable path
+
+For each deliverable in the Deliverables section:
+
+a. Determine the expected category for the file:
+   - Infer from file extension and naming patterns:
+     - `.test.{ext}` or `.spec.{ext}` → tests category
+     - `*Route*`, `*Controller*` in routes dir → routes category
+     - `*Component*`, `.tsx`, `.jsx` in components dir → components category
+     - `*Service*`, business logic files → services category
+     - `*util*`, `*helper*` → utils category
+     - `interface`, `type` declarations → types category
+     - `middleware`, `plugin` → middleware category
+   - Check if the deliverable description mentions a category
+   - Default to "general" if no category can be inferred
+
+b. Look up the expected directory for the category:
+   - Find the category in directory-mappings.yaml mappings section
+   - Get the primary path (first path in paths list)
+   - Note the priority level (explicit/inferred/default)
+
+c. Validate the deliverable path:
+   - Extract directory from the deliverable path
+   - Check if it matches any of the allowed paths for the category
+   - If strictness = strict: path must match exactly
+   - If strictness = warn: mismatch generates warning but allows override
+   - If strictness = off: skip validation
+
+d. Generate suggestions for violations:
+   - If path doesn't match category, suggest correct paths:
+     ```
+     Path violation detected for {deliverable}:
+       Current: {current_path}
+       Expected: One of {allowed_paths} for {category} category
+       Suggested: {primary_path}/{filename}
+     ```
+
+3.5.3: Handle validation results
+
+Collect all validation results:
+
+| Deliverable | Path | Category | Valid | Issues |
+|-------------|------|----------|-------|--------|
+| {name} | {path} | {category} | {yes/no} | {issues} |
+
+Action based on strictness and violations:
+
+- strict + violations: Block spec finalization, require fixes
+  "Path violations must be resolved before proceeding. Update deliverable 
+   paths to match directory mappings, or add exceptions to enforcement rules."
+
+- warn + violations: Add warnings to spec, allow proceeding
+  Add "## Path Validation Warnings" section to spec with violation details
+
+- no violations: Add "All deliverable paths validated successfully" note
+
+3.5.4: Allow explicit overrides
+
+Users can override path enforcement per deliverable:
+
+In the Deliverables section, add override notation:
+```markdown
+### {Deliverable Name}
+- **Path:** {file path}
+- **Path Override:** true
+- **Override Reason:** {explanation}
+```
+
+When override is present, skip validation for that deliverable and note:
+"Path override accepted for {deliverable}: {reason}"
+
+3.5.5: Add Path Validation section to spec
+
+Insert into the spec document template in the Deliverables section:
+
+```markdown
+## Path Validation
+
+**Status:** {All paths valid | {N} warnings | {N} violations blocked}
+
+| Deliverable | Path | Category | Valid | Notes |
+|-------------|------|----------|-------|-------|
+| {name} | {path} | {category} | {yes/no} | {notes} |
+
+{If warnings or overrides present:}
+### Warnings/Overrides
+- {deliverable}: {warning or override reason}
+```
 ```
 
 ---
@@ -284,6 +386,9 @@ Step 1: Review for requirement coverage
   | Requirement | Issue | Recommendation |
   |-------------|-------|---------------|
   | {REQ-ID} | {gap or issue} | {specific fix} |
+  
+  Additional checklist for path validation:
+  - [ ] All deliverable paths validated against directory mappings (or overrides documented)
 
 Step 2: Review architecture decisions
   For each decision in the Key Decisions table:
@@ -501,6 +606,170 @@ When requirements change (new REQUIREMENTS.md entries, updated ROADMAP.md phase 
 - If a spec already exists, the user is prompted to overwrite or keep
 - The new spec replaces the old one — no merge, no diff
 - Plans generated from the old spec are not automatically updated; re-plan with `/legion:plan {N}` after spec update
+
+---
+
+## Section 8: Path Enforcement Utilities (ENV-03)
+
+Helper functions and patterns for path validation against directory mappings.
+
+### 8.1: Category Inference
+
+Infer the directory category from file characteristics:
+
+```
+inferCategory(filePath, fileDescription):
+  # Test files
+  if matches(filePath, "**/*.test.*") or matches(filePath, "**/*.spec.*"):
+    return "tests"
+  if contains(fileDescription, ["test", "spec", "fixture"]):
+    return "tests"
+  
+  # Routes / API endpoints
+  if matches(filePath, "**/routes/**") or contains(fileDescription, ["route", "endpoint", "api", "handler"]):
+    return "routes"
+  if matches(filePath, "**/pages/api/**"):
+    return "routes"
+  
+  # Components
+  if matches(filePath, "**/components/**") or matches(filePath, "**/*.tsx"):
+    return "components"
+  if contains(fileDescription, ["component", "UI", "widget", "view"]):
+    return "components"
+  
+  # Services
+  if matches(filePath, "**/services/**") or contains(fileDescription, ["service", "business logic", "domain"]):
+    return "services"
+  
+  # Utils
+  if matches(filePath, "**/utils/**") or matches(filePath, "**/helpers/**"):
+    return "utils"
+  if contains(fileDescription, ["util", "helper", "common", "shared"]):
+    return "utils"
+  
+  # Types
+  if matches(filePath, "**/types/**") or matches(filePath, "**/interfaces/**"):
+    return "types"
+  if matches(filePath, "**/*.d.ts") or contains(fileDescription, ["type", "interface", "model", "schema"]):
+    return "types"
+  
+  # Config
+  if matches(filePath, "**/config/**") or contains(fileDescription, ["config", "settings", "environment"]):
+    return "config"
+  
+  # Middleware
+  if matches(filePath, "**/middleware/**") or contains(fileDescription, ["middleware", "plugin", "interceptor"]):
+    return "middleware"
+  
+  # Assets
+  if matches(filePath, "**/public/**") or matches(filePath, "**/assets/**"):
+    return "assets"
+  if contains(fileDescription, ["asset", "static", "image", "font", "resource"]):
+    return "assets"
+  
+  # Styles
+  if matches(filePath, "**/styles/**") or matches(filePath, "**/*.css") or matches(filePath, "**/*.scss"):
+    return "styles"
+  if contains(fileDescription, ["style", "CSS", "theme", "stylesheet"]):
+    return "styles"
+  
+  # Hooks / Composables
+  if matches(filePath, "**/hooks/**") or matches(filePath, "**/composables/**"):
+    return "hooks"
+  if contains(fileDescription, ["hook", "composable", "use*"]):
+    return "hooks"
+  
+  # Stores / State
+  if matches(filePath, "**/stores/**") or matches(filePath, "**/state/**"):
+    return "stores"
+  if contains(fileDescription, ["store", "state", "redux", "pinia", "mobx"]):
+    return "stores"
+  
+  # Default
+  return "general"
+```
+
+### 8.2: Path Validation
+
+Validate a path against directory mappings:
+
+```
+validatePath(filePath, category, mappings, strictness):
+  # Get allowed paths for category
+  categoryConfig = mappings.mappings[category]
+  if not categoryConfig:
+    return { valid: true, note: "No mappings for category '{category}'" }
+  
+  allowedPaths = categoryConfig.paths
+  
+  # Extract directory from filePath
+  fileDir = dirname(filePath)
+  
+  # Check if fileDir matches any allowed path
+  for allowedPath in allowedPaths:
+    if fileDir.startsWith(allowedPath) or allowedPath.startsWith(fileDir):
+      return { 
+        valid: true, 
+        matchedPath: allowedPath,
+        priority: categoryConfig.priority 
+      }
+  
+  # No match found
+  suggestion = join(allowedPaths[0], basename(filePath))
+  
+  if strictness == "strict":
+    return { 
+      valid: false, 
+      violation: true,
+      message: "Path '{filePath}' is not in allowed directories for '{category}'",
+      allowedPaths: allowedPaths,
+      suggestion: suggestion,
+      action: "block"
+    }
+  else if strictness == "warn":
+    return { 
+      valid: true, 
+      warning: true,
+      message: "Path '{filePath}' is not in recommended directories for '{category}'",
+      allowedPaths: allowedPaths,
+      suggestion: suggestion,
+      action: "warn"
+    }
+  else:
+    return { valid: true, note: "Validation disabled (strictness: off)" }
+```
+
+### 8.3: Integration Reference
+
+| Function | Input | Output | Used In |
+|----------|-------|--------|---------|
+| `inferCategory()` | filePath, description | category string | Step 3.5.2a |
+| `validatePath()` | filePath, category, mappings, strictness | validation result | Step 3.5.2c |
+| `generateSuggestion()` | filePath, allowedPaths | suggested path | Step 3.5.2d |
+
+### 8.4: Example Validation Flow
+
+```
+Deliverable: User API Route
+Path: src/utils/user-api.ts
+Description: "API endpoint for user operations"
+
+Step 1: inferCategory("src/utils/user-api.ts", "API endpoint for user operations")
+→ Returns: "routes" (description contains "API endpoint")
+
+Step 2: Look up mappings for "routes"
+→ Found: paths = ["app/routes", "src/routes"], priority = 10
+
+Step 3: validatePath("src/utils/user-api.ts", "routes", mappings, "warn")
+→ File dir: "src/utils"
+→ Allowed: ["app/routes", "src/routes"]
+→ Match: None ("src/utils" != "src/routes")
+→ Returns: { valid: true, warning: true, suggestion: "src/routes/user-api.ts" }
+
+Step 4: Generate warning
+→ "Warning: src/utils/user-api.ts is in 'utils' but appears to be a route.
+     Consider: src/routes/user-api.ts"
+```
 
 ---
 
