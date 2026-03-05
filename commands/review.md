@@ -390,6 +390,73 @@ If $ARGUMENTS contains intent flags (--just-*):
 6. COMPLETE REVIEW
    Determine outcome based on loop result:
 
+   If REVIEW_MODE === "full":
+      [Existing Step 6 logic unchanged]
+
+   If REVIEW_MODE === "security-only":
+      → Use Step 6-INTENT below
+
+## Step 6-INTENT: SECURITY-ONLY OUTPUT
+
+If REVIEW_MODE === "security-only":
+
+1. **Generate Security Report**
+   Write to: `.planning/security-review-{timestamp}.md`
+   
+   Template:
+   ```markdown
+   # Security Review Report
+   
+   **Generated:** {timestamp}
+   **Mode:** --just-security (security-only audit)
+   **Agents:** engineering-security-engineer, testing-api-tester
+   
+   ## Executive Summary
+   - Total findings: {count}
+   - Critical (BLOCKER): {count}
+   - High (WARNING): {count}
+   - Low (SUGGESTION): {count}
+   
+   ## OWASP Top 10 Coverage
+   - [ ] A01: Broken Access Control — {findings}
+   - [ ] A02: Cryptographic Failures — {findings}
+   - [ ] A03: Injection — {findings}
+   - [ ] A05: Security Misconfiguration — {findings}
+   - [ ] A07: Auth Failures — {findings}
+   - [ ] ...
+   
+   ## STRIDE Threats Identified
+   - Spoofing: {findings}
+   - Tampering: {findings}
+   - Repudiation: {findings}
+   - Information Disclosure: {findings}
+   - Denial of Service: {findings}
+   - Elevation of Privilege: {findings}
+   
+   ## Findings
+   {Finding blocks from review panel}
+   
+   ## Remediation Priority
+   1. [BLOCKER] {highest severity finding}
+   2. [WARNING] {next priority}
+   ...
+   ```
+
+2. **Display Summary**
+   ```
+   Security-only review complete.
+   
+   Findings: {total} (BLOCKER: {blocker}, WARNING: {warning}, SUGGESTION: {suggestion})
+   Report: .planning/security-review-{timestamp}.md
+   
+   Next steps:
+   - Review BLOCKER findings immediately
+   - Run /legion:build --just-harden for detailed remediation
+   - Run full /legion:review for complete audit
+   ```
+
+3. **EXIT** (security-only review complete)
+
    **Path A: Review Passed** (follow review-loop Section 7)
 
    a. Generate review summary file (review-loop Section 7, Step 1):
