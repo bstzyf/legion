@@ -5,6 +5,32 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.2] - 2026-03-04
+
+### Fixed
+- **Critical**: Fixed `plugin_discovery_glob` in all 9 adapters — agent auto-discovery was broken on every runtime.
+- **Critical**: Removed circular self-dependency in `package.json`.
+- **Critical**: Removed dead file path references in 3 agent personalities (`design-ux-architect`, `testing-evidence-collector`, `testing-reality-checker`).
+- **Critical**: Removed orphan `</output>` XML tags from all 11 command files.
+- **Critical**: Fixed `settings.schema.json` to allow `$schema` property.
+- Fixed corrupted markdown headings in `engineering-mobile-app-builder`, `engineering-rapid-prototyper`, and `marketing-app-store-optimizer` (4 headings with encoding artifacts).
+- Fixed `agent.md` git add target (`SKILL.md` → `CATALOG.md`) and removed dead `workflow-common.md` reference.
+- Fixed hard-coded review cycle limit in `review.md` — now reads `{max_cycles}` from settings.
+- Fixed hard-coded project name in `review.md` completion message.
+- Fixed `portfolio.md` casing inconsistency (`PORTFOLIO.md` → `{adapter.global_config_dir}/portfolio.md`).
+- Made `github-sync` conditional in `milestone.md` (only loads when `gh` is authenticated).
+- Added `design-workflows` conditional load to `plan.md` for DSN-* requirements.
+- Fixed `Step 4.5` → `Step 6` references in `phase-decomposer` and `review-panel` skills.
+- Fixed `agent-creator` validation threshold (50 → 80 lines) and Section 4 heading format.
+- Fixed `workflow-common-core` skill mapping for `/legion:start` (added `portfolio-manager`, moved `codebase-mapper` to always-loads).
+- Fixed `review-loop` escalation trigger to include WARNINGs alongside BLOCKERs.
+- Fixed `wave-executor` agent extraction to use frontmatter only (removed body-search fallback).
+- Removed duplicated command-to-skill mapping table from `workflow-common` shim.
+- Fixed Engineering division count (`7` → `8` agents) in `portfolio-manager`.
+- Fixed recommendation engine agent eviction to replace lowest-ranked (last) instead of highest-ranked (first).
+- Added 10-second timeout to `fetchNpmLatest` in installer to prevent hanging on unresponsive registry.
+- Updated agent count from 51 to 52 across project state files.
+
 ## [3.0.1] - 2026-03-04
 
 ### Changed
