@@ -29,9 +29,9 @@
 **Plans:** 3 plans in 2 waves
 
 Plans:
-- [ ] 36-01-PLAN.md — Create Polymath agent personality and /legion:explore command
-- [ ] 36-02-PLAN.md — Build polymath-engine skill with research-first workflows
-- [ ] 36-03-PLAN.md — Integrate exploration into /legion:start workflow
+- [x] 36-01-PLAN.md — Create Polymath agent personality and /legion:explore command
+- [x] 36-02-PLAN.md — Build polymath-engine skill with research-first workflows
+- [x] 36-03-PLAN.md — Integrate exploration into /legion:start workflow
 
 ---
 
