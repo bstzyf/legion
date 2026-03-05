@@ -342,6 +342,65 @@ If $ARGUMENTS contains intent flags (--just-* or --skip-*):
       - Report the full list of failed plans with their summary file paths
       - Suggest: "Run /legion:review to diagnose failures in Phase {N}."
 
+## Step 4-ADHOC: SPAWN INTENT-SPECIFIC TEAM
+
+For intents with mode: "ad_hoc" (e.g., --just-harden):
+
+1. **Load Intent Template**
+   - Load: .planning/config/intent-teams.yaml
+   - Get: harden template (agents, domains, mode)
+
+2. **Resolve Team**
+   - Primary agents: testing-reality-checker, engineering-security-engineer
+   - Secondary agents: testing-api-tester, testing-evidence-collector
+   - Read personalities: agents/{agent}.md
+
+3. **Spawn Agents**
+   For each agent in team:
+   ```
+   TASK PROMPT:
+   {PERSONALITY_CONTENT}
+
+   ---
+
+   # Security Audit Task — /legion:build --just-harden
+
+   You are part of a hardening team conducting a security audit.
+
+   ## Your Role
+   {agent-specific role from intent template}
+
+   ## Audit Scope
+   Review entire codebase for:
+   - OWASP Top 10 vulnerabilities
+   - STRIDE threat model issues
+   - Input validation gaps
+   - Authentication/authorization weaknesses
+   - Dependency vulnerabilities
+
+   ## Deliverable
+   Provide findings in standard format:
+   - File: {path}
+   - Severity: BLOCKER | WARNING | SUGGESTION
+   - Issue: {description}
+   - Fix: {suggested remediation}
+
+   ## Authority Boundaries
+   @.planning/config/authority-matrix.yaml (security domains)
+   ```
+
+4. **Collect Results**
+   - Use adapter.collect_results (see Step 5)
+   - Aggregate findings from all agents
+
+5. **Generate Report**
+   - Write: .planning/security-audit-{timestamp}.md
+   - Include: Summary statistics, findings by severity, remediation guide
+   - Format: Standard Legion finding blocks
+
+6. **EXIT** (ad_hoc doesn't proceed to normal build)
+   - Display: "Security audit complete. Report: .planning/security-audit-{timestamp}.md"
+
 5. COMPLETE PHASE EXECUTION
    Follow execution-tracker Section 4 (Phase Completion Tracking):
 
