@@ -8,10 +8,10 @@ last_session: "2026-03-05 — Completed 36-03 plan (Polymath integration with /l
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 4
+  completed_plans: 4
   total_requirements: 32
-  completed_requirements: 4
+  completed_requirements: 6
 ---
 
 # Project State
@@ -26,7 +26,7 @@ Milestone: v5.0 — Production-Grade Architecture
 Status: **Ready to Build** — Requirements defined, roadmap created
 Last activity: 2026-03-05 — Milestone v5.0 initialized (32 requirements, 5 phases)
 
-Progress: [          ] 0% (5 phases planned, 0 plans executed, 0 requirements delivered)
+Progress: [█         ] 12% (5 phases planned, 1 plan executed, 2 requirements delivered)
 
 ## Shipped Milestones
 
@@ -60,6 +60,19 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 **Next:** Phase 37 — select next phase from v5.0 roadmap
 
 ## Recent Activity
+
+### Completed: Plan 37-02 — Wave Executor Authority Injection
+- Updated `skills/wave-executor/SKILL.md` — Authority constraint injection and two-wave pattern
+  - Added Step 3.6: Load authority constraints from authority matrix
+  - Added Step 3.7: Enforce authority during agent spawn with conflict detection
+  - Updated Step 4: Prompt construction includes AUTHORITY_CONTEXT block
+  - Added Section 7: Two-Wave Pattern (Wave A: Build+Analysis, Wave B: Execution+Remediation)
+- Created `.planning/templates/agent-prompt.md` — Reusable agent prompt template
+  - AUTHORITY_CONTEXT section with exclusive domain ownership
+  - Authority Reminder with visual ✅/❌ indicators
+  - Variable reference table for template substitutions
+- Status: ✓ Complete, 3 commits, all verification criteria passed
+- Requirements satisfied: AUTH-02, WAVE-01
 
 ### Completed: Plan 36-03 — Polymath Integration
 - Updated `commands/start.md` — Integrated exploration workflow into `/legion:start`

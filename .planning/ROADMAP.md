@@ -55,7 +55,7 @@ Plans:
 Plans:
 - [ ] 37-00-PLAN.md — Create Wave 0 test scaffolding (AUTH-01, AUTH-05, AUTH-03, WAVE-01)
 - [ ] 37-01-PLAN.md — Create authority matrix infrastructure (AUTH-01, AUTH-05)
-- [ ] 37-02-PLAN.md — Implement wave executor authority injection (AUTH-02, WAVE-01)
+- [x] 37-02-PLAN.md — Implement wave executor authority injection (AUTH-02, WAVE-01)
 - [ ] 37-03-PLAN.md — Add review panel deduplication and filtering (AUTH-03, AUTH-04)
 - [ ] 37-04-PLAN.md — Build two-wave pattern implementation (WAVE-02, WAVE-03, WAVE-04, WAVE-05)
 
