@@ -177,5 +177,10 @@ Reverse mapping from common project needs to recommended agents.
 - **Data**: data-analytics-reporter, support-analytics-reporter
 - **Business**: support-executive-summary-generator, support-finance-tracker, support-legal-compliance-checker
 
+### Exploration & Clarification
+- **Pre-flight Alignment**: polymath
+- **Use case**: Crystallize raw ideas through structured exploration before formal planning
+- **Task types**: exploration, clarification, research-first, structured-questions, gap-detection
+
 
 
