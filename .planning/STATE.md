@@ -11,7 +11,7 @@ progress:
   completed_plans: 15
   total_requirements: 32
   completed_requirements: 25
-last_session: "2026-03-05 — Completed 40-01 plan (Gap Analysis Engine)"
+last_session: "2026-03-05 — Completed 40-00 plan (Roster Gap Analysis Test Scaffolding)"
 ---
 
 # Project State
@@ -139,6 +139,14 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
 - Requirements satisfied: ENV-01, ENV-02, ENV-03, ENV-04, ENV-05
 
 **Phase 40 — Roster Gap Analysis:**
+- Plan 00 complete (Test Scaffolding)
+  - Created `tests/fixtures/production-roles.yaml` with 18 production-grade roles (408 lines)
+  - Created `tests/fixtures/agent-coverage-matrix.yaml` with 53 agent mappings (607 lines)
+  - Created `tests/roster-gap-analysis.test.js` with 47 passing tests (780 lines)
+  - Key findings: 53 agents (1 over 52-agent limit), 2 orphaned references
+  - Critical gaps: engineering-security-engineer, product-technical-writer
+  - Requirements satisfied: ROSTER-01, ROSTER-02, ROSTER-03, ROSTER-04, ROSTER-05, ROSTER-06
+
 - Plan 01 complete (Gap Analysis Engine and Initial Analysis)
   - Created `.planning/config/roster-gap-config.yaml` (352 lines)
     - 52-agent limit configuration
@@ -164,6 +172,22 @@ v5.0 milestone initialized with 32 requirements across 5 phases.
   - Requirements addressed: ROSTER-01, ROSTER-02, ROSTER-03, ROSTER-04, ROSTER-06
 
 ## Recent Activity
+
+### Completed: Plan 40-00 — Roster Gap Analysis Test Scaffolding
+- Created comprehensive test suite with 47 passing tests across 6 sections:
+  - Agent Registry Parsing (8 tests): ROSTER-01 validation
+  - Intent Teams Validation (6 tests): ROSTER-05 validation
+  - Gap Detection Algorithm (10 tests): ROSTER-02 validation
+  - 52-Agent Limit Enforcement (8 tests): ROSTER-04 validation
+  - Coverage Analysis (8 tests): ROSTER-02, ROSTER-03, ROSTER-06 validation
+  - Integration Tests (6 tests): End-to-end workflow validation
+- **Production Roles Fixture**: 18 roles across 5 categories (SRE, Security, Data/AI, Engineering, Operations)
+- **Agent Coverage Matrix**: All 53 agents mapped with coverage strength annotations
+- **Key Findings**:
+  - 2 orphaned references: engineering-security-engineer, product-technical-writer
+  - 6 critical/important gaps identified (security-engineer, data-scientist, chaos-engineer, etc.)
+  - 52-agent limit violated (53 agents, overage: 1)
+- Requirements satisfied: ROSTER-01, ROSTER-02, ROSTER-03, ROSTER-04, ROSTER-05, ROSTER-06
 
 ### Completed: Plan 40-01 — Gap Analysis Engine
 - Built comprehensive gap analysis infrastructure
