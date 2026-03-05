@@ -186,22 +186,25 @@ function detectWaves(tasks) {
   const waveA = [];
   const waveB = [];
   
-  function getWaveLevel(taskId, visited = new Set()) {
-    if (visited.has(taskId)) return 0;
-    visited.add(taskId);
+  const levelCache = new Map();
+  function getWaveLevel(taskId) {
+    if (levelCache.has(taskId)) return levelCache.get(taskId);
     
     const task = taskMap.get(taskId);
     if (!task || !task.dependencies || task.dependencies.length === 0) {
+      levelCache.set(taskId, 0);
       return 0; // Wave A
     }
     
     let maxDepLevel = 0;
     for (const depId of task.dependencies) {
-      const depLevel = getWaveLevel(depId, visited);
+      const depLevel = getWaveLevel(depId);
       maxDepLevel = Math.max(maxDepLevel, depLevel);
     }
     
-    return maxDepLevel + 1;
+    const level = maxDepLevel + 1;
+    levelCache.set(taskId, level);
+    return level;
   }
   
   for (const task of tasks) {
