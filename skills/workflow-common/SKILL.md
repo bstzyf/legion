@@ -94,6 +94,7 @@ Commands reference `adapter.ask_user` in their process body. The `allowed-tools`
 | Codebase Map | `.planning/CODEBASE.md` | Structured map of existing codebase architecture, patterns, and risks (via codebase-mapper skill) |
 | Campaign Documents | `.planning/campaigns/{campaign-slug}.md` | Structured campaign plans with objectives, messaging, audience, channels, calendar, and agent assignments (via marketing-workflows skill) |
 | Design Documents | `.planning/designs/{project-slug}-system.md` | Structured design system specifications with tokens, components, accessibility, and agent assignments (via design-workflows skill) |
+| Exploration Documents | `.planning/exploration-{timestamp}.md` | Crystallized exploration outputs from `/legion:explore` sessions (via polymath-engine skill) |
 | Spec Documents | `.planning/specs/{NN}-{phase-slug}-spec.md` | Structured specification documents produced by spec-pipeline skill before coding phases |
 
 
@@ -130,6 +131,16 @@ Agent IDs include their division as a prefix (e.g., `engineering-senior-develope
 Custom agents created via `/legion:agent` follow the same path pattern.
 
 To load an agent personality: `Read {AGENTS_DIR}/{agent-id}.md`
+
+### Pre-Flight Alignment Agent
+
+**Polymath** (`agents/polymath.md`)
+- **Role:** Pre-flight alignment specialist
+- **Invoked by:** `/legion:explore` command
+- **Purpose:** Crystallize raw ideas through structured exploration before formal planning
+- **Key behaviors:** Research-first workflow, structured choices only (no open-ended questions), 7-exchange limit
+- **Division:** Specialized
+- **Task types:** exploration, clarification, research-first, structured-questions, gap-detection
 
 ### Agent Path Resolution Protocol
 
@@ -334,6 +345,27 @@ When a command determines it needs a specific skill, load the ENTIRE SKILL.md co
 ### Command-to-Skill Mapping
 
 > The canonical command-to-skill mapping is in workflow-common-core/SKILL.md.
+
+| Command | Primary Skills | Agent Registry | Purpose |
+|---------|----------------|----------------|---------|
+| `/legion:advise` | agent-registry, questioning-flow | Read-only consultation | Get expert advice from any agent without project context |
+| `/legion:agent` | agent-creator | agent-registry | Create custom agent personalities via guided workflow |
+| `/legion:build` | wave-executor, execution-tracker | All divisions | Execute phase plans with parallel agent coordination |
+| `/legion:explore` | polymath-engine, questioning-flow | Specialized (Polymath) | Entry point for pre-flight exploration. Spawns Polymath agent. Research-first workflow. |
+| `/legion:milestone` | milestone-manager | agent-registry | Milestone status, completion, archiving, and definition |
+| `/legion:plan` | phase-decomposer | All divisions | Plan a phase with recommended agents and wave-structured tasks |
+| `/legion:portfolio` | portfolio-manager | All divisions | Multi-project dashboard and dependency tracking |
+| `/legion:quick` | agent-registry | Selected agent | Run ad-hoc task with intelligent agent selection |
+| `/legion:review` | review-loop, quality-gates | Testing division | Quality review cycle with testing/QA agents |
+| `/legion:start` | questioning-flow, codebase-mapper, agent-registry | All divisions | Initialize project with guided questioning flow |
+| `/legion:status` | portfolio-manager, memory-manager | All divisions | Show progress dashboard and route to next action |
+
+**Command Relationships:**
+- `/legion:start` conditionally invokes `/legion:explore` before formal planning (exploration is optional but recommended)
+- `/legion:explore` can transition to `/legion:start` when user selects "Proceed to planning"
+- This forms a two-phase entry: exploration (optional pre-alignment) → initialization (required formal planning)
+- `/legion:advise` is standalone — no command transitions to or from it
+- `/legion:quick` can transition to `/legion:plan` or `/legion:build` if the task grows into a phase
 
 ### Context Budget Guideline
 
