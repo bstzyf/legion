@@ -36,6 +36,16 @@ DRY-RUN MODE (deterministic, no side effects)
      - Skills that would load (always + conditional)
    - Stop after reporting.
 
+## Intent-Driven Review
+
+| Flag | Description |
+|------|-------------|
+| `--just-security` | Security-only audit (OWASP + STRIDE) |
+
+Examples:
+- `/legion:review` — Full review panel (all domains)
+- `/legion:review --just-security` — Security-only review
+
 0. CONDITIONAL SKILL LOADING (context budget)
    Load optional skills only when prerequisites are present:
    
@@ -45,7 +55,33 @@ DRY-RUN MODE (deterministic, no side effects)
    
    - `skills/workflow-common-domains/SKILL.md` only for design/marketing domain review contexts.
    If a condition is not met, skip that skill silently and continue.
-1. DETERMINE TARGET PHASE
+
+## Step 0.5: INTENT DETECTION AND VALIDATION
+
+If $ARGUMENTS contains intent flags (--just-*):
+
+1. **Parse Intent Flags**
+   - Load skill: intent-router
+   - Call: parseIntentFlags($ARGUMENTS)
+   - Expected for review: [{name: "security-only"}] (--just-security)
+
+2. **Validate for Review Command**
+   - Call: validateFlagCombination(intents, "review")
+   - Only "security-only" intent is valid for review command
+   - If other intents detected (harden, document, etc.):
+     - ERROR: "{intent} is only valid for /legion:build"
+     - EXIT
+
+3. **Determine Review Mode**
+   - Normal mode: No intent flags → Full review panel (all domains)
+   - Intent mode: --just-security → Filtered panel (security domains only)
+   - Set: REVIEW_MODE = "full" | "security-only"
+
+4. **Load Intent Configuration**
+   - Load: intent-teams.yaml
+   - Get: security-only template (agents, domains)
+   - Domains: ["security", "owasp", "stride", "authentication", "authorization"]
+ 1. DETERMINE TARGET PHASE
    - Check $ARGUMENTS for --phase N flag (e.g., `/legion:review --phase 4`)
    - If no flag: read STATE.md to determine current phase
      - Use the phase number from "Phase: N of M" in Current Position
@@ -104,6 +140,16 @@ DRY-RUN MODE (deterministic, no side effects)
 4. SELECT REVIEW AGENTS
 
    **4.0 Choose Review Mode**
+   
+   **If REVIEW_MODE === "security-only":**
+   1. Use intent template agents:
+      - Primary: engineering-security-engineer
+      - Secondary: testing-api-tester (for API security)
+   2. Skip normal agent registry recommendation
+   3. Set: agents = [security-engineer, api-tester]
+   4. Go directly to Step 5 (Execute Review Cycle)
+
+   **If REVIEW_MODE === "full":**
    Use adapter.ask_user to offer the review approach:
    "How should reviewers be selected for this phase?"
    Options:
