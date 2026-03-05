@@ -6,7 +6,7 @@
 - [x] **v2.0** — Proper Claude Code plugin with advisory capabilities: manifest, restructured directories, installable via `claude plugin add`, plus strategic advisors, dynamic review panels, and plan critique (9 phases, 9 plans, 26 requirements) → [Archive](milestones/v2.0-ROADMAP.md)
 - [x] **v3.0** — Legion rebrand: `/legion:` namespace, plugin manifest, rewritten docs, attribution, and repo rename (5 phases, 6 plans, 13 requirements) → [Archive](milestones/v3.0-ROADMAP.md)
 - [x] **v4.0** — Inspiration audit adoption: progressive disclosure, review quality, behavioral guardrails, planning intelligence, knowledge layer, execution resilience, consolidation audit (7 phases, 13 plans, 18 requirements) → [Archive](milestones/v4.0-ROADMAP.md)
-- [ ] **v5.0** — Production-grade architecture: Polymath integration, authority boundaries, intent-driven execution, two-wave parallelism, environment mapping, roster verification (5 phases, 32 requirements) → In Progress
+- [x] **v5.0** — Production-grade architecture: Polymath integration, authority boundaries, intent-driven execution, two-wave parallelism, environment mapping, roster verification (5 phases, 32 requirements) → [Archive](milestones/v5.0-ROADMAP.md)
 
 ---
 
@@ -101,7 +101,7 @@ Plans:
 4. Wave executor places files in correct existing directories
 5. CODEBASE.md auto-updates when structure changes
 
-**Plans:** 5 plans in 3 waves
+**Plans:** 5/5 plans complete
 
 Plans:
 - [x] 39-00-PLAN.md — Create test scaffolding for environment mapping features
@@ -129,7 +129,15 @@ Plans:
 4. Data-scientist coverage verified for AI projects
 5. Gap analysis respects 52-agent limit
 
-**Phase Completion:** When roster analysis runs and reports coverage status
+**Plans:** 4/4 plans complete
+
+Plans:
+- [x] 40-00-PLAN.md — Create test scaffolding for gap analysis
+- [x] 40-01-PLAN.md — Build gap analysis engine and run initial analysis
+- [x] 40-02-PLAN.md — Create missing agents (security-engineer, technical-writer)
+- [x] 40-03-PLAN.md — Verify gap closure and finalize phase
+
+**Phase Status:** ✓ COMPLETE — All 6 requirements (ROSTER-01 through ROSTER-06) satisfied
 
 ---
 
@@ -140,9 +148,11 @@ Plans:
 | Phases | 5 (36-40) |
 | Requirements | 32 |
 | New Commands | 1 (`/legion:explore`) |
-| New Agents | 1 (Polymath) |
-| Modified Skills | 5 (wave-executor, review-panel, codebase-mapper, spec-pipeline, agent-registry) |
+| New Agents | 3 (Polymath + security-engineer + technical-writer) |
+| Modified Skills | 6 (+ agent-registry gap analysis) |
 | Modified Commands | 2 (`/legion:build`, `/legion:start`) |
+| Tests Added | 47 (roster gap analysis) |
+| Intent Teams | All valid (no orphaned references) |
 
 **Estimated Complexity:** Medium — Natural fit with existing Legion architecture. Builds on v4.0 consolidation work.
 
