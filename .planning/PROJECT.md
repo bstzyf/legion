@@ -2,11 +2,11 @@
 
 ## What This Is
 
-A Claude Code plugin that orchestrates 52 AI specialist personalities as coordinated teams. Forked from The Agency Workflows and rebranded as Legion — "My name is Legion, for we are many." The agents have deep expertise and distinct voices; this project gives them a coordination layer so they work together on real projects.
+A multi-CLI plugin for orchestrating 53 AI specialist personalities as coordinated teams. Works with Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Amazon Q Developer, Windsurf, OpenCode, and Aider. Forked from The Agency Workflows and rebranded as Legion — "My name is Legion, for we are many."
 
 ## Core Value
 
-Turn a collection of 52 isolated agent personalities into a functional AI legion. Users type `/legion:start`, describe what they want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
+Turn a collection of 53 isolated agent personalities into a functional AI legion. Users type `/legion:start`, describe what they want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
 
 ## Who It's For
 
@@ -16,24 +16,20 @@ Turn a collection of 52 isolated agent personalities into a functional AI legion
 
 ## Current State
 
-**v4.0 shipped** (2026-03-02) — Inspiration audit adoption complete. Cherry-picked proven patterns from 10 orchestration tools while maintaining Legion's core identity. 7 phases, 13 plans, 18 requirements across 7 categories.
+**v5.0 shipped** (2026-03-05) — Production-grade architecture complete. Polymath pre-flight exploration, authority boundaries with domain ownership, intent-driven execution with semantic flags, two-wave parallelism, environment mapping with path enforcement, roster gap analysis. 5 phases, 22 plans, 32 requirements across 6 categories.
 
-10 commands, 18 skills, 52 agents across 9 divisions. See [roadmap](ROADMAP.md) for milestone history.
+11 commands, 22 skills, 53 agents across 9 divisions. See [roadmap](ROADMAP.md) for milestone history.
 
-## Current Milestone: v5.0 — Production-Grade Architecture
-
-**Goal:** Integrate proven architectural concepts from production-grade orchestration patterns while preserving Legion's multi-runtime flexibility and 52-agent versatility.
-
-**Target features:**
-- **Polymath Integration** — Pre-flight alignment via `/legion:explore` command with dedicated exploration agent
-- **Strict Authority Boundaries** — Domain ownership matrix preventing agent conflicts during parallel execution
-- **Intent-Driven Partial Execution** — Semantic flags for targeted operations (`--just-harden`, `--just-document`, `--skip-frontend`)
-- **Adaptive Environment Mapping** — Enhanced brownfield detection with workspace path enforcement
-- **Roster Gap Analysis** — Verify coverage for DevOps/SRE and security audit roles
-
-### Next Milestone Goals
+## Next Milestone
 
 To be defined via `/gsd:new-milestone` or `/legion:start`.
+
+<details>
+<summary>v5.0 (2026-03-05)</summary>
+
+Production-grade architecture. 5 phases, 22 plans, 32 requirements. Polymath pre-flight exploration (`/legion:explore`), authority boundaries with YAML domain ownership matrix, intent-driven execution (`--just-harden`, `--just-document`, `--skip-frontend`, `--just-security`), two-wave parallelism (Wave A Build+Analysis, Wave B Execution+Remediation), environment mapping with directory mappings and path enforcement, roster gap analysis with security-engineer and technical-writer agents. 377+ automated tests. See [v5.0 archived requirements](milestones/v5.0-REQUIREMENTS.md).
+
+</details>
 
 <details>
 <summary>v4.0 (2026-03-02)</summary>
@@ -69,7 +65,7 @@ Legion rebrand complete. 5 phases, 6 plans, 13 requirements, 334+ substitutions,
 - Board of directors / governance model (Conductor-style) — too heavy
 - MCP server requirements — user brings their own
 - Jira / Linear / other issue trackers — GitHub only for now
-- Agent count inflation beyond 52 — diminishing returns, maintenance burden
+- Agent count inflation beyond 52 — diminishing returns, maintenance burden (53 accepted for production-critical roles)
 - Full automation without checkpoints (Conductor `/go` pattern) — expensive runaway sessions
 - 50-iteration QA loops — if 3-5 don't fix it, problem is systemic
 - Bundled third-party skill libraries — version coupling, dependency creep
@@ -95,6 +91,8 @@ Legion rebrand complete. 5 phases, 6 plans, 13 requirements, 334+ substitutions,
 | Cherry-pick patterns from 10 repos | GSD + Shipyard + Conductor + Best Practice + Feature-dev + code-foundations + beads + Auto-Claude + bjarne + Puzld.ai | Confirmed (v4.0 audit) |
 | Cross-division support | 52 agents span 9 divisions — workflows must handle all, not just engineering | Confirmed |
 | Hybrid agent selection | Workflow recommends based on task analysis, user confirms/overrides | Confirmed |
+| Authority boundaries | Domain ownership matrix prevents agent conflicts during parallel execution | Confirmed (v5.0) |
+| Intent-driven execution | Semantic flags for targeted operations without full phase planning | Confirmed (v5.0) |
 
 ## Architecture Influences
 
@@ -102,7 +100,7 @@ Legion rebrand complete. 5 phases, 6 plans, 13 requirements, 334+ substitutions,
 |--------|-------------------|-------------------|
 | **Agency Agents** | 52 agent personalities, division structure, personality-first design | Original "Agency" branding and namespace |
 | **GSD** | Questioning flow, orchestrator/subagent split, phase planning, state management pattern | CLI tooling, 33+ workflows, complex config, milestone system |
-| **Conductor** | Evaluate-loop (build→review→fix), quality gates, parallel dispatch | Board governance, message bus, 50+ iteration limits, metadata.json |
+| **Conductor** | Evaluate-loop (build>review>fix), quality gates, parallel dispatch | Board governance, message bus, 50+ iteration limits, metadata.json |
 | **Shipyard** | Wave-based execution, max 3 tasks/plan, atomic commits, agent role boundaries | 29 commands, checkpoint/rollback system, hook complexity |
 | **Best Practice** | Skills/commands/agents structure, agent frontmatter, permission patterns | RPI workflow (too specific), custom hooks infrastructure |
 | **Feature-dev** | Confidence-based review filtering (80%+), competing architecture designs (2-3 approaches), 3-agent model | No state persistence, no memory, no quick mode |
@@ -113,4 +111,4 @@ Legion rebrand complete. 5 phases, 6 plans, 13 requirements, 334+ substitutions,
 | **Puzld.ai** | DPO preference extraction, debate-with-winner-tracking, clean adapter pattern | Near-zero test coverage, 95 releases in 3 months, 11 execution modes |
 
 ---
-*Last updated: 2026-03-02 — v4.0 milestone shipped*
+*Last updated: 2026-03-05 — v5.0 milestone shipped*
