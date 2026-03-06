@@ -168,7 +168,7 @@
 | Phase | Plans | Completed | Status |
 |-------|-------|-----------|--------|
 | 1 — Plan Schema Hardening | 3 | 3 | Complete |
-| 2 — Wave Safety | 2 | 0 | Not started |
+| 2 — Wave Safety | 2 | 2 | Complete |
 | 3 — Control Modes | 3 | 0 | Not started |
 | 4 — Observability | 2 | 0 | Not started |
 | 5 — Agent Metadata Enrichment | 3 | 0 | Not started |
