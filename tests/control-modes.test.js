@@ -194,3 +194,68 @@ describe('Cross-Reference Validation', () => {
       'wave-executor should reference mode_profile');
   });
 });
+
+// 7. Edge Cases and Error Handling (5 tests)
+describe('Edge Cases', () => {
+  let schema;
+  let fixture;
+  const VALID_MODES = ['autonomous', 'guarded', 'advisory', 'surgical'];
+  const FLAG_NAMES = [
+    'authority_enforcement',
+    'domain_filtering',
+    'human_approval_required',
+    'file_scope_restriction',
+    'read_only'
+  ];
+
+  before(() => {
+    schema = loadJSON(SCHEMA_PATH);
+    fixture = loadJSON(FIXTURE_PATH);
+  });
+
+  test('schema rejects invalid mode values', () => {
+    const validEnum = schema.properties.control_mode.enum;
+    const invalidModes = ['chaos', 'manual', 'full', '', 'GUARDED'];
+    for (const invalid of invalidModes) {
+      assert.ok(!validEnum.includes(invalid),
+        `Schema enum should not include invalid mode "${invalid}"`);
+    }
+  });
+
+  test('no profile has extra flags beyond the 5 expected', () => {
+    for (const [name, profile] of Object.entries(fixture.profiles)) {
+      const profileFlags = Object.keys(profile).filter(k => k !== 'description');
+      assert.strictEqual(profileFlags.length, 5,
+        `Profile ${name} should have exactly 5 flags, got ${profileFlags.length}: ${profileFlags.join(', ')}`);
+      for (const flag of profileFlags) {
+        assert.ok(FLAG_NAMES.includes(flag),
+          `Profile ${name} has unexpected flag "${flag}"`);
+      }
+    }
+  });
+
+  test('all flag values are strictly boolean, not truthy strings', () => {
+    for (const [name, profile] of Object.entries(fixture.profiles)) {
+      for (const flag of FLAG_NAMES) {
+        assert.notStrictEqual(profile[flag], 'true',
+          `Profile ${name}.${flag} should be boolean true, not string "true"`);
+        assert.notStrictEqual(profile[flag], 'false',
+          `Profile ${name}.${flag} should be boolean false, not string "false"`);
+      }
+    }
+  });
+
+  test('no duplicate profiles exist', () => {
+    const profileNames = Object.keys(fixture.profiles);
+    const unique = new Set(profileNames);
+    assert.strictEqual(profileNames.length, unique.size,
+      'All profile names should be unique');
+  });
+
+  test('each profile has a non-empty description', () => {
+    for (const [name, profile] of Object.entries(fixture.profiles)) {
+      assert.ok(profile.description && profile.description.length > 0,
+        `Profile ${name} should have a non-empty description`);
+    }
+  });
+});

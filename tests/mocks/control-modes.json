@@ -3,7 +3,7 @@
   "description": "Defines how control_mode presets adjust authority enforcement behavior",
   "profiles": {
     "autonomous": {
-      "description": "Full agent autonomy -- authority enforcement disabled, agents decide freely",
+      "description": "Full agent autonomy — authority enforcement disabled, agents decide freely",
       "authority_enforcement": false,
       "domain_filtering": false,
       "human_approval_required": false,
@@ -11,7 +11,7 @@
       "read_only": false
     },
     "guarded": {
-      "description": "Default -- authority boundaries active, domain filtering on, human approval for out-of-scope",
+      "description": "Default — authority boundaries active, domain filtering on, human approval for out-of-scope",
       "authority_enforcement": true,
       "domain_filtering": true,
       "human_approval_required": true,
@@ -19,7 +19,7 @@
       "read_only": false
     },
     "advisory": {
-      "description": "Read-only mode -- agents suggest but don't execute, all findings shown unfiltered",
+      "description": "Read-only mode — agents suggest but don't execute, all findings shown unfiltered",
       "authority_enforcement": false,
       "domain_filtering": false,
       "human_approval_required": false,
@@ -27,7 +27,7 @@
       "read_only": true
     },
     "surgical": {
-      "description": "Maximum restriction -- agents only touch listed files, all changes require confirmation",
+      "description": "Maximum restriction — agents only touch listed files, all changes require confirmation",
       "authority_enforcement": true,
       "domain_filtering": true,
       "human_approval_required": true,
@@ -44,8 +44,8 @@
   },
   "when_to_use": {
     "autonomous": "Trusted workflows, solo development, rapid prototyping where speed matters more than guardrails",
-    "guarded": "Default for team workflows -- balances agent productivity with human oversight",
-    "advisory": "Code review, architecture exploration, learning a codebase -- no changes, only suggestions",
-    "surgical": "Production hotfixes, sensitive codebases, compliance-critical changes -- maximum safety"
+    "guarded": "Default for team workflows — balances agent productivity with human oversight",
+    "advisory": "Code review, architecture exploration, learning a codebase — no changes, only suggestions",
+    "surgical": "Production hotfixes, sensitive codebases, compliance-critical changes — maximum safety"
   }
 }
