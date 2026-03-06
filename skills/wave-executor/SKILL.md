@@ -180,7 +180,23 @@ Step 3.5: Load brownfield context (optional)
 
   - If CODEBASE.md does not exist: set CODEBASE_CONTEXT = "" (empty string, no block injected)
 
+Step 3.5b: Receive control mode profile
+
+  The control mode profile is pre-resolved by workflow-common-core's Settings Resolution
+  Protocol at invocation start. The wave-executor receives the resolved profile — it does
+  NOT read `.planning/config/control-modes.yaml` directly.
+
+  The profile contains 5 boolean flags:
+  - authority_enforcement, domain_filtering, human_approval_required, file_scope_restriction, read_only
+
+  If no profile was resolved (legacy invocation): default to guarded profile
+  (authority_enforcement=true, domain_filtering=true, human_approval_required=true,
+   file_scope_restriction=false, read_only=false)
+
 Step 3.6: Load authority constraints
+  - If mode_profile.authority_enforcement is false:
+    Set AUTHORITY_CONTEXT = "" (skip all authority boundary injection)
+    Skip to Step 3.7
   - Load active agents for this wave from wave map
   - For current agent, identify its exclusive_domains from authority matrix
   - Build AUTHORITY_CONTEXT block:
@@ -202,6 +218,9 @@ Step 3.6: Load authority constraints
   - If authority matrix does not exist: AUTHORITY_CONTEXT = "" (no constraints)
 
 Step 3.7: Enforce authority during agent spawn
+
+  - If mode_profile.authority_enforcement is false:
+    Skip authority enforcement during agent spawn (no domain conflict warnings)
 
   Before spawning each agent:
   1. Load authority matrix: `.planning/config/authority-matrix.yaml`
@@ -300,6 +319,31 @@ Step 3.8: Validate file placement against directory mappings (ENV-04)
   - Skip validation for this plan
   - Log: "Path validation overridden: {reason}"
   - Note in wave summary
+
+### Control Mode Prompt Constraints
+
+After constructing the base agent prompt (personality + task + authority), apply mode-specific constraints from the resolved profile:
+
+When `mode_profile.read_only` is true:
+- Append advisory mode constraint to agent prompt:
+  "You are in ADVISORY mode. Analyze and suggest improvements but DO NOT modify any files.
+   Present your suggestions as a structured list of proposed changes with rationale."
+- Suppress `auto_commit` regardless of settings.json value — no commits in advisory mode
+- After agent execution, present suggested changes to user without applying them
+- Skip the commit step in the execution results
+
+When `mode_profile.file_scope_restriction` is true:
+- Append file-scope constraint to agent prompt:
+  "You may ONLY modify files explicitly listed in this plan's files_modified field.
+   Do not create, edit, or delete any other files. If a task requires touching unlisted
+   files, stop and escalate."
+- After agent execution, verify that only files listed in plan `files_modified` were touched
+- If agent modified unlisted files: flag as a BLOCKER in execution results and present
+  to user for decision (revert or accept)
+- Note: prompt injection is preventive; post-execution check is detective. Both are needed.
+
+When `mode_profile.human_approval_required` is false:
+- Omit escalation protocol reminders from agent prompts
 
 Step 4: Construct the agent execution prompt
   Combine personality and plan using this exact format:

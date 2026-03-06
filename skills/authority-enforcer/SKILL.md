@@ -90,9 +90,17 @@ Output:
 
 ```python
 def validate_boundary(agent_id, topic, active_agents):
+    # Mode check: skip validation if authority enforcement is disabled
+    if not profile.authority_enforcement:
+        return {
+            authorized: True,
+            domain_owner: None,
+            reason: "Authority enforcement disabled by control mode"
+        }
+
     # Load agent's exclusive domains from matrix
     agent_domains = matrix.get_domains(agent_id)
-    
+
     # Check 1: Agent owns this topic
     if topic in agent_domains:
         return {
@@ -178,7 +186,7 @@ def inject_authority_constraints(agent_id, base_prompt, active_agents):
     for other_agent in active_agents:
         if other_agent == agent_id:
             continue
-        
+
         other_domains = matrix.get_domains(other_agent)
         if other_domains:
             agent_name = matrix.get_name(other_agent)
@@ -188,8 +196,29 @@ def inject_authority_constraints(agent_id, base_prompt, active_agents):
                 + "\\n".join(f"- {d}" for d in other_domains)
                 + "\\n\\nDO NOT critique or override their findings in these domains."
             )
-    
-    # Step 3: Combine with base prompt
+
+    # Step 3: Mode-specific constraints
+    if profile.read_only:
+        constraints.append(
+            "\n## Advisory Mode Active\n\n"
+            "You are in ADVISORY mode. Analyze and suggest improvements "
+            "but DO NOT modify any files. Present your suggestions as a "
+            "structured list of proposed changes with rationale."
+        )
+
+    if profile.file_scope_restriction:
+        constraints.append(
+            "\n## Surgical Mode — File Scope Restriction\n\n"
+            "You may ONLY modify files explicitly listed in this plan's "
+            "`files_modified` field. Do not create, edit, or delete any other files. "
+            "If a task requires touching unlisted files, stop and escalate."
+        )
+
+    if not profile.human_approval_required:
+        # Omit the escalation protocol section from injected constraints
+        pass  # Do not append the standard "Human Approval Required" block
+
+    # Step 4: Combine with base prompt
     if constraints:
         enhanced = "\\n\\n".join(constraints) + "\\n\\n---\\n\\n" + base_prompt
     else:
@@ -258,9 +287,13 @@ Finding:
 
 ```python
 def filter_findings(findings, active_agents):
+    # Mode check: skip filtering if domain filtering is disabled
+    if not profile.domain_filtering:
+        return findings, []  # Return all findings, nothing removed
+
     filtered = []
     removed = []
-    
+
     # Build domain ownership map from active agents
     domain_ownership = {}
     for agent in active_agents:
@@ -457,13 +490,15 @@ const activeAgents = [
     'testing-reality-checker'
 ];
 
-// 3. Inject constraints into prompts
+// 3. Inject constraints into prompts (with mode profile)
+const modeProfile = resolvedSettings.modeProfile; // from workflow-common-core
 for (const agentId of activeAgents) {
     const basePrompt = loadAgentPersonality(agentId);
     const enhancedPrompt = injectAuthorityConstraints(
-        agentId, 
-        basePrompt, 
-        activeAgents
+        agentId,
+        basePrompt,
+        activeAgents,
+        modeProfile  // NEW: pass resolved mode profile
     );
     // Spawn agent with enhancedPrompt
 }
@@ -495,3 +530,45 @@ const report = synthesizeFindings(filtered);
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2026-03-05 | Initial authority enforcer with boundary validation, prompt injection, and finding filtering |
+| 1.1 | 2026-03-06 | Added Mode Profile Loading (Section 10) — control mode flag integration |
+
+---
+
+## Section 10: Mode Profile Loading
+
+Receive the pre-resolved control mode profile from workflow-common-core's Settings Resolution Protocol. The profile is resolved ONCE at invocation start and passed to all authority-enforcer calls — the authority-enforcer does NOT read control-modes.yaml directly.
+
+### Input
+
+The resolved profile is a set of 5 boolean flags passed by the caller (wave-executor or review-panel):
+
+| Flag | Type | Effect on Authority Enforcer |
+|------|------|------------------------------|
+| `authority_enforcement` | boolean | When false, skip Section 2 (Boundary Validation) entirely — all agents are authorized |
+| `domain_filtering` | boolean | When false, skip Section 4 (Finding Filtering) — all findings are kept regardless of domain ownership |
+| `human_approval_required` | boolean | When false, suppress escalation prompts in Section 3 (Prompt Injection) — agents do not remind about human approval |
+| `file_scope_restriction` | boolean | When true, add file-scope constraint to Section 3 injected prompts — agents may ONLY modify files in plan `files_modified` |
+| `read_only` | boolean | When true, add read-only constraint to Section 3 injected prompts — agents suggest but do not execute changes |
+
+### Resolution Fallback
+
+If no profile is provided (caller does not pass it), default to the `guarded` profile:
+- `authority_enforcement: true`, `domain_filtering: true`, `human_approval_required: true`
+- `file_scope_restriction: false`, `read_only: false`
+
+This ensures backward compatibility — existing callers (including review-panel) that do not yet pass a profile get the same behavior as before.
+
+### Flag Consumption Pattern
+
+All earlier sections check flags before executing their logic:
+
+Section 2 (Boundary Validation):
+  if not profile.authority_enforcement: return { authorized: true, reason: "authority enforcement disabled by control mode" }
+
+Section 3 (Prompt Injection):
+  if profile.read_only: append "CONSTRAINT: You are in advisory mode. Suggest changes but do NOT modify any files."
+  if profile.file_scope_restriction: append "CONSTRAINT: You may ONLY modify files listed in the plan's files_modified field."
+  if not profile.human_approval_required: omit the escalation protocol reminder from injected constraints
+
+Section 4 (Finding Filtering):
+  if not profile.domain_filtering: return all findings unfiltered

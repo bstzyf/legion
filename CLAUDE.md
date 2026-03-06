@@ -99,6 +99,29 @@ When an agent encounters a decision that falls outside its autonomous scope:
 3. **Continue** — work on other in-scope items while waiting for human input
 4. **Never rationalize** — "it's a small change" or "it's obviously fine" are not valid reasons to skip approval
 
+### Control Modes
+
+The `control_mode` setting in `settings.json` adjusts how strictly authority matrix rules are enforced. Four presets are available:
+
+| Mode | Authority | Domain Filtering | Human Approval | File Restriction | Read-Only |
+|------|-----------|-----------------|----------------|-----------------|-----------|
+| `autonomous` | Off | Off | Off | Off | Off |
+| `guarded` (default) | On | On | On | Off | Off |
+| `advisory` | Off | Off | Off | Off | On |
+| `surgical` | On | On | On | On | Off |
+
+- **autonomous**: Full agent freedom. Use for trusted workflows and rapid prototyping.
+- **guarded**: Default mode. Authority boundaries active, domain-filtered reviews, escalation protocol enforced.
+- **advisory**: Agents suggest but don't execute. All findings shown unfiltered. Auto-commit suppressed.
+- **surgical**: Maximum restriction. Agents only touch explicitly listed files. All out-of-scope changes blocked.
+
+Set via `settings.json`:
+```json
+{ "control_mode": "guarded" }
+```
+
+Mode profiles are defined in `.planning/config/control-modes.yaml`. See `docs/control-modes.md` for detailed usage guide.
+
 ## Memory Layer (Optional)
 
 After build/review cycles, outcomes are recorded to `.planning/memory/OUTCOMES.md`. During planning, past outcomes boost agent recommendations. During status, recent outcomes enrich the session briefing. All memory features degrade gracefully — the system works identically without them.
