@@ -63,6 +63,32 @@ If confidence is low:
 2. Offer 2-3 alternatives from different divisions.
 3. Ask for user guidance before locking assignment.
 
+### Score Export
+
+After scoring, produce a structured score breakdown for each recommended agent:
+
+```
+score_export:
+  task_type_detected: "{extracted task type from intent parsing}"
+  candidates:
+    - agent_id: "{agent-id}"
+      semantic_score: "{quality of semantic overlap: strong|moderate|weak}"
+      heuristic_score: {numeric total from tiebreak rules}
+      memory_boost: {numeric boost from OUTCOMES.md or 0}
+      total_score: {heuristic_score + memory_boost}
+      confidence: "{HIGH|MEDIUM|LOW}"
+    - agent_id: "{agent-id-2}"
+      ...
+  adapter: "{adapter name from current CLI}"
+  model_tier: "{planning|execution|check}"
+  recommendation_source: "{semantic|heuristic|memory|override}"
+```
+
+This score breakdown is:
+- **Produced** by agent-registry during recommendation
+- **Consumed** by wave-executor when writing SUMMARY.md (see OBS-01)
+- **Optional** — if recommendation was skipped (autonomous task), no export is generated
+
 ### Step 5: Team Size and Composition Guardrails
 - **2 agents** for single-domain tasks.
 - **3 agents** for standard feature work.
@@ -86,6 +112,8 @@ Constraints:
 - **Execution teams** (code-writing/deployment) MUST include at least one Testing-division agent.
 - **Cross-division teams** MUST include a coordinator: `project-manager-senior`, `project-management-project-shepherd`, or `agents-orchestrator`.
 - **User-facing change teams** SHOULD include a Design-division reviewer.
+
+Mandatory role additions should be reflected in the score_export with `recommendation_source: "mandatory"`.
 
 ### Step 8: Conflict Resolution
 - If two agents remain tied in one division, prefer broader production reliability for delivery tasks.

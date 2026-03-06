@@ -719,6 +719,32 @@ Step 3: Generate the plan summary file
   **Agent**: {agent-id} | Autonomous
   **Completed**: {timestamp}
 
+  ## Agent Selection Rationale
+
+  > This section is auto-generated from agent-registry score_export data.
+  > Omitted for autonomous tasks where no recommendation was run.
+
+  | Candidate | Semantic | Heuristic | Memory | Total | Source |
+  |-----------|----------|-----------|--------|-------|--------|
+  | {selected agent} | {strong/moderate/weak} | {score} | {boost} | {total} | {semantic/heuristic/memory/mandatory} |
+  | {runner-up 1} | ... | ... | ... | ... | ... |
+  | {runner-up 2} | ... | ... | ... | ... | ... |
+
+  - **Task type detected**: {task_type_detected from score_export}
+  - **Confidence**: {HIGH/MEDIUM/LOW}
+  - **Adapter**: {adapter name}
+  - **Model tier**: {planning/execution/check}
+
+  If the plan's `autonomous: true` or no score_export data is available, omit the
+  "Agent Selection Rationale" section entirely. Do not output an empty section.
+
+  **Data source**: The executing agent reconstructs the rationale from the plan's context
+  (plan frontmatter `agents` field, task descriptions, and agent-registry scoring criteria).
+  This is an LLM-native approach — the agent re-derives WHY this agent was selected based on
+  the task requirements and agent-registry's scoring rules, rather than consuming a serialized
+  data payload. The score_export structure in agent-registry Section 3 defines what fields
+  to populate, but the executing agent computes these at SUMMARY.md generation time.
+
   ## What Was Done
   {Summary of actions taken, derived from the agent's return message.
    Should be specific: "Created skills/wave-executor/SKILL.md (312 lines)
@@ -765,6 +791,24 @@ Step 4: Confirm summary file was written
   - If write failed: report error to orchestrator — the summary file is required
     for the wave completion check in Wave Execution Step 2
 ```
+
+### Phase Decision Summary (decision_capture)
+
+After all per-plan SUMMARY.md files are written for a phase, produce a phase-level decision summary appended to the final wave's completion report:
+
+```markdown
+### Phase Decision Summary
+
+| Plan | Agent | Confidence | Adapter | Model Tier | Escalations |
+|------|-------|------------|---------|------------|-------------|
+| 01 | {agent-id} | {HIGH/MEDIUM/LOW} | {adapter} | {tier} | {count or "none"} |
+| 02 | ... | ... | ... | ... | ... |
+
+Escalations are decisions where an agent encountered an out-of-scope action and
+documented it per the authority matrix escalation protocol.
+```
+
+This summary is reconstructed from the individual SUMMARY.md files' Agent Selection Rationale sections. If a plan was autonomous, its row shows "Autonomous" for Agent and dashes for Confidence/Adapter/Model Tier.
 
 ### Summary File Naming
 

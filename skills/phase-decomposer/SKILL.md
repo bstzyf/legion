@@ -421,6 +421,33 @@ For each plan:
    - Whether the plan is autonomous or agent-delegated
 ```
 
+### Score Data for Observability
+
+When recommending agents, the phase-decomposer triggers agent-registry's recommendation
+algorithm which produces a `score_export` structure (see agent-registry Section 3, Score Export).
+
+This data flows through the pipeline as follows:
+
+1. **phase-decomposer** — triggers agent-registry recommendation — displays score_export to user
+2. **User confirmation** — user sees top candidates with rationale, confirms or swaps
+3. **Plan file generation** — selected agent recorded in plan frontmatter `agents` field
+4. **wave-executor** — at execution time, the executing agent reconstructs the rationale
+   by re-deriving scores from the task description + agent-registry scoring rules (LLM-native
+   approach — no serialized data bus needed). The score_export structure defines WHAT to
+   populate; the agent computes HOW at SUMMARY.md generation time.
+
+The score_export includes per-candidate:
+- `semantic_score` (strong/moderate/weak)
+- `heuristic_score` (numeric from tiebreak rules)
+- `memory_boost` (numeric from OUTCOMES.md history)
+- `total_score` (heuristic + memory)
+- `confidence` (HIGH/MEDIUM/LOW)
+- `recommendation_source` (semantic/heuristic/memory/mandatory/override)
+
+Plus context fields: `task_type_detected`, `adapter`, `model_tier`.
+
+If the user overrides the recommendation, record `recommendation_source: "override"`.
+
 ### Autonomous vs. Agent-Delegated
 
 | Plan Type | Autonomous? | Agents Needed |
