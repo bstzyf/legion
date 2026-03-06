@@ -16,7 +16,7 @@
 - [x] Phase 1: Plan Schema Hardening (3 plans)
 - [x] Phase 2: Wave Safety (2 plans)
 - [x] Phase 3: Control Modes (3 plans)
-- [ ] Phase 4: Observability (2 plans)
+- [x] Phase 4: Observability (3 plans)
 - [ ] Phase 5: Agent Metadata Enrichment (3 plans)
 - [ ] Phase 6: Recommendation Engine v2 (3 plans)
 - [ ] Phase 7: Validation & Conformance (3 plans)
@@ -66,10 +66,10 @@
 **Requirements**: OBS-01, OBS-02, OBS-03
 **Recommended Agents**: engineering-senior-developer, testing-evidence-collector
 **Success Criteria**:
-- [ ] SUMMARY.md template includes "Agent Selection Rationale" section with recommendation scores
-- [ ] REVIEW.md template includes "Cycle Delta" section showing what changed between review cycles
-- [ ] Wave executor captures and writes structured decision data
-- [ ] Tests verify decision log format and cycle diff output
+- [x] SUMMARY.md template includes "Agent Selection Rationale" section with recommendation scores
+- [x] REVIEW.md template includes "Cycle Delta" section showing what changed between review cycles
+- [x] Wave executor captures and writes structured decision data
+- [x] Tests verify decision log format and cycle diff output
 **Plans**: 2
 
 ### Phase 5: Agent Metadata Enrichment
@@ -170,7 +170,7 @@
 | 1 — Plan Schema Hardening | 3 | 3 | Complete |
 | 2 — Wave Safety | 2 | 2 | Complete |
 | 3 — Control Modes | 3 | 3 | Complete ✓ |
-| 4 — Observability | 3 | 3 | Complete |
+| 4 — Observability | 3 | 3 | Complete ✓ |
 | 5 — Agent Metadata Enrichment | 3 | 0 | Not started |
 | 6 — Recommendation Engine v2 | 3 | 0 | Not started |
 | 7 — Validation & Conformance | 3 | 0 | Not started |

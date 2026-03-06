@@ -6,14 +6,14 @@
 
 ## Current Position
 
-- **Phase**: 4 of 12 (executed, pending review)
+- **Phase**: 4 of 12 (complete)
 - **Milestone**: v6.0 — Discipline & Intelligence
-- **Status**: Phase 4 complete — all 3 plans executed successfully
-- **Last Activity**: Phase 4 execution (2026-03-06)
+- **Status**: Phase 4 complete — review passed (1 cycle)
+- **Last Activity**: Phase 4 review passed (2026-03-06)
 
 ## Progress
 ```
-[####......] 37% — 11/30 plans complete
+[####......] 37% — 11/30 plans complete (Phase 4 reviewed)
 ```
 
 ## Shipped Milestones
@@ -74,8 +74,8 @@
 - Directory mapping extraction: Priority-based resolution (explicit/inferred/default)
 
 ## Next Action
-Run `/legion:review` to verify Phase 4: Observability
+Run `/legion:plan 5` to plan the next phase
 
 ---
 
-*Last updated: 2026-03-06 — Phase 4 executed*
+*Last updated: 2026-03-06 — Phase 4 review passed*
