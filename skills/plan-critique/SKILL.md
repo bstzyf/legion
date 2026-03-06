@@ -205,16 +205,20 @@ How to synthesize both passes and route to user action.
 After both passes complete:
 
 Step 1: Merge findings
-  Combine pre-mortem critical risks and assumption critical/warning items.
+  Combine:
+  - Schema conformance violations (Section 5)
+  - Pre-mortem critical risks (Section 1)
+  - Assumption critical/warning items (Section 2)
   Deduplicate: if a pre-mortem finding and an assumption point to the same
   plan section with the same root issue, merge into one entry.
+  Schema BLOCKERs are never deduplicated — they always appear individually.
 
 Step 2: Compute critique verdict
-  - PASS: No critical risks AND no critical assumptions
+  - PASS: No schema BLOCKERs AND no critical risks AND no critical assumptions
     → "Plan looks solid. Proceed to execution."
-  - CAUTION: 1-2 critical items, all have clear mitigations
+  - CAUTION: 1-2 critical items (including schema warnings), all have clear mitigations
     → "Plan has addressable risks. Review mitigations before proceeding."
-  - REWORK: 3+ critical items OR any item without a clear mitigation
+  - REWORK: Any schema BLOCKER OR 3+ critical items OR any item without clear mitigation
     → "Plan needs revision before execution."
 
 Step 3: Present consolidated critique
@@ -232,6 +236,11 @@ Step 3: Present consolidated critique
   | Critical assumptions | {N} |
   | Warning assumptions | {N} |
   | Merged findings | {N} |
+
+  ### Schema Conformance
+  | Plan | verification_commands | files_forbidden | expected_artifacts | Status |
+  |------|----------------------|----------------|--------------------|--------|
+  | {NN}-{PP} | {PASS/BLOCKER} | {PASS/WARNING/BLOCKER} | {PASS/WARNING} | {overall} |
 
   {Pre-mortem findings from Section 1, Step 5}
 
@@ -315,6 +324,91 @@ Panel size:
   plan modification. If personality file is missing: run critique
   autonomously without personality injection.
 ```
+
+---
+
+## Section 5: Schema Conformance Check (DSC-01, DSC-02, DSC-03)
+
+Validates plan frontmatter against the v6.0 schema before execution. Runs automatically as part of plan-critique (before pre-mortem and assumption hunting). Schema violations are reported alongside critique findings in the consolidated report.
+
+### When to Run
+
+Schema conformance check runs:
+- Automatically when plan-critique is invoked (always, before Sections 1-2)
+- Standalone via direct invocation on any plan file
+- During wave-executor pre-flight validation
+
+### Validation Rules
+
+For each plan file in the phase:
+
+#### Rule 1: verification_commands (BLOCKER if missing)
+```
+Check: Plan frontmatter contains `verification_commands` field
+If missing: BLOCKER — "Plan {NN}-{PP} missing mandatory verification_commands field"
+If present but empty array: BLOCKER — "Plan {NN}-{PP} has empty verification_commands — must contain at least one bash command"
+If present with entries: PASS
+Additional: Each command must be a valid-looking bash command (not empty string, not a comment)
+```
+
+#### Rule 2: files_forbidden (WARNING if missing for code-modifying plans)
+```
+Check: Plan frontmatter contains `files_forbidden` field
+If missing AND plan has code files in files_modified: WARNING — "Plan {NN}-{PP} modifies code but declares no files_forbidden"
+If missing AND plan is markdown-only: PASS (no warning)
+If present: Validate no overlap with files_modified using PREFIX MATCHING:
+  - A `files_forbidden` entry ending with `/` (e.g., `agents/`) is a directory prefix — it matches any `files_modified` entry starting with that prefix
+  - A `files_forbidden` entry without trailing `/` is an exact path — it matches only identical entries in `files_modified`
+  - If overlap found: BLOCKER — "Plan {NN}-{PP} has {file} in both files_modified and files_forbidden"
+  - Document this matching algorithm explicitly in the section so implementations are consistent
+```
+
+#### Rule 3: expected_artifacts (WARNING if missing)
+```
+Check: Plan frontmatter contains `expected_artifacts` field
+If missing: WARNING — "Plan {NN}-{PP} missing expected_artifacts — consider declaring outputs"
+If present: Validate structure
+  - Each entry must have `path` (string) and `provides` (string)
+  - Each `required: true` artifact must appear in `files_modified`
+  - If required artifact not in files_modified: WARNING — "Artifact {path} marked required but not in files_modified"
+```
+
+### Schema Validation Examples
+
+**Example 1: Plan passes all checks**
+```yaml
+files_modified: [skills/new-skill/SKILL.md]
+files_forbidden: [agents/, commands/]
+expected_artifacts:
+  - path: skills/new-skill/SKILL.md
+    provides: New skill definition
+    required: true
+verification_commands:
+  - test -f skills/new-skill/SKILL.md
+  - grep -q "Section 1" skills/new-skill/SKILL.md
+```
+Result: All rules PASS.
+
+**Example 2: Missing verification_commands**
+```yaml
+files_modified: [skills/new-skill/SKILL.md]
+# no verification_commands field
+```
+Result: Rule 1 BLOCKER — "missing mandatory verification_commands"
+
+**Example 3: files_modified / files_forbidden overlap**
+```yaml
+files_modified: [skills/decomposer/SKILL.md, skills/critique/SKILL.md]
+files_forbidden: [skills/critique/SKILL.md]
+```
+Result: Rule 2 BLOCKER — "skills/critique/SKILL.md in both files_modified and files_forbidden"
+
+### Edge Cases
+
+- **Autonomous plans**: Schema checks still apply. Even autonomous plans must declare verification_commands.
+- **Wave 2+ plans**: May reference Wave 1 outputs in expected_artifacts. This is valid.
+- **Empty files_forbidden**: `files_forbidden: []` is valid and passes. Only missing field triggers warning for code plans.
+- **Legacy plans (pre-v6.0)**: Schema check reports findings but does NOT block execution of archived plans. Apply exemption: if plan's phase number predates v6.0, downgrade BLOCKERs to WARNINGs.
 
 ---
 
