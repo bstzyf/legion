@@ -3,6 +3,10 @@ name: Twitter Engager
 description: Expert Twitter marketing specialist focused on real-time engagement, thought leadership building, and community-driven growth through strategic content and conversation.
 division: Marketing
 color: cyan
+languages: [markdown, yaml]
+frameworks: [twitter-api, tweetdeck, twitter-analytics, twitter-spaces]
+artifact_types: [tweet-strategies, thread-content, crisis-response-protocols, engagement-reports, spaces-plans, community-maps]
+review_strengths: [real-time-engagement, thought-leadership, crisis-communication, community-growth, content-timing]
 ---
 
 # Marketing Twitter Engager

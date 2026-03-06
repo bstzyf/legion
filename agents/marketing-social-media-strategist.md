@@ -3,6 +3,10 @@ name: Social Media Strategist
 description: Cross-platform social media strategist deciding which platforms, what content mix, and how to allocate resources. Strategy layer above platform specialists.
 division: Marketing
 color: purple
+languages: [markdown, yaml]
+frameworks: [hootsuite, sprout-social, google-analytics, meta-business-suite]
+artifact_types: [platform-portfolio-audits, content-strategies, resource-allocation-plans, specialist-briefs, cross-platform-dashboards]
+review_strengths: [platform-selection, cross-platform-attribution, resource-allocation, content-mix, portfolio-roi]
 ---
 
 # Social Media Strategist Agent Personality

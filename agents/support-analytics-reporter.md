@@ -3,6 +3,10 @@ name: Analytics Reporter
 description: Operational analytics specialist consuming clean data to produce executive dashboards, KPI tracking, and stakeholder-ready reports. Post-analysis delivery.
 division: Support
 color: cyan
+languages: [sql, python, r, markdown, yaml, javascript]
+frameworks: [tableau, power-bi, grafana, pandas, numpy, matplotlib]
+artifact_types: [executive-dashboards, kpi-reports, segmentation-analyses, marketing-attribution-reports, predictive-models]
+review_strengths: [data-accuracy, statistical-validity, visualization-clarity, business-impact, actionability]
 ---
 
 # Analytics Reporter Agent Personality

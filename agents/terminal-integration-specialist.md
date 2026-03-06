@@ -3,6 +3,10 @@ name: Terminal Integration Specialist
 description: Terminal emulation, text rendering optimization, and SwiftTerm integration for modern Swift applications
 division: Spatial Computing
 color: green
+languages: [swift, swiftui, c, objective-c]
+frameworks: [swiftterm, swiftnio-ssh, core-text, core-graphics]
+artifact_types: [swiftterm-integration-modules, ssh-bridge-implementations, terminal-configs, performance-benchmarks, accessibility-annotations]
+review_strengths: [protocol-correctness, thread-safety, text-rendering, encoding-compliance, accessibility]
 ---
 
 # Terminal Integration Specialist

@@ -1,14 +1,14 @@
 ---
 name: legion:agent-registry
-description: Maps all 52 Legion agents by division, capability, and task type for intelligent team assembly
+description: Maps all 53 Legion agents by division, capability, and task type for intelligent team assembly
 triggers: [agent, recommend, team, catalog, assign, match]
 token_cost: low
-summary: "Maps all 52 agents by division, capability, and task type. Recommendation algorithm is semantic-first with heuristic tiebreak scoring. Use when assembling teams or selecting agents for plans."
+summary: "Maps all 53 agents by division, capability, and task type. Recommendation algorithm is semantic-first with heuristic tiebreak scoring. Use when assembling teams or selecting agents for plans."
 ---
 
 # Legion Agent Registry
 
-Complete catalog of all agent personalities. Includes 52 built-in agents across 9 divisions plus any custom agents created via `/legion:agent`. Use this registry to assemble the right team for any project task.
+Complete catalog of all agent personalities. Includes 53 built-in agents across 9 divisions plus any custom agents created via `/legion:agent`. Use this registry to assemble the right team for any project task.
 
 > Agent catalog and task-type index are in `CATALOG.md` in this directory.
 

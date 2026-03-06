@@ -27,6 +27,8 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 
 ---
 
+> **Metadata Enrichment (Phase 5):** All 53 agents now include `languages`, `frameworks`, `artifact_types`, and `review_strengths` fields in their YAML frontmatter. These fields enable structured filtering and scoring for agent recommendation. Phase 6 (Recommendation Engine v2) will score against these fields.
+
 ## Section 1: Agent Catalog
 
 ### Design Division (6 agents)

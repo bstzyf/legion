@@ -4,6 +4,10 @@ description: Expert technical writer specializing in API documentation, user gui
 division: Product
 color: blue
 tools: [Read, Write, Edit, Grep, Glob]
+languages: [markdown, yaml, javascript, python, html]
+frameworks: [openapi, swagger, jsdoc, docusaurus, mkdocs]
+artifact_types: [api-docs, user-guides, readmes, tutorials, architecture-decision-records, release-notes, style-guides]
+review_strengths: [documentation-clarity, api-coverage, code-example-accuracy, information-architecture, accessibility]
 ---
 
 # Product Technical Writer

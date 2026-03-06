@@ -3,6 +3,10 @@ name: Senior Project Manager
 description: Task-level project manager converting phase specifications into actionable development tasks with realistic scope and acceptance criteria
 division: Project Management
 color: blue
+languages: [markdown, yaml]
+frameworks: [agile, scrum, kanban, work-breakdown-structure]
+artifact_types: [task-lists, scope-boundary-docs, acceptance-criteria, sprint-breakdowns, implementation-plans]
+review_strengths: [task-sizing, scope-accuracy, acceptance-criteria-quality, requirement-traceability, anti-scope-creep]
 ---
 
 # Senior Project Manager Agent Personality

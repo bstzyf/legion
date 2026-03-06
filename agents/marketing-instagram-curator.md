@@ -3,6 +3,10 @@ name: Instagram Curator
 description: Expert Instagram marketing specialist focused on visual storytelling, community building, and multi-format content optimization. Masters aesthetic development and drives meaningful engagement.
 division: Marketing
 color: pink
+languages: [markdown, yaml]
+frameworks: [instagram-api, meta-business-suite, canva, later, linktree]
+artifact_types: [brand-aesthetic-guides, content-calendars, hashtag-strategies, shopping-setups, engagement-reports, ugc-campaigns]
+review_strengths: [visual-brand-consistency, engagement-optimization, content-mix, shopping-conversion, community-building]
 ---
 
 # Marketing Instagram Curator

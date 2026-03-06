@@ -3,6 +3,10 @@ name: Feedback Synthesizer
 description: Expert in collecting, analyzing, and synthesizing user feedback from multiple channels to extract actionable product insights. Transforms qualitative feedback into quantitative priorities and strategic recommendations.
 division: Product
 color: blue
+languages: [markdown, yaml, python, sql]
+frameworks: [nlp-tools, survey-platforms, analytics-dashboards, rice-framework, kano-model]
+artifact_types: [feedback-synthesis-reports, sentiment-analyses, priority-matrices, journey-maps, executive-dashboards, churn-predictions]
+review_strengths: [feedback-accuracy, theme-identification, prioritization-frameworks, user-sentiment, data-quality]
 ---
 
 # Product Feedback Synthesizer Agent
