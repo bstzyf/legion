@@ -476,14 +476,14 @@ Legion intentionally optimizes for orchestration ergonomics (few commands, markd
 
 | Design Axis | Typical Alternative | Legion Choice | Tradeoff |
 |-------------|---------------------|---------------|----------|
-| Command surface | 15-33+ command sets | 11 commands | Faster onboarding, but less granular command specialization |
+| Command surface | 15-33+ command sets | 12 commands | Faster onboarding, but less granular command specialization |
 | State storage | JSON/DB/hybrid state | Markdown-only `.planning/` | Human-readable and git-native, but less strict schema enforcement |
 | Setup model | CLI bootstrap + config | `npx` installer | Simpler install path, but runtime capabilities can vary more |
 | Agent model | Generic role prompts | 53 full personalities | Higher domain specificity, but larger context footprint |
 | Runtime coverage | Single-runtime focus | 9 runtime adapters | Broader portability, but feature parity differs by runtime tier |
 | Memory strategy | Hook-based/global memory | Project-local explicit memory | Better project isolation, but requires explicit integration points |
 
-Current repository metrics: 11 commands, 22 skills, 53 agent personalities, and 9 runtime adapters.
+Current repository metrics: 12 commands, 25 skills, 53 agent personalities, and 9 runtime adapters.
 
 ## The 53 Agents
 
@@ -511,7 +511,7 @@ legion/                     <- Project root
 ├── bin/
 │   └── install.js         <- Cross-runtime installer (npx entry point)
 ├── CLAUDE.md               <- Project instructions (injected into Claude Code context)
-├── commands/               <- 11 /legion: command entry points
+├── commands/               <- 12 /legion: command entry points
 │   ├── start.md
 │   ├── plan.md
 │   ├── build.md
@@ -522,8 +522,9 @@ legion/                     <- Project root
 │   ├── portfolio.md
 │   ├── milestone.md
 │   ├── agent.md
+│   ├── explore.md
 │   └── update.md
-├── skills/                 <- 22 reusable workflow skills
+├── skills/                 <- 25 reusable workflow skills
 │   ├── workflow-common-core/SKILL.md <- Lean always-load core conventions
 │   ├── workflow-common/SKILL.md      <- Compatibility shim for legacy references
 │   ├── agent-registry/
@@ -582,10 +583,10 @@ These activate automatically when their prerequisites are met:
 | **Review Panels** | User selects panel mode in `/legion:review` | 2-4 domain-weighted reviewers with non-overlapping rubrics |
 
 <!-- legion-metrics:start -->
-- Commands: 11
-- Skills: 22
+- Commands: 12
+- Skills: 25
 - Agents: 53
-- Agent personality line range (current): 85-348
+- Agent personality line range (current): 85-445
 <!-- legion-metrics:end -->
 
 ## Requirements

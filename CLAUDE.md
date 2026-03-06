@@ -22,8 +22,8 @@ A multi-CLI plugin for orchestrating 53 AI specialist personalities as a coordin
 
 ```
 bin/                  — npm installer (install.js)
-commands/             — 11 /legion: command entry points
-skills/               — 22 reusable workflow skills (SKILL.md per directory)
+commands/             — 12 /legion: command entry points
+skills/               — 25 reusable workflow skills (SKILL.md per directory)
 agents/               — 53 agent personality .md files (flat, with division in frontmatter)
 adapters/             — Per-CLI adapter files (claude-code.md, codex-cli.md, cursor.md, etc.)
 .planning/            — Project state (PROJECT.md, ROADMAP.md, STATE.md)

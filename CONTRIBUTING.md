@@ -32,9 +32,9 @@ claude --plugin-dir ./legion --plugin-dir ./other-plugin
 ## Plugin Structure
 
 ```
-commands/           11 command entry points (/legion:*)
-skills/             22 workflow skills (SKILL.md format)
-agents/             52 agent personality files (.md)
+commands/           12 command entry points (/legion:*)
+skills/             25 workflow skills (SKILL.md format)
+agents/             53 agent personality files (.md)
 scripts/            Validation and maintenance scripts
 .claude-plugin/     Plugin manifest + marketplace entry
 settings.json       Plugin settings

@@ -18,7 +18,7 @@ Turn a collection of 53 isolated agent personalities into a functional AI legion
 
 **v5.0 shipped** (2026-03-05) — Production-grade architecture complete. Polymath pre-flight exploration, authority boundaries with domain ownership, intent-driven execution with semantic flags, two-wave parallelism, environment mapping with path enforcement, roster gap analysis. 5 phases, 22 plans, 32 requirements across 6 categories.
 
-11 commands, 22 skills, 53 agents across 9 divisions. See [roadmap](ROADMAP.md) for milestone history.
+12 commands, 25 skills, 53 agents across 9 divisions. See [roadmap](ROADMAP.md) for milestone history.
 
 ## Next Milestone
 

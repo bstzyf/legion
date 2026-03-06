@@ -38,8 +38,8 @@ Last activity: 2026-03-05 — v5.0 milestone completed and archived
 
 ## What's Deployed
 
-- 11 commands (`/legion:start`, `plan`, `build`, `review`, `status`, `quick`, `portfolio`, `milestone`, `agent`, `advise`, `explore`)
-- 22 skills with progressive disclosure metadata (triggers, token_cost, summary in frontmatter)
+- 12 commands (`/legion:start`, `plan`, `build`, `review`, `status`, `quick`, `portfolio`, `milestone`, `agent`, `advise`, `explore`, `update`)
+- 25 skills with progressive disclosure metadata (triggers, token_cost, summary in frontmatter)
 - 53 agents across 9 divisions (including Polymath + security-engineer + technical-writer)
 - Agent registry gap analysis skill for roster coverage validation
 - Intent teams with validated agent mappings for harden/document/security-only
