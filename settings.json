@@ -1,5 +1,6 @@
 {
   "$schema": "./docs/settings.schema.json",
+  "control_mode": "guarded",
   "models": {
     "planning": "adapter_default",
     "execution": "adapter_default",

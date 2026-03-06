@@ -46,6 +46,19 @@ Defaults:
 - `integrations.github = "prompt"`
 - `memory.enabled = true`
 - `memory.project_scoped_only = true`
+- `control_mode = "guarded"`
+
+### Mode Profile Resolution
+
+After resolving `control_mode` from settings (default: `"guarded"`), load the corresponding profile:
+
+1. Read `.planning/config/control-modes.yaml`
+2. Look up `profiles[control_mode]` to get the flag set
+3. If file missing or mode not found: fall back to `guarded` profile hardcoded as:
+   - `authority_enforcement: true`, `domain_filtering: true`, `human_approval_required: true`, `file_scope_restriction: false`, `read_only: false`
+4. Pass resolved profile to authority-enforcer and wave-executor integration points
+
+The resolved profile is a set of 5 boolean flags: `authority_enforcement`, `domain_filtering`, `human_approval_required`, `file_scope_restriction`, `read_only`.
 
 ## Agent Path Resolution (Core)
 

@@ -5,6 +5,12 @@
   "additionalProperties": false,
   "properties": {
     "$schema": { "type": "string" },
+    "control_mode": {
+      "type": "string",
+      "enum": ["autonomous", "guarded", "advisory", "surgical"],
+      "default": "guarded",
+      "description": "Controls how strictly authority matrix rules are enforced. See .planning/config/control-modes.yaml for flag profiles."
+    },
     "models": {
       "type": "object",
       "additionalProperties": false,
