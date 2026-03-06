@@ -6,10 +6,10 @@
 
 ## Current Position
 
-- **Phase**: 2 of 12 (executed, pending review)
+- **Phase**: 2 of 12 (complete)
 - **Milestone**: v6.0 — Discipline & Intelligence
-- **Status**: Phase 2 complete — all plans executed successfully
-- **Last Activity**: Phase 2 execution (2026-03-06)
+- **Status**: Phase 2 complete — review passed (1 cycle)
+- **Last Activity**: Phase 2 review passed (2026-03-06)
 
 ## Progress
 ```
@@ -74,8 +74,8 @@
 - Directory mapping extraction: Priority-based resolution (explicit/inferred/default)
 
 ## Next Action
-Run `/legion:review` to verify Phase 2: Wave Safety
+Run `/legion:plan 3` to plan the next phase
 
 ---
 
-*Last updated: 2026-03-06 — Phase 2 executed*
+*Last updated: 2026-03-06 — Phase 2 review passed*

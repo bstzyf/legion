@@ -14,7 +14,7 @@
 ## Phases
 
 - [x] Phase 1: Plan Schema Hardening (3 plans)
-- [ ] Phase 2: Wave Safety (2 plans)
+- [x] Phase 2: Wave Safety (2 plans)
 - [ ] Phase 3: Control Modes (3 plans)
 - [ ] Phase 4: Observability (2 plans)
 - [ ] Phase 5: Agent Metadata Enrichment (3 plans)
@@ -44,10 +44,10 @@
 **Requirements**: DSC-04, DSC-05
 **Recommended Agents**: engineering-backend-architect, testing-evidence-collector, project-management-project-shepherd
 **Success Criteria**:
-- [ ] Plan-critique detects when two plans in the same wave list overlapping `files_modified` and flags BLOCKER
-- [ ] Wave metadata supports `sequential_files` list for single-agent access files
-- [ ] Wave executor respects `sequential_files` during dispatch
-- [ ] Tests cover overlap detection and sequential_files enforcement
+- [x] Plan-critique detects when two plans in the same wave list overlapping `files_modified` and flags BLOCKER
+- [x] Wave metadata supports `sequential_files` list for single-agent access files
+- [x] Wave executor respects `sequential_files` during dispatch
+- [x] Tests cover overlap detection and sequential_files enforcement
 **Plans**: 2
 
 ### Phase 3: Control Modes
