@@ -6,14 +6,14 @@
 
 ## Current Position
 
-- **Phase**: 7 of 12 (complete)
+- **Phase**: 8 of 12 (executed, pending review)
 - **Milestone**: v6.0 — Discipline & Intelligence
-- **Status**: Phase 7 complete — review passed (2 cycles)
-- **Last Activity**: Phase 7 review passed (2026-03-06)
+- **Status**: Phase 8 complete — all plans executed successfully
+- **Last Activity**: Phase 8 execution (2026-03-06)
 
 ## Progress
 ```
-[#######...] 70% — 21/30 plans complete (Phase 7 executed)
+[########..] 77% — 23/30 plans complete (Phase 8 executed)
 ```
 
 ## Shipped Milestones
@@ -74,8 +74,8 @@
 - Directory mapping extraction: Priority-based resolution (explicit/inferred/default)
 
 ## Next Action
-Run `/legion:plan 8` to plan Phase 8: Codebase Mapper Enrichment
+Run `/legion:review` to verify Phase 8: Codebase Mapper Enrichment
 
 ---
 
-*Last updated: 2026-03-06 — Phase 7 review passed*
+*Last updated: 2026-03-06 — Phase 8 executed*
