@@ -152,7 +152,7 @@ control_mode_behaviors:
     behavior:
       - All escalations treated as info severity regardless of declared severity
       - Logged to SUMMARY.md for post-build review
-      - Agent proceeds with the action without waiting for approval
+      - Agent is never instructed to halt on out-of-scope actions; if escalation blocks appear in output, they are logged as info-level observations for post-build review
     override_severity: info
 
   guarded:

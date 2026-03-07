@@ -43,7 +43,7 @@ adapters/             — Per-CLI adapter files (claude-code.md, codex-cli.md, c
 | Project Management | 5 | Coordination, portfolio, operations, experiments |
 | Support | 6 | Analytics, finance, legal, infrastructure |
 | Spatial Computing | 6 | VisionOS, XR, Metal, terminal integration |
-| Specialized | 3 | Orchestration, data analytics, LSP indexing |
+| Specialized | 4 | Orchestration, data analytics, LSP indexing, exploration |
 
 ## Workflow
 
@@ -104,6 +104,7 @@ When an agent encounters a decision that falls outside its autonomous scope:
    context: Why you encountered this (2-3 sentences)
    </escalation>
    ```
+   Optional fields: `alternatives`, `affected_files`, `related_domain`. See `.planning/config/escalation-protocol.yaml` for full specification.
 3. **Continue** -- work on other in-scope items while waiting for human input
 4. **Never rationalize** -- "it's a small change" or "it's obviously fine" are not valid reasons to skip approval
 

@@ -745,13 +745,13 @@ Step 3: Generate the plan summary file
   data payload. The score_export structure in agent-registry Section 3 defines what fields
   to populate, but the executing agent computes these at SUMMARY.md generation time.
 
-  ## What Was Done
+  ## Completed Tasks
   {Summary of actions taken, derived from the agent's return message.
    Should be specific: "Created skills/wave-executor/SKILL.md (312 lines)
    with 6 sections covering plan discovery, personality injection, wave execution,
    result processing, and error handling."}
 
-  ## Files Created / Modified
+  ## Files Modified
   - {file path 1} — {brief description of what changed}
   - {file path 2} — {brief description of what changed}
 
@@ -780,6 +780,12 @@ Step 3: Generate the plan summary file
   | # | Severity | Type | Decision | Status | Resolution |
   |---|----------|------|----------|--------|------------|
   | 1 | {severity} | {type} | {decision text} | {pending/approved/rejected/deferred} | {resolution details or "Awaiting decision"} |
+
+  ## Handoff Context
+  - **key_outputs**: {list of files created/modified with purpose}
+  - **decisions_made**: {architectural or design decisions the agent made}
+  - **open_questions**: {unresolved items the next wave should address, or "None"}
+  - **conventions_established**: {patterns set that subsequent agents must follow, or "None"}
 
   ## Requirements Covered
   {List the requirement IDs from the plan's frontmatter}
@@ -927,6 +933,9 @@ For each escalation_block in the escalation_list (using effective severity after
          note what was approved. Agent may proceed with the action if
          re-executed (blocker escalations do not auto-retry — the approved
          action is recorded for reference in subsequent builds).
+         If the blocked task could not complete, mark the plan as
+         "Complete with Warnings" and inform the user they must re-run
+         `/legion:build` to execute the approved action.
        - Reject: Update SUMMARY.md escalation status to "rejected",
          note the rejection reason. Agent must find an alternative approach
          within its authorized scope.
