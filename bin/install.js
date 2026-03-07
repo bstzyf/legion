@@ -304,7 +304,9 @@ function parseChecksumLine(line) {
 function sha256File(filePath) {
   const crypto = require('crypto');
   const data = fs.readFileSync(filePath);
-  return crypto.createHash('sha256').update(data).digest('hex');
+  // Normalize CRLF to LF so checksums match across Windows and Linux
+  const normalized = Buffer.from(data.toString('utf8').replace(/\r\n/g, '\n'));
+  return crypto.createHash('sha256').update(normalized).digest('hex');
 }
 
 function verifyPackageIntegrity(sourceRoot) {

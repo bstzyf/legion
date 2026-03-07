@@ -28,7 +28,9 @@ function normalize(filePath) {
 
 function hashFile(filePath) {
   const buf = fs.readFileSync(filePath);
-  return crypto.createHash('sha256').update(buf).digest('hex');
+  // Normalize CRLF to LF so checksums are identical on Windows and Linux
+  const normalized = Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'));
+  return crypto.createHash('sha256').update(normalized).digest('hex');
 }
 
 function walk(dirPath, out) {
