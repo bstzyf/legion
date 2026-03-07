@@ -5,6 +5,30 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0] - 2026-03-07
+
+### Added
+- **Plan schema hardening** — `files_forbidden`, `expected_artifacts`, mandatory `verification_commands` in all plan frontmatter.
+- **Wave safety** — File overlap detection and `sequential_files` convention to prevent parallel write conflicts.
+- **Control modes** — `autonomous`/`guarded`/`advisory`/`surgical` presets in settings.json with per-mode authority enforcement.
+- **Observability** — Decision logging in SUMMARY.md, cycle-over-cycle diff tracking in REVIEW.md.
+- **Agent metadata enrichment** — `languages`, `frameworks`, `artifact_types`, `review_strengths` fields in all 53 agent frontmatter files.
+- **Recommendation engine v2** — Metadata-aware scoring, `task_type` tracking in OUTCOMES.md, archetype-weighted boosts.
+- **Validation and conformance** — Adapter conformance tests, cross-reference validation, lint-commands, `max_prompt_size`/`known_quirks` in ADAPTER.md.
+- **Codebase mapper enrichment** — Dependency risk assessment and test coverage summary in CODEBASE.md output.
+- **Polymath advanced modes** — Onboard, compare, and debate modes in `/legion:explore`.
+- **Authority and conflict resolution** — Escalation automation protocol, structured agent-to-agent communication conventions.
+- **Intent routing v2** — Natural language intent parsing and context-aware command suggestions.
+
+### Changed
+- All 53 agent personality files enriched with structured metadata for recommendation engine consumption.
+- All 9 adapter files updated with conformance metadata (`max_prompt_size`, `known_quirks`).
+- Control mode system integrated across build, review, and plan commands.
+
+### Stats
+- 11 phases, 22+ plans executed
+- 1056 tests passing
+
 ## [5.0.0] - 2026-03-05
 
 ### Added
