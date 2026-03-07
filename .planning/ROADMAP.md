@@ -23,7 +23,7 @@
 - [x] Phase 8: Codebase Mapper Enrichment (2 plans)
 - [x] Phase 9: Polymath Advanced Modes (3 plans)
 - [x] Phase 10: Authority & Conflict Resolution (2 plans)
-- [ ] Phase 11: Intent Routing v2 (2 plans)
+- [x] Phase 11: Intent Routing v2 (2 plans)
 - [ ] Phase 12: Integration & Release (2 plans)
 
 ## Phase Details
@@ -145,10 +145,10 @@
 **Requirements**: INTENT-07, INTENT-08
 **Recommended Agents**: engineering-ai-ml-engineer, engineering-senior-developer, testing-reality-checker
 **Success Criteria**:
-- [ ] Intent router parses natural language queries to command+flags (e.g., "fix the tests" → `/legion:review`)
-- [ ] Context-aware suggestions consider current STATE.md position when recommending actions
-- [ ] Existing intent tests extended for natural language inputs
-- [ ] Fallback to explicit command when confidence is low
+- [x] Intent router parses natural language queries to command+flags (e.g., "fix the tests" → `/legion:review`)
+- [x] Context-aware suggestions consider current STATE.md position when recommending actions
+- [x] Existing intent tests extended for natural language inputs
+- [x] Fallback to explicit command when confidence is low
 **Plans**: 2
 
 ### Phase 12: Integration & Release
