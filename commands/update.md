@@ -8,6 +8,10 @@ allowed-tools: [Read, Bash]
 Check the installed Legion version against the latest npm release and update if a newer version is available. Uses the npm registry — no marketplace or git clone required.
 </objective>
 
+<context>
+Self-contained command with no additional context dependencies.
+</context>
+
 <execution_context>
 skills/workflow-common-core/SKILL.md
 </execution_context>
