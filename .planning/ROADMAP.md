@@ -177,5 +177,5 @@
 | 8 — Codebase Mapper Enrichment | 2 | 2 | Complete ✓ |
 | 9 — Polymath Advanced Modes | 3 | 3 | Complete ✓ |
 | 10 — Authority & Conflict Resolution | 2 | 2 | Complete ✓ |
-| 11 — Intent Routing v2 | 2 | 0 | Not started |
+| 11 — Intent Routing v2 | 2 | 2 | Complete ✓ |
 | 12 — Integration & Release | 2 | 0 | Not started |
