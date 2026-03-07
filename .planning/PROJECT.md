@@ -1,114 +1,117 @@
-# Legion
+# Legion v6.0 — Discipline & Intelligence
 
 ## What This Is
 
-A multi-CLI plugin for orchestrating 53 AI specialist personalities as coordinated teams. Works with Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Amazon Q Developer, Windsurf, OpenCode, and Aider. Forked from The Agency Workflows and rebranded as Legion — "My name is Legion, for we are many."
+A multi-CLI plugin for orchestrating 53 AI specialist personalities as coordinated teams. v6.0 transforms Legion from a working orchestration protocol into a disciplined, observable, and smarter orchestration protocol — better planning constraints, richer agent selection, advanced exploration modes, and explicit human control.
 
 ## Core Value
 
-Turn a collection of 53 isolated agent personalities into a functional AI legion. Users type `/legion:start`, describe what they want, and the system assembles the right team, plans the work, executes in parallel, and runs quality checks — with each agent operating in full character.
+Make Legion's prompt-based orchestration more disciplined by adding constraints at planning time, richer metadata for agent selection, and better post-execution observability — all within the existing markdown-native, zero-runtime-dependency architecture.
 
 ## Who It's For
 
-- Developers, designers, marketers, and project managers using Claude Code
-- Projects spanning any of the 9 divisions (engineering, design, marketing, product, PM, testing, support, spatial, specialized)
-- Both code and non-code work (marketing campaigns, design systems, content strategies, not just software)
+- Developers, designers, marketers, and project managers using Legion across 9 CLIs
+- Enterprise users and cautious adopters who need explicit safety guarantees
+- Power users who want smarter agent recommendations and advanced exploration workflows
 
-## Current State
+## Requirements
 
-**v5.0 shipped** (2026-03-05) — Production-grade architecture complete. Polymath pre-flight exploration, authority boundaries with domain ownership, intent-driven execution with semantic flags, two-wave parallelism, environment mapping with path enforcement, roster gap analysis. 5 phases, 22 plans, 32 requirements across 6 categories.
+### Validated
+(None yet — ship to validate)
 
-12 commands, 25 skills, 53 agents across 9 divisions. See [roadmap](ROADMAP.md) for milestone history.
+### Active
 
-## Next Milestone
+**Plan Schema & Safety (DSC-01 through DSC-05)**
+- [ ] DSC-01: `files_forbidden` field in plan frontmatter schema
+- [ ] DSC-02: `expected_artifacts` field in plan frontmatter schema
+- [ ] DSC-03: Mandatory `verification_commands` in all plans (plan-critique enforced)
+- [ ] DSC-04: Plan-critique file overlap detection for same-wave plans
+- [ ] DSC-05: `sequential_files` convention in wave metadata
 
-To be defined via `/gsd:new-milestone` or `/legion:start`.
+**Human Control (CTL-01 through CTL-03)**
+- [ ] CTL-01: `control_mode` setting with `autonomous`/`guarded`/`advisory`/`surgical` presets
+- [ ] CTL-02: Authority matrix mode integration — each preset adjusts active rules
+- [ ] CTL-03: Settings schema and documentation updates for control modes
 
-<details>
-<summary>v5.0 (2026-03-05)</summary>
+**Observability (OBS-01 through OBS-03)**
+- [ ] OBS-01: Decision logging in SUMMARY.md (agent scores, adapter, confidence)
+- [ ] OBS-02: Cycle-over-cycle diff in REVIEW.md
+- [ ] OBS-03: Structured decision capture in wave executor output
 
-Production-grade architecture. 5 phases, 22 plans, 32 requirements. Polymath pre-flight exploration (`/legion:explore`), authority boundaries with YAML domain ownership matrix, intent-driven execution (`--just-harden`, `--just-document`, `--skip-frontend`, `--just-security`), two-wave parallelism (Wave A Build+Analysis, Wave B Execution+Remediation), environment mapping with directory mappings and path enforcement, roster gap analysis with security-engineer and technical-writer agents. 377+ automated tests. See [v5.0 archived requirements](milestones/v5.0-REQUIREMENTS.md).
+**Agent Intelligence (AGT-01 through AGT-04)**
+- [ ] AGT-01: Structured metadata in 53 agent frontmatter (`languages`, `frameworks`, `artifact_types`, `review_strengths`)
+- [ ] AGT-02: Recommendation engine scoring against enriched metadata fields
+- [ ] AGT-03: `task_type` field in OUTCOMES.md records
+- [ ] AGT-04: Archetype-weighted recommendation boosts from task_type history
 
-</details>
+**Validation & Conformance (VAL-01 through VAL-04)**
+- [ ] VAL-01: Adapter schema conformance tests (required fields, capability flags)
+- [ ] VAL-02: Cross-reference validation (commands reference existing skills and agents)
+- [ ] VAL-03: `lint-commands` test for command .md files
+- [ ] VAL-04: `max_prompt_size` and `known_quirks` fields in ADAPTER.md spec
 
-<details>
-<summary>v4.0 (2026-03-02)</summary>
+**Codebase Mapper (MAP-01 through MAP-02)**
+- [ ] MAP-01: Dependency risk assessment in CODEBASE.md output
+- [ ] MAP-02: Test coverage summary in CODEBASE.md output
 
-Inspiration audit adoption. 7 phases, 13 plans, 18 requirements. Progressive disclosure metadata, confidence-filtered reviews, behavioral guardrails, competing architecture proposals, spec pipeline, knowledge layer (PATTERNS/ERRORS/PREFERENCES), branch-aware memory, semantic compaction, DPO preference capture, auto-remediation, output redirection, consolidation audit. See [v4.0 archived requirements](milestones/v4.0-REQUIREMENTS.md).
+**Polymath Advanced (POLY-07 through POLY-09)**
+- [ ] POLY-07: Onboard mode — guided codebase familiarization via structured choices
+- [ ] POLY-08: Compare mode — structured comparison of alternatives with decision capture
+- [ ] POLY-09: Debate mode — adversarial exploration with winner tracking
 
-</details>
+**Authority & Conflict (AUTH-06 through AUTH-07)**
+- [ ] AUTH-06: Escalation automation protocol for out-of-scope decisions
+- [ ] AUTH-07: Agent-to-agent communication conventions for handoffs
 
-<details>
-<summary>v3.0 (2026-03-02)</summary>
+**Intent Routing v2 (INTENT-07 through INTENT-08)**
+- [ ] INTENT-07: Natural language intent parsing for command routing
+- [ ] INTENT-08: Context-aware intent suggestions based on project state
 
-Legion rebrand complete. 5 phases, 6 plans, 13 requirements, 334+ substitutions, repo renamed to `9thLevelSoftware/legion`. 10 commands, 17 skills, 51 agents. See [v3.0 archived requirements](milestones/v3.0-REQUIREMENTS.md).
+**Integration & Release (REL-01 through REL-04)**
+- [ ] REL-01: Cross-phase regression testing
+- [ ] REL-02: Documentation updates for all new features
+- [ ] REL-03: `.gitignore` and `package.json` files audit (repo hygiene)
+- [ ] REL-04: Version bump to 6.0.0
 
-</details>
+### Out of Scope
 
-<details>
-<summary>v2.0 (2026-03-02)</summary>
-
-10 commands, 17 skills, 51 agents, 26 requirements delivered across 9 phases. Plugin structure with `.claude-plugin/plugin.json`, distribution artifacts, plus three advisory capabilities: strategic advisors (`/legion:advise`), dynamic review panels, and plan critique. See [v2.0 archived requirements](milestones/v2.0-REQUIREMENTS.md).
-
-</details>
-
-<details>
-<summary>v1.0 (2026-03-01)</summary>
-
-9 commands, 15 skills, 51 agents, 54 requirements across 14 phases. Core workflows: project initialization, phase planning with agent recommendation, parallel execution, quality review, portfolio management, milestone tracking, cross-session memory, custom agent creation, GitHub integration, brownfield analysis, marketing campaigns, design systems. See [v1.0 archived requirements](milestones/v1.0-REQUIREMENTS.md).
-
-</details>
-
-## Out of Scope
-
-- Custom CLI tooling (like GSD's gsd-tools.cjs) — keep it pure markdown/skills
-- Board of directors / governance model (Conductor-style) — too heavy
-- MCP server requirements — user brings their own
-- Jira / Linear / other issue trackers — GitHub only for now
-- Agent count inflation beyond 52 — diminishing returns, maintenance burden (53 accepted for production-critical roles)
-- Full automation without checkpoints (Conductor `/go` pattern) — expensive runaway sessions
-- 50-iteration QA loops — if 3-5 don't fix it, problem is systemic
-- Bundled third-party skill libraries — version coupling, dependency creep
+- Token/budget governance — Legion cannot measure tokens or wall-clock time
+- Typed orchestration core — requires rebuilding Legion as a different product
+- Full replay system — no execution runtime to replay against
+- Three-layer memory — triples complexity for marginal improvement over OUTCOMES.md
+- Integration test suite per adapter — requires infrastructure Legion doesn't control
+- Runtime file locks — no filesystem lock primitive available
+- Machine-readable evidence bundles — LLM reading markdown IS the evidence consumer
+- Recovery mode — already covered by `/legion:review` and manual intervention
+- Rollback commands in plans — git is the rollback mechanism
 
 ## Constraints
 
-- **No custom tooling**: Pure Claude Code primitives (skills, commands, agents, Tasks, Teams)
-- **Human-readable state**: All planning files are markdown, readable without tools
-- **Personality-first**: Agent .md files are the source of truth for agent behavior
-- **Balanced cost**: Opus for planning, Sonnet for execution, Haiku for lightweight checks
-- **Max 3 tasks per plan**: Keeps plans focused and reviewable (borrowed from Shipyard)
-- **Fresh context per agent**: Each spawned agent gets its own context window
+- **No custom tooling**: Pure markdown/skills architecture — no new JS executables beyond recommendation engine updates
+- **Human-readable state**: All planning files remain markdown
+- **Personality-first**: Agent .md files remain the source of truth
+- **ROI-bounded**: Follow the FEEDBACK-ROI-ANALYSIS.md "worth doing" boundaries for each proposal
+- **Backward compatible**: All changes must work with existing v5.0 project state and adapters
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Rebrand to Legion | Fresh identity for the fork; "for we are many" captures the 52-agent concept perfectly | Confirmed (v3.0) |
-| Namespace under /legion: | Clean break from /agency:, avoids collision | Confirmed (v3.0) |
-| Plugin name: legion | Simple, memorable, clean `claude plugin install legion` | Confirmed (v3.0) |
-| Full personality injection | The personalities ARE the product — must be preserved | Confirmed |
-| Minimal .planning/ state | Users want human-readable files, not complex state machines | Confirmed |
-| Cherry-pick patterns from 10 repos | GSD + Shipyard + Conductor + Best Practice + Feature-dev + code-foundations + beads + Auto-Claude + bjarne + Puzld.ai | Confirmed (v4.0 audit) |
-| Cross-division support | 52 agents span 9 divisions — workflows must handle all, not just engineering | Confirmed |
-| Hybrid agent selection | Workflow recommends based on task analysis, user confirms/overrides | Confirmed |
-| Authority boundaries | Domain ownership matrix prevents agent conflicts during parallel execution | Confirmed (v5.0) |
-| Intent-driven execution | Semantic flags for targeted operations without full phase planning | Confirmed (v5.0) |
+| Execution mode | Trusted workflow, 5th milestone cycle | Autonomous |
+| Planning depth | 12 phases already defined from exploration | Deep Analysis |
+| Cost profile | Maximum quality for architectural changes | Premium |
+| Scope strategy | User wants comprehensive v6.0 | One big milestone, all tiers included |
+| Phase ordering | Dependencies flow foundation to features | Foundation → Features |
+| ROI boundaries | Follow analysis, don't over-engineer | Accept "worth doing", reject "not worth doing" |
+| Concept source | Crystallized via `/legion:explore` | FEEDBACK-ROI-ANALYSIS.md + v5.0 backlog |
 
 ## Architecture Influences
 
-| Source | What We're Taking | What We're Leaving |
-|--------|-------------------|-------------------|
-| **Agency Agents** | 52 agent personalities, division structure, personality-first design | Original "Agency" branding and namespace |
-| **GSD** | Questioning flow, orchestrator/subagent split, phase planning, state management pattern | CLI tooling, 33+ workflows, complex config, milestone system |
-| **Conductor** | Evaluate-loop (build>review>fix), quality gates, parallel dispatch | Board governance, message bus, 50+ iteration limits, metadata.json |
-| **Shipyard** | Wave-based execution, max 3 tasks/plan, atomic commits, agent role boundaries | 29 commands, checkpoint/rollback system, hook complexity |
-| **Best Practice** | Skills/commands/agents structure, agent frontmatter, permission patterns | RPI workflow (too specific), custom hooks infrastructure |
-| **Feature-dev** | Confidence-based review filtering (80%+), competing architecture designs (2-3 approaches), 3-agent model | No state persistence, no memory, no quick mode |
-| **code-foundations** | Anti-rationalization tables, evidence-backed checklists, scope discipline | 614-check pipeline, heavy token consumption, no feedback loop |
-| **beads** | Git-native state, `ready` primitive, semantic compaction, actor-based audit trails | Scope creep, MEOW naming, single-giant-package, $100+/hour cost |
-| **Auto-Claude** | Worktree isolation, multi-stage spec pipeline, semantic merge, dynamic security profiles | 1,751 files, Python-Electron split, 50-iteration QA, file-based IPC |
-| **bjarne** | Verification points, stale loop detection, environment auto-remediation, verbose output redirection | 2,500 lines of Bash, zero tests, --dangerously-skip-permissions |
-| **Puzld.ai** | DPO preference extraction, debate-with-winner-tracking, clean adapter pattern | Near-zero test coverage, 95 releases in 3 months, 11 execution modes |
+v6.0 builds on the same architecture influences as v5.0 with one addition:
+
+| Source | What v6.0 Takes |
+|--------|----------------|
+| **FEEDBACK-ROI-ANALYSIS.md** | 12 proposals evaluated on feasibility, ROI, and risk. Tier 1-3 "worth doing" items accepted; runtime-dependent proposals rejected. Core reframe: "disciplined prompt orchestration, not runtime enforcement." |
 
 ---
-*Last updated: 2026-03-05 — v5.0 milestone shipped*
+*Last updated: 2026-03-06 after initialization (concept crystallized via /legion:explore)*

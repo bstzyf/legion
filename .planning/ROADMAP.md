@@ -17,7 +17,7 @@
 - [x] Phase 2: Wave Safety (2 plans)
 - [x] Phase 3: Control Modes (3 plans)
 - [x] Phase 4: Observability (3 plans)
-- [ ] Phase 5: Agent Metadata Enrichment (3 plans)
+- [x] Phase 5: Agent Metadata Enrichment (3 plans)
 - [ ] Phase 6: Recommendation Engine v2 (3 plans)
 - [ ] Phase 7: Validation & Conformance (3 plans)
 - [ ] Phase 8: Codebase Mapper Enrichment (2 plans)
@@ -77,10 +77,10 @@
 **Requirements**: AGT-01
 **Recommended Agents**: agents-orchestrator, engineering-senior-developer, testing-reality-checker
 **Success Criteria**:
-- [ ] All 53 agent .md files include `languages`, `frameworks`, `artifact_types`, `review_strengths` in frontmatter
-- [ ] Metadata is accurate to each agent's described capabilities (not generic)
-- [ ] Agent contract tests validate new required fields
-- [ ] No agent personality text is altered — frontmatter only
+- [x] All 53 agent .md files include `languages`, `frameworks`, `artifact_types`, `review_strengths` in frontmatter
+- [x] Metadata is accurate to each agent's described capabilities (not generic)
+- [x] Agent contract tests validate new required fields
+- [x] No agent personality text is altered — frontmatter only
 **Plans**: 3
 
 ### Phase 6: Recommendation Engine v2
@@ -171,7 +171,7 @@
 | 2 — Wave Safety | 2 | 2 | Complete |
 | 3 — Control Modes | 3 | 3 | Complete ✓ |
 | 4 — Observability | 3 | 3 | Complete ✓ |
-| 5 — Agent Metadata Enrichment | 3 | 3 | Complete ✓ |
+| 5 — Agent Metadata Enrichment | 3 | 3 | Complete ✓ (reviewed) |
 | 6 — Recommendation Engine v2 | 3 | 0 | Not started |
 | 7 — Validation & Conformance | 3 | 0 | Not started |
 | 8 — Codebase Mapper Enrichment | 2 | 0 | Not started |
