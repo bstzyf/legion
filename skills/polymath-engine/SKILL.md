@@ -132,6 +132,16 @@ Which describes your situation?
 | Cost | Total cost of ownership unclear | "What are the long-term maintenance costs?" |
 | Experience | Team/user familiarity unknown | "Has anyone used this in production?" |
 
+**Debate gap categories:**
+
+| Category | Description | Example |
+|----------|-------------|---------|
+| Position | Framing of a side is unclear or incomplete | "What exactly does Position A claim?" |
+| Evidence | Supporting data is missing or unverified | "Is there research backing this argument?" |
+| Assumption | Unstated premises underlying an argument | "What assumption makes this argument work?" |
+| Precedent | Historical examples or case studies missing | "Has this approach been tried before?" |
+| Blind spot | Risks or consequences not yet considered | "What could go wrong that neither side addressed?" |
+
 **Gap detection workflow:**
 
 1. **Track stated vs implied**
@@ -211,6 +221,47 @@ previous_choices:
 | 5 | Trade-offs & constraints | Identify deal-breakers, hidden costs |
 | 6 | Recommendation review | Accept/reject recommendation, challenge scores |
 | 7 | Decision & capture | Commit to choice, capture rationale |
+
+**Debate exchange pattern:**
+
+| Exchange # | Purpose | Typical Choices |
+|------------|---------|-----------------|
+| 1 | Position setup | Confirm/adjust opposing positions |
+| 2 | Evidence for Position A | Assess strength: Compelling/Reasonable/Weak/Mixed |
+| 3 | Evidence for Position B | Assess strength: Compelling/Reasonable/Weak/Mixed |
+| 4 | Counter-arguments | Which side countered more effectively |
+| 5 | Blind spots (optional) | Which position has more hidden risk |
+| 6 | Scoring & winner | Review scores, accept or challenge |
+| 7 | Decision & next steps | Winner clear / Need more evidence / Declare tie / Flip sides |
+
+**DPO-inspired scoring mechanism:**
+
+The debate mode uses a scoring system inspired by Direct Preference Optimization (DPO). Instead of the LLM judging which side is "better," the system collects human preference signals at each exchange and tallies them into a score.
+
+**Preference signals** — Binary per exchange. Each exchange produces a signal favoring one position or a tie.
+
+**Assessment-to-signal mapping:**
+- Evidence exchanges (Phases 2 & 3):
+  - Compelling/Reasonable → that position preferred (+1)
+  - Weak → opposing position preferred (+1)
+  - Mixed → Tie (+0.5 each)
+- Counter-argument exchange (Phase 4):
+  - "Position X countered more effectively" → Position X preferred (+1)
+  - Neither/Both weak → Tie (+0.5 each)
+- Blind spots exchange (Phase 5, optional):
+  - "Reveals more risk for Position X" → opposing position preferred (+1)
+  - Equal → Tie (+0.5 each)
+
+**Scoring** — Simple tally of preference signals per position.
+
+**Win probability** — P(A) = score_A / (score_A + score_B)
+
+**Confidence thresholds:**
+- **High**: Winner has >70% win probability
+- **Medium**: Winner has 50-70% win probability
+- **Low**: Winner has <50% win probability (effective tie)
+
+**Why DPO-inspired** — Uses human preference signals to determine the winner rather than relying on LLM judgment. The LLM presents balanced evidence; the human evaluates it. This prevents the LLM from biasing the outcome toward its own training preferences.
 
 **Early exit conditions:**
 - User explicitly requests exit (save progress option)
@@ -366,6 +417,64 @@ Scoring: Strong / Adequate / Weak / Unknown
 | [#] | [what was compared] | [what was learned] |
 ```
 
+**Debate deliverable template** (produces a verdict with supporting arguments — saved to `.planning/exploration-{name}.md`):
+
+```markdown
+# Debate Summary — {name}
+
+## Debate Question
+{The question or decision that was debated}
+
+## Position A: {label}
+**Framing**: {How Position A is defined}
+**Key Arguments**:
+1. {Argument 1} — {evidence}
+2. {Argument 2} — {evidence}
+3. {Argument 3} — {evidence}
+
+## Position B: {label}
+**Framing**: {How Position B is defined}
+**Key Arguments**:
+1. {Argument 1} — {evidence}
+2. {Argument 2} — {evidence}
+3. {Argument 3} — {evidence}
+
+## Counter-Arguments
+### Position A responds to Position B
+- {Counter to B's argument 1}
+- {Counter to B's argument 2}
+
+### Position B responds to Position A
+- {Counter to A's argument 1}
+- {Counter to A's argument 2}
+
+## Scoring Breakdown
+| Exchange | Position A | Position B | Signal Source |
+|----------|-----------|-----------|--------------|
+| Evidence A assessment | {score} | {score} | User rated A's evidence as {assessment} |
+| Evidence B assessment | {score} | {score} | User rated B's evidence as {assessment} |
+| Counter-arguments | {score} | {score} | User judged {winner} countered better |
+| **Total** | **{score_A}** | **{score_B}** | |
+
+## Winner
+**Winner**: Position {X} — {label}
+**Win Probability**: {percentage}%
+**Confidence**: High / Medium / Low
+
+## Remaining Uncertainties
+- {What evidence was unavailable}
+- {What assumptions were made}
+- {What could change the outcome}
+
+## Recommended Next Actions
+- {Based on outcome: implement winner, gather evidence, explore hybrid}
+
+## Debate Exploration Log
+| Exchange | Topic | Key Finding |
+|----------|-------|-------------|
+| [#] | [what was debated] | [what was learned] |
+```
+
 **Decision outcomes:**
 
 | Outcome | Trigger | Next Action |
@@ -467,6 +576,42 @@ exploration:
     decision:
       chosen: string                 # final user choice
       justification: string          # why (may differ from recommendation)
+```
+
+**Debate-specific state extensions:**
+
+```yaml
+exploration:
+  mode: debate
+  debate:
+    question: string                   # the debate topic/question
+    position_a:                        # first position
+      label: string
+      framing: string
+      arguments: [string]             # 3-5 arguments with evidence
+    position_b:                        # second position
+      label: string
+      framing: string
+      arguments: [string]             # 3-5 arguments with evidence
+    evidence:                          # evidence gathered per position
+      position_a: [string]
+      position_b: [string]
+    counter_arguments:                 # counter-arguments per position
+      a_counters_b: [string]
+      b_counters_a: [string]
+    preference_signals:                # DPO-inspired preference signals per exchange
+      - exchange: string               # which exchange produced this signal
+        preferred: position_a|position_b|tie
+        signal_a: number               # score awarded to position A
+        signal_b: number               # score awarded to position B
+    scores:                            # tallied scores
+      position_a: number
+      position_b: number
+      win_probability: number          # P(A) = score_A / (score_A + score_B)
+    winner:
+      position: position_a|position_b|tie
+      confidence: high|medium|low
+      rationale: string
 ```
 
 ---

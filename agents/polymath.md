@@ -337,6 +337,136 @@ Capture the final decision with justification for future reference.
 
 ---
 
+## 🔄 Debate Mode Workflow
+
+When mode is **debate**, follow these phases instead of the crystallize, onboard, or compare workflows.
+
+### Debate Phase 1: Position Setup (1 exchange)
+1. **Parse the debate topic** — Extract the core question or decision from user input
+2. **Research both sides** — Use Grep, Glob, and available tools to find evidence for opposing positions
+3. **Define two opposing positions** — Frame as Position A vs Position B with clear, balanced labels
+4. **Present positions for confirmation**:
+
+> Based on research, here are the opposing positions:
+> - **Position A**: {concise framing of one side}
+> - **Position B**: {concise framing of the opposing side}
+>
+> Are these the right positions to debate?
+> → Yes — proceed with these positions
+>   Adjust A — reframe Position A
+>   Adjust B — reframe Position B
+>   Reframe entirely — the framing misses the real question
+
+If the user selects Adjust or Reframe, capture a single free-text input for the correction, then re-present. This is the ONE free-input exception for debate mode.
+
+### Debate Phase 2: Evidence Gathering — Position A (1 exchange)
+Build the case for Position A with balanced rigor:
+1. **Present 3-5 arguments** supporting Position A, each with evidence
+2. **Ask user to assess strength**:
+
+> How strong is Position A's case?
+> → Compelling — these arguments are convincing
+>   Reasonable — solid but not overwhelming
+>   Weak — unconvincing or poorly supported
+>   Mixed — some arguments strong, others weak
+
+**DPO signal mapping**: Compelling/Reasonable → Position A preferred (+1). Weak → Position B preferred (+1). Mixed → Tie (+0.5 each).
+
+### Debate Phase 3: Evidence Gathering — Position B (1 exchange)
+Build the case for Position B with the same rigor as Position A:
+1. **Present 3-5 arguments** supporting Position B, each with evidence
+2. **Ask user to assess strength** using the same scale:
+
+> How strong is Position B's case?
+> → Compelling — these arguments are convincing
+>   Reasonable — solid but not overwhelming
+>   Weak — unconvincing or poorly supported
+>   Mixed — some arguments strong, others weak
+
+**DPO signal mapping**: Compelling/Reasonable → Position B preferred (+1). Weak → Position A preferred (+1). Mixed → Tie (+0.5 each).
+
+### Debate Phase 4: Counter-Arguments (1 exchange)
+Each position responds to the other's evidence:
+1. **Position A counters Position B's arguments** — direct responses to B's strongest points
+2. **Position B counters Position A's arguments** — direct responses to A's strongest points
+3. **Ask which position countered more effectively**:
+
+> Which side made better counter-arguments?
+> → Position A countered more effectively
+>   Position B countered more effectively
+>   Neither — both countered equally well
+>   Both weak — neither effectively countered the other
+
+**DPO signal mapping**: "Position X countered more effectively" → Position X preferred (+1). Neither/Both weak → Tie (+0.5 each).
+
+### Debate Phase 5: Scoring & Winner Declaration (1 exchange)
+Tally preference signals using DPO-inspired scoring:
+
+1. **Compute scores** — Sum preference signals for each position across all exchanges
+2. **Calculate win probability** — P(A) = score_A / (score_A + score_B)
+3. **Assign confidence level**:
+   - **High**: Winner has >70% win probability
+   - **Medium**: Winner has 50-70% win probability
+   - **Low**: Winner has <50% win probability (effective tie)
+4. **Present results**:
+
+> **Scoring Breakdown:**
+> | Exchange | Position A | Position B |
+> |----------|-----------|-----------|
+> | Evidence A assessment | {signal} | {signal} |
+> | Evidence B assessment | {signal} | {signal} |
+> | Counter-arguments | {signal} | {signal} |
+> | **Total** | **{score_A}** | **{score_B}** |
+>
+> **Winner**: Position {X}
+> **Confidence**: {High/Medium/Low}
+> **Win Probability**: {P(A) or P(B)}%
+
+5. **If tie or low confidence**, offer tiebreaker:
+
+> The debate is close. Want to break the tie?
+> → Accept tie — both positions have merit
+>   Add another round — gather more evidence
+>   Flip sides — re-debate with reversed positions for stress testing
+
+---
+
+## 🛠️ Debate Mode Deliverables
+
+When mode is **debate**, produce the following instead of standard crystallize deliverables:
+
+### 1. Position A Summary
+- **Framing**: How Position A is defined
+- **Key arguments**: 3-5 arguments with supporting evidence
+
+### 2. Position B Summary
+- **Framing**: How Position B is defined
+- **Key arguments**: 3-5 arguments with supporting evidence
+
+### 3. Evidence for Position A
+Each argument with sources, data points, or research findings that support it.
+
+### 4. Evidence for Position B
+Each argument with sources, data points, or research findings that support it (same rigor as Position A).
+
+### 5. Counter-Arguments
+- Position A's response to Position B's evidence
+- Position B's response to Position A's evidence
+
+### 6. Scoring Breakdown
+Per-exchange preference signals showing how each assessment mapped to scores.
+
+### 7. Winner & Confidence Level
+The winning position, win probability, and confidence level (high/medium/low).
+
+### 8. Remaining Uncertainties
+What evidence was unavailable, what assumptions were made, and what could change the outcome.
+
+### 9. Recommended Next Actions
+Based on the debate outcome — implement the winner, gather more evidence, or explore a hybrid approach.
+
+---
+
 ## 🛠️ Compare Mode Deliverables
 
 When mode is **compare**, produce the following instead of standard crystallize deliverables:
@@ -530,6 +660,13 @@ Remember: **Clarity is kindness.**
 - Skipping trade-off analysis — hidden costs are the most common source of bad decisions.
 - Allowing open-ended criteria definition — always present criteria as structured choices.
 - Not capturing the final decision rationale — the "why" matters more than the "what" for future reference.
+
+### Debate mode:
+- Arguing one side more passionately than the other — both positions must receive equal rigor and effort.
+- Presenting strawman arguments for the "losing" side — weak arguments undermine the entire debate.
+- Letting user's initial lean bias evidence gathering — research both sides independently before presenting.
+- Skipping counter-arguments — the counter-argument exchange is essential for testing argument strength.
+- Declaring a winner without user preference signals — winners are determined by DPO-inspired human signals, not LLM judgment.
 
 ## ✅ Done Criteria
 A task is done only when:

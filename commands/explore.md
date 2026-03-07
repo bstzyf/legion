@@ -190,8 +190,10 @@ Polymath presents final structured choice after 5-7 exchanges.
 > We've examined the viewpoints. Time to decide:
 >
 > - [A] **Winner clear** — one side is convincingly stronger
-> - [B] **Need more evidence** — want to explore additional arguments
+> - [B] **Need more evidence** — add another round of arguments
 > - [C] **Declare tie** — both sides have equal merit, capture the nuance
+> - [D] **Flip sides** — re-debate with reversed positions for stress testing
+> - [E] **Park** — save debate state for later
 
 ### Crystallize mode outcomes:
 
@@ -255,16 +257,32 @@ Polymath presents final structured choice after 5-7 exchanges.
 ### Debate mode outcomes:
 
 #### If "Winner clear" selected:
-- Save debate summary with winner, arguments, and evidence to `.planning/exploration-{name}.md`
-- Display final verdict with supporting arguments
+- Save debate summary with winner, scoring breakdown, and evidence to `.planning/exploration-{name}.md`
+- Display final verdict with DPO-inspired scoring breakdown and confidence level
+- Suggest next action based on winner: "Ready to proceed with the winning position?"
 
 #### If "Need more evidence" selected:
 - Save current debate state
-- Continue with targeted research on weak points
+- Continue with targeted research on weak points identified during counter-arguments
+- Add another evidence round (limit 2 additional rounds max)
 
 #### If "Declare tie" selected:
-- Save nuanced summary capturing both positions
-- Present: "How do you want to handle the tie?" with options for hybrid approach, defer, or external input
+- Save nuanced summary capturing both positions with full scoring breakdown
+- Present: "How do you want to handle the tie?"
+  - Hybrid approach — combine the strongest arguments from both positions
+  - Defer decision — gather external input before deciding
+  - Accept ambiguity — document both positions as valid and move on
+
+#### If "Flip sides" selected:
+- Save current debate state as "round 1"
+- Re-run debate phases 2-4 with positions reversed (advocate who argued A now argues B and vice versa)
+- Compare scoring across both rounds to stress-test the conclusion
+- Note: If full flip implementation is not feasible within the session, present as a suggestion in the deliverable: "Consider re-debating with reversed positions to stress-test this conclusion"
+
+#### If "Park" selected:
+- Save full debate state including positions, evidence, counter-arguments, and partial scoring
+- Display summary of debate progress so far
+- Exit with: "Debate saved. Resume with `/legion:explore` when ready."
 
 ## 7. HANDLE DECISION OUTCOME (all modes)
 
