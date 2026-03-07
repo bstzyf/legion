@@ -111,24 +111,48 @@ Step 3: Calculate importance
   - Apply adjustment modifiers
   - Cap at 5
 
-Step 4: Build the record
+Step 4: Validate and resolve task_type
+  - task_type MUST be populated for every outcome record (never leave blank)
+  - Apply the following inference chain in order:
+    1. Primary: use the task_type passed by the execution-tracker
+       (the tracker derives this from the plan's task descriptions)
+    2. Fallback 1: if task_type is missing or empty, look up the executing agent's
+       entry in CATALOG.md (skills/agent-registry/CATALOG.md) and use the FIRST
+       value from the agent's Task Types column
+    3. Fallback 2: if the agent is "autonomous" or not found in CATALOG.md,
+       use "general"
+  - Valid task_types: any tag listed in the Task Types column of CATALOG.md
+    (e.g., "frontend", "backend", "quality-review", "workflow", "branding",
+    "ci-cd", "user-research", "content-strategy", "sprint-planning")
+  - The fallback value "general" is always valid even though it does not
+    appear in CATALOG.md
+
+  Examples:
+    - execution-tracker passes task_type="frontend" → use "frontend"
+    - execution-tracker passes no task_type, agent is engineering-backend-architect
+      → look up CATALOG.md → first Task Type is "backend" → use "backend"
+    - execution-tracker passes no task_type, agent is "autonomous"
+      → no CATALOG.md entry → use "general"
+
+Step 5: Build the record
   - Date: current date (YYYY-MM-DD)
   - Phase: from the current phase context
   - Plan: from the plan ID being tracked
   - Agent: agent ID that executed the plan, or "autonomous"
-  - Task Type: inferred from the plan's tasks (match against agent-registry task type tags)
+  - Task Type: resolved in Step 4 (guaranteed non-empty)
   - Outcome: success / partial / failed (from plan execution result)
   - Importance: calculated in Step 3
   - Tags: phase slug, agent division, task-related keywords
   - Summary: one-line description of the outcome
 
-Step 5: Append the record
+Step 6: Append the record
   - Read current OUTCOMES.md
   - Append the new row to the Records table
   - Write updated OUTCOMES.md
 
-Step 6: Verify
+Step 7: Verify
   - Confirm the new record appears in OUTCOMES.md
+  - Confirm Task Type column is non-empty in the new record
   - If write failed: output the record as text to the user (never lose data)
 ```
 
@@ -228,6 +252,56 @@ Step 4: Calculate memory score per agent
 Step 5: Return agent_id → memory_score mapping
   - Only include agents with total_tasks >= 2 (avoid one-off noise)
   - Sort by memory_score descending
+```
+
+**Recall Archetype Scores**:
+
+A specialized recall mode that groups outcomes by task_type to produce archetype-level performance data. Consumed by agent-registry recommendation algorithm for archetype-weighted boosts.
+
+```
+Recall Archetype Scores:
+
+Input:
+  - task_types: list of task type tags to include (optional; if empty, all task types)
+
+Step 1: Check memory exists
+  - If .planning/memory/OUTCOMES.md does not exist: return empty map
+
+Step 2: Read and parse all outcomes
+  - Parse the Records table from OUTCOMES.md
+  - If task_types provided: filter to records where Task Type matches any value in task_types
+  - If task_types empty: use all records
+
+Step 3: Apply recency decay to each record
+  - Same formula as Section 5:
+    days_old <= 7: 1.0, <= 30: 0.7, <= 90: 0.4, > 90: 0.1
+  - Exclude records where decay_score < 0.2
+
+Step 4: Group by Task Type
+  - For each unique Task Type value in the filtered records:
+    - agents: list of unique agent IDs that have outcomes for this task type
+    - totalOutcomes: count of records for this task type
+    - successes: count where outcome = "success"
+    - successRate: successes / totalOutcomes
+    - avgImportance: mean of importance values for this task type
+    - topAgent: agent with highest success rate among those with >= 2 outcomes
+      for this task type (null if no agent has >= 2 outcomes)
+
+Step 5: Return archetypeScores
+  - Structure:
+    archetypeScores: {
+      "task_type_name": {
+        agents: ["agent-id-1", "agent-id-2"],
+        successRate: 0.85,
+        totalOutcomes: 12,
+        avgImportance: 3.2,
+        topAgent: "agent-id-1"
+      },
+      ...
+    }
+  - Sort task types by totalOutcomes descending
+  - archetypeScores is returned alongside existing memoryScores from
+    Recall Agent Scores — callers can use either or both
 ```
 
 **Recall for Session Briefing**:

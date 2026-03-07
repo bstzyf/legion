@@ -97,15 +97,21 @@ This score breakdown is:
 
 ### Step 6: Apply Memory Boost (Optional, Additive Only)
 If `.planning/memory/OUTCOMES.md` exists:
-1. Recall agent scores via memory-manager.
-2. Add memory score to shortlisted agents only.
-3. Re-rank candidates.
-4. Show memory influence in output (for transparency).
+1. Recall agent scores via memory-manager (memoryScores).
+2. Recall archetype scores via memory-manager (archetypeScores) for the detected task_type.
+3. Add memory score to shortlisted agents only.
+4. If archetypeScores contains the detected task_type, apply archetype-weighted boost:
+   - Agents listed in archetypeScores[task_type].agents receive a bonus proportional
+     to that archetype's successRate (Plan 06-03 defines the exact formula).
+   - The topAgent for the task_type receives an additional tiebreak advantage.
+5. Re-rank candidates.
+6. Show memory influence in output (for transparency), including archetype source.
 
 Constraints:
 - Memory boost is additive and cannot override mandatory-role constraints.
 - Memory boost cannot promote unrelated agents with zero semantic/heuristic relevance.
 - Agents with fewer than 2 recorded outcomes are excluded from memory boosting.
+- archetypeScores are consumed only when available; if absent, fall back to flat memoryScores.
 - If memory is unavailable, skip silently.
 
 ### Step 7: Enforce Mandatory Roles
