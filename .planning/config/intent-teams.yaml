@@ -1,7 +1,7 @@
 # Intent Teams Registry
 # Maps semantic intent flags to agent team templates and validation rules
-# Version: 1.0.0
-# Requirements Validated: INTENT-05, INTENT-06
+# Version: 2.0.0
+# Requirements Validated: INTENT-05, INTENT-06, INTENT-07
 
 intents:
   harden:
@@ -118,3 +118,213 @@ validation:
       allows: ["skip-backend"]
     - flags: ["harden"]
       allows: []
+
+# Natural Language Patterns
+# Keyword clusters and phrase templates for NL intent parsing
+# Used by intent-router Section 7: parseNaturalLanguage()
+
+nl_patterns:
+  harden:
+    keywords:
+      security: 1.0
+      harden: 1.0
+      vulnerabilities: 0.9
+      owasp: 0.9
+      audit: 0.7
+      secure: 0.8
+      penetration: 0.8
+      exploit: 0.7
+      threat: 0.6
+      stride: 0.8
+    phrases:
+      - "harden {the|our|my}? security"
+      - "run {a}? security audit"
+      - "fix {the}? vulnerabilities"
+      - "check for {security}? {issues|problems|vulnerabilities}"
+      - "security {audit|scan|review}"
+
+  document:
+    keywords:
+      documentation: 1.0
+      docs: 1.0
+      document: 0.9
+      readme: 0.8
+      write: 0.5
+      guide: 0.7
+      api-docs: 0.9
+      tutorial: 0.6
+      comments: 0.4
+    phrases:
+      - "write {the}? {docs|documentation}"
+      - "generate {the}? documentation"
+      - "create {a}? readme"
+      - "document {the|this}? {code|project|api}"
+
+  skip-frontend:
+    keywords:
+      backend-only: 1.0
+      skip-frontend: 1.0
+      no-frontend: 0.9
+      exclude-ui: 0.8
+      server-only: 0.7
+      without-ui: 0.7
+    phrases:
+      - "skip {the}? frontend"
+      - "backend only"
+      - "no {frontend|ui|client} {code|work|tasks}?"
+      - "exclude {the}? {frontend|ui}"
+
+  skip-backend:
+    keywords:
+      frontend-only: 1.0
+      skip-backend: 1.0
+      no-backend: 0.9
+      exclude-api: 0.8
+      client-only: 0.7
+      without-api: 0.7
+    phrases:
+      - "skip {the}? backend"
+      - "frontend only"
+      - "no {backend|api|server} {code|work|tasks}?"
+      - "exclude {the}? {backend|api}"
+
+  security-only:
+    keywords:
+      security-review: 1.0
+      security-audit: 1.0
+      security: 0.8
+      owasp: 0.9
+      stride: 0.8
+      authentication: 0.7
+      authorization: 0.7
+      vulnerabilities: 0.6
+    phrases:
+      - "security {only|review|audit}"
+      - "review {the}? security"
+      - "check {for}? {security|auth} {issues|problems}?"
+      - "audit {the}? {authentication|authorization}"
+
+# Command Routes
+# NL patterns for direct command routing (not intent flags)
+# Used by intent-router Section 7: parseNaturalLanguage()
+
+command_routes:
+  start:
+    keywords:
+      start: 1.0
+      initialize: 1.0
+      new project: 0.9
+      setup: 0.8
+      begin: 0.7
+      create project: 0.8
+      init: 0.9
+    phrases:
+      - "start {a}? {new}? project"
+      - "initialize {the|a}? {project|codebase}"
+      - "set up {a}? {new}? {project|repo}"
+      - "begin {a}? {new}? project"
+
+  plan:
+    keywords:
+      plan: 1.0
+      decompose: 0.9
+      break down: 0.8
+      phase: 0.7
+      tasks: 0.5
+      scope: 0.5
+      requirements: 0.4
+    phrases:
+      - "plan {the|next}? phase {\\d+}?"
+      - "break down phase {\\d+}"
+      - "decompose {the}? {requirements|work|phase}"
+      - "create {a}? plan {for}?"
+
+  build:
+    keywords:
+      build: 1.0
+      execute: 0.9
+      run: 0.6
+      implement: 0.8
+      code: 0.5
+      ship: 0.6
+      develop: 0.7
+    phrases:
+      - "build {it|the plans}?"
+      - "execute {the}? plans"
+      - "run {the}? build"
+      - "implement {the}? {plans|phase|features}"
+
+  review:
+    keywords:
+      review: 1.0
+      test: 0.8
+      quality: 0.7
+      check: 0.6
+      qa: 0.9
+      verify: 0.7
+      validate: 0.6
+    phrases:
+      - "review {the}? {code|changes|work}"
+      - "run {the}? {tests|review}"
+      - "check {the}? quality"
+      - "fix {the|my|our} {tests|testing|test suite}"
+      - "verify {the}? {work|output|results}"
+
+  status:
+    keywords:
+      status: 1.0
+      progress: 0.9
+      dashboard: 0.8
+      where: 0.6
+      next: 0.5
+      overview: 0.7
+    phrases:
+      - "show {the}? {status|progress|dashboard}"
+      - "where are we"
+      - "what's next"
+      - "how is {the}? {project|phase} going"
+
+  quick:
+    keywords:
+      quick: 1.0
+      one-off: 0.9
+      ad hoc: 0.9
+      single: 0.6
+      fast: 0.5
+      just do: 0.7
+    phrases:
+      - "quick {task|fix|run}"
+      - "run {a}? {one-off|ad hoc} task"
+      - "just do {this|it|a}"
+      - "quick {fix|patch|change}"
+
+  advise:
+    keywords:
+      advise: 1.0
+      advice: 1.0
+      consult: 0.9
+      ask: 0.6
+      opinion: 0.7
+      recommend: 0.7
+      suggest: 0.6
+    phrases:
+      - "get advice {on|about}"
+      - "ask {about|an expert}"
+      - "consult {on|about}"
+      - "what do you {think|recommend} about"
+
+  explore:
+    keywords:
+      explore: 1.0
+      research: 0.9
+      crystallize: 0.9
+      brainstorm: 0.7
+      investigate: 0.7
+      prototype: 0.6
+      spike: 0.7
+    phrases:
+      - "explore {options|ideas|approaches}"
+      - "research {the|a}? {topic|idea|approach}"
+      - "crystallize {the|an}? idea"
+      - "brainstorm {about|on}?"
+      - "investigate {the|a}? {problem|issue|option}"

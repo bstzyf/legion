@@ -671,6 +671,317 @@ function handleIntentErrors(validation) {
 
 ---
 
+## Section 7: Natural Language Intent Parsing
+
+Parse free-text user input into structured command+flags with confidence scoring. Enables users to type natural language queries (e.g., "fix the tests", "harden security", "write the docs") instead of memorizing exact `--just-*` and `--skip-*` flag names.
+
+### 7.1 parseNaturalLanguage(input)
+
+```javascript
+/**
+ * Parse natural language input into a command route with confidence scoring
+ * @param {string} input - Raw user text (e.g., "fix the tests", "harden security")
+ * @returns {Object} { command, flags, confidence, fallbackSuggestion }
+ *
+ * confidence levels:
+ * - HIGH (>= 0.8): auto-route to command
+ * - MEDIUM (0.5-0.79): suggest command, ask user to confirm
+ * - LOW (< 0.5): show top 3 suggestions, ask user to pick
+ */
+function parseNaturalLanguage(input) {
+  const normalizedInput = input.toLowerCase().trim();
+
+  // Load NL patterns from intent-teams.yaml
+  const { nlPatterns, commandRoutes } = loadNLPatterns();
+
+  // Score all candidates (intent flags + direct command routes)
+  const candidates = [];
+
+  // Score intent flag patterns (e.g., harden → --just-harden)
+  for (const [intentName, patterns] of Object.entries(nlPatterns)) {
+    const score = scoreCandidate(normalizedInput, patterns);
+    if (score > 0) {
+      const intentToFlag = {
+        'harden': { command: '/legion:build', flags: ['--just-harden'] },
+        'document': { command: '/legion:build', flags: ['--just-document'] },
+        'skip-frontend': { command: '/legion:build', flags: ['--skip-frontend'] },
+        'skip-backend': { command: '/legion:build', flags: ['--skip-backend'] },
+        'security-only': { command: '/legion:review', flags: ['--just-security'] }
+      };
+      const route = intentToFlag[intentName] || { command: null, flags: [] };
+      candidates.push({
+        command: route.command,
+        flags: route.flags,
+        confidence: score,
+        label: `${route.command} ${route.flags.join(' ')}`.trim()
+      });
+    }
+  }
+
+  // Score direct command routes (e.g., "build it" → /legion:build)
+  for (const [commandName, patterns] of Object.entries(commandRoutes)) {
+    const score = scoreCandidate(normalizedInput, patterns);
+    if (score > 0) {
+      candidates.push({
+        command: `/legion:${commandName}`,
+        flags: [],
+        confidence: score,
+        label: `/legion:${commandName}`
+      });
+    }
+  }
+
+  // Sort by confidence descending
+  candidates.sort((a, b) => b.confidence - a.confidence);
+
+  if (candidates.length === 0) {
+    return {
+      command: null,
+      flags: [],
+      confidence: 0,
+      fallbackSuggestion: 'No matching command found. Try /legion:status for available commands.'
+    };
+  }
+
+  const best = candidates[0];
+
+  // HIGH confidence: auto-route
+  if (best.confidence >= 0.8) {
+    return {
+      command: best.command,
+      flags: best.flags,
+      confidence: best.confidence,
+      fallbackSuggestion: null
+    };
+  }
+
+  // MEDIUM confidence: suggest with confirmation
+  if (best.confidence >= 0.5) {
+    return {
+      command: best.command,
+      flags: best.flags,
+      confidence: best.confidence,
+      fallbackSuggestion: best.label
+    };
+  }
+
+  // LOW confidence: top 3 suggestions
+  const top3 = candidates.slice(0, 3).map((c, i) => `${i + 1}. ${c.label}`).join('  ');
+  return {
+    command: null,
+    flags: [],
+    confidence: best.confidence,
+    fallbackSuggestion: `Did you mean: ${top3}`
+  };
+}
+```
+
+---
+
+### 7.2 Pattern Matching Strategy
+
+Two-tier matching system for balancing speed and accuracy:
+
+**Tier 1: Keyword Cluster Matching** (fast, pattern-based)
+- Each intent/command has a set of weighted keywords (word to weight, 0.0-1.0)
+- Tokenize user input into words
+- Score = sum of matched keyword weights / total possible weight for that cluster
+- Fast O(n*m) lookup, good for single-word or multi-word queries
+
+**Tier 2: Phrase Template Matching** (structured, higher confidence)
+- Regex-like templates for common expressions
+- Templates use `{option1|option2}` syntax for alternation and `{word}?` for optional words
+- Example: `"fix {the|my|our} {tests|testing|test suite}"` matches "fix the tests", "fix my testing"
+- Template match provides a confidence bonus
+
+**Scoring Formula:**
+```
+final_score = keyword_score * 0.6 + template_match_bonus + exact_name_bonus
+
+Where:
+  keyword_score  = (sum of matched keyword weights) / (sum of all keyword weights)  [0-1]
+  template_match = 0.3 if any phrase template matches, 0 otherwise
+  exact_name     = 0.1 if input contains the exact command name (e.g., "build", "review"), 0 otherwise
+```
+
+```javascript
+/**
+ * Score a candidate command/intent against user input
+ * @param {string} input - Normalized user input (lowercase, trimmed)
+ * @param {Object} patterns - { keywords: {word: weight}, phrases: [template strings] }
+ * @returns {number} Confidence score 0.0-1.0
+ */
+function scoreCandidate(input, patterns) {
+  const inputTokens = input.split(/\s+/);
+
+  // Tier 1: Keyword cluster score
+  let matchedWeight = 0;
+  let totalWeight = 0;
+
+  for (const [keyword, weight] of Object.entries(patterns.keywords)) {
+    totalWeight += weight;
+    // Check if keyword appears in input (supports multi-word keywords)
+    if (input.includes(keyword)) {
+      matchedWeight += weight;
+    }
+  }
+
+  const keywordScore = totalWeight > 0 ? matchedWeight / totalWeight : 0;
+
+  // Tier 2: Phrase template matching
+  let templateBonus = 0;
+
+  if (patterns.phrases && patterns.phrases.length > 0) {
+    for (const phrase of patterns.phrases) {
+      const regex = phraseToRegex(phrase);
+      if (regex.test(input)) {
+        templateBonus = 0.3;
+        break;  // One match is enough for the bonus
+      }
+    }
+  }
+
+  // Exact command name bonus
+  let exactNameBonus = 0;
+  // Extract command name from pattern context (first keyword with weight 1.0)
+  const primaryKeyword = Object.entries(patterns.keywords)
+    .find(([_, weight]) => weight >= 1.0);
+
+  if (primaryKeyword && inputTokens.includes(primaryKeyword[0])) {
+    exactNameBonus = 0.1;
+  }
+
+  // Final score (capped at 1.0)
+  return Math.min(1.0, keywordScore * 0.6 + templateBonus + exactNameBonus);
+}
+
+/**
+ * Convert phrase template to regex
+ * @param {string} phrase - Template like "fix {the|my|our} {tests|testing}"
+ * @returns {RegExp} Compiled regex
+ *
+ * Syntax:
+ *   {a|b|c}  → matches "a", "b", or "c"
+ *   {word}?  → optional group (matches "word" or nothing)
+ *   \\d+     → digit sequence (passed through to regex)
+ */
+function phraseToRegex(phrase) {
+  let pattern = phrase
+    // Handle optional groups: {word}? → (?:word\s*)?
+    .replace(/\{([^}]+)\}\?/g, '(?:$1\\s*)?')
+    // Handle alternation groups: {a|b|c} → (?:a|b|c)
+    .replace(/\{([^}]+)\}/g, '(?:$1)')
+    // Normalize whitespace to flexible matching
+    .replace(/\s+/g, '\\s+');
+
+  return new RegExp(pattern, 'i');
+}
+```
+
+---
+
+### 7.3 Command Route Mapping
+
+Natural language phrases mapped to Legion commands. Intent flags are matched via `nl_patterns` in `intent-teams.yaml`; direct command routes are matched via `command_routes`.
+
+| Pattern Category | Example Phrases | Routes To |
+|-----------------|-----------------|-----------|
+| Start/initialize | "start a new project", "initialize", "set up" | `/legion:start` |
+| Plan/decompose | "plan the next phase", "break down phase 3" | `/legion:plan` |
+| Build/execute | "build it", "execute the plans", "run the build" | `/legion:build` |
+| Review/test | "review the code", "run tests", "check quality" | `/legion:review` |
+| Status/progress | "show progress", "where are we", "what's next" | `/legion:status` |
+| Quick task | "quick fix", "run a one-off task" | `/legion:quick` |
+| Advise/consult | "get advice on", "ask about", "consult on" | `/legion:advise` |
+| Explore/research | "explore options", "research", "crystallize" | `/legion:explore` |
+| Harden | "harden security", "security audit", "fix vulnerabilities" | `/legion:build --just-harden` |
+| Document | "write docs", "generate documentation" | `/legion:build --just-document` |
+
+**Cross-command detection**: When NL parsing within one command (e.g., `/legion:build`) matches a different command (e.g., `/legion:review`), the system suggests the correct command rather than silently redirecting:
+```
+You ran /legion:build, but your input "review the code" matches /legion:review.
+Did you mean to run /legion:review instead?
+```
+
+---
+
+### 7.4 Confidence Thresholds and Fallback
+
+Three confidence tiers determine routing behavior:
+
+| Level | Range | Behavior | Return Shape |
+|-------|-------|----------|-------------|
+| HIGH | >= 0.8 | Auto-route to matched command | `{ command, flags, confidence, fallbackSuggestion: null }` |
+| MEDIUM | 0.5 - 0.79 | Suggest command, ask user to confirm | `{ command, flags, confidence, fallbackSuggestion: "<matched command>" }` |
+| LOW | < 0.5 | Show top 3 suggestions, ask user to pick | `{ command: null, flags: [], confidence, fallbackSuggestion: "Did you mean: 1. ... 2. ... 3. ..." }` |
+
+**Caller behavior by confidence level:**
+
+```javascript
+function handleNLResult(result, currentCommand) {
+  if (result.confidence >= 0.8) {
+    // HIGH: auto-route
+    if (result.command !== currentCommand) {
+      // Cross-command: suggest instead of redirect
+      console.log(`Your input matches ${result.command}. Did you mean to run that instead?`);
+      return;
+    }
+    // Same command: proceed with parsed flags
+    return executeWithFlags(result.flags);
+  }
+
+  if (result.confidence >= 0.5) {
+    // MEDIUM: confirm with user
+    const confirmed = adapter.ask_user(
+      `Did you mean: ${result.fallbackSuggestion}?`,
+      ['Yes, proceed', 'No, show other options', 'Cancel']
+    );
+    if (confirmed === 'Yes, proceed') {
+      return executeWithFlags(result.flags);
+    }
+  }
+
+  // LOW: show suggestions
+  console.log(result.fallbackSuggestion);
+  // Let user pick or type a different command
+}
+```
+
+**Edge cases:**
+- Empty input: return `{ command: null, flags: [], confidence: 0, fallbackSuggestion: null }` (no-op)
+- Input is an exact flag (e.g., "--just-harden"): defer to `parseIntentFlags()` in Section 1 (NL parsing is only for non-flag text)
+- Multiple high-confidence matches with equal scores: prefer intent-flag matches over command routes (more specific)
+
+---
+
+### 7.5 loadNLPatterns()
+
+Load natural language patterns from the `nl_patterns` and `command_routes` sections of `intent-teams.yaml`.
+
+```javascript
+/**
+ * Load and cache NL patterns from intent-teams.yaml
+ * @returns {Object} { nlPatterns, commandRoutes }
+ *
+ * nlPatterns: { intentName: { keywords: {word: weight}, phrases: [templates] } }
+ * commandRoutes: { commandName: { keywords: {word: weight}, phrases: [templates] } }
+ */
+function loadNLPatterns() {
+  const config = loadIntentTeams();  // Reuses Section 3 loader
+
+  return {
+    nlPatterns: config.nl_patterns || {},
+    commandRoutes: config.command_routes || {}
+  };
+}
+```
+
+**Caching**: `loadNLPatterns()` uses the same `loadIntentTeams()` function from Section 3, which reads and parses `intent-teams.yaml` once per session. No additional file I/O is needed if the config is already loaded.
+
+**Graceful degradation**: If `nl_patterns` or `command_routes` sections are missing from the config file (e.g., older version of `intent-teams.yaml`), the function returns empty objects and `parseNaturalLanguage()` will return a LOW confidence result with no suggestions. The system falls back to standard flag parsing via Section 1.
+
+---
+
 ## Appendix: Intent Reference
 
 | Intent | Mode | Primary Agents | Use Case |
