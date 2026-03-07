@@ -72,6 +72,10 @@ test.describe('Lint commands: required XML sections', () => {
       // <process> and </process> must both be present
       assert.ok(text.includes('<process>'), `${file} must contain <process> tag`);
       assert.ok(text.includes('</process>'), `${file} must contain </process> tag`);
+
+      // <context> and </context> must both be present
+      assert.ok(text.includes('<context>'), `${file} must contain <context> tag`);
+      assert.ok(text.includes('</context>'), `${file} must contain </context> tag`);
     });
   }
 });
@@ -117,6 +121,14 @@ test.describe('Lint commands: no orphan closing tags', () => {
           `${file} has </process> without matching <process>`);
         assert.ok(text.indexOf('<process>') < text.indexOf('</process>'),
           `${file} has <process> after </process>`);
+      }
+
+      // </context> without <context> is orphan
+      if (text.includes('</context>')) {
+        assert.ok(text.includes('<context>'),
+          `${file} has </context> without matching <context>`);
+        assert.ok(text.indexOf('<context>') < text.indexOf('</context>'),
+          `${file} has <context> after </context>`);
       }
     });
   }

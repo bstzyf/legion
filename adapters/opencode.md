@@ -14,7 +14,6 @@ detection:
   secondary: ".opencode/ directory exists in CWD or ~/.config/opencode/ directory exists"
 max_prompt_size: 128000
 known_quirks:
-  - "no-agent-spawning"
   - "terminal-ui-only"
 ---
 

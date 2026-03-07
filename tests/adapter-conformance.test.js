@@ -36,6 +36,11 @@ const REQUIRED_TOOL_CONCEPTS = [
   'model_planning',
   'model_execution',
   'model_check',
+  'shutdown_agents',
+  'cleanup_coordination',
+  'global_config_dir',
+  'plugin_discovery_glob',
+  'commit_signature',
 ];
 
 // --- Adapter file discovery ---
@@ -79,7 +84,7 @@ function parseAdapterFrontmatter(filePath) {
 
     // Handle indented items for capabilities/detection
     if (currentNested && /^ {2}/.test(line)) {
-      const kv = line.trim().match(/^([a-z_]+):\s*(.*)/);
+      const kv = line.trim().match(/^([a-z][a-z0-9_-]*):\s*(.*)/);
       if (kv) {
         let val = kv[2].trim().replace(/^"|"$/g, '');
         if (val === 'true') val = true;
@@ -109,10 +114,11 @@ function parseAdapterFrontmatter(filePath) {
     currentNested = null;
 
     // Top-level key
-    const topMatch = line.match(/^([a-z_]+):\s*(.*)/);
+    const topMatch = line.match(/^([a-z][a-z0-9_-]*):\s*(.*)/);
     if (topMatch) {
       const key = topMatch[1];
       const val = topMatch[2].trim();
+      // UPDATE THIS LIST when ADAPTER.md adds new nested objects
       if (key === 'capabilities' || key === 'detection') {
         currentNested = key;
         fm[key] = {};
@@ -140,10 +146,12 @@ function parseAdapterFrontmatter(filePath) {
 
 function getMarkdownBody(filePath) {
   const text = fs.readFileSync(filePath, 'utf8');
-  const parts = text.split(/^---\s*$/m);
-  // parts[0] is before first ---, parts[1] is frontmatter, parts[2+] is body
-  if (parts.length < 3) return '';
-  return parts.slice(2).join('---');
+  const firstDelim = text.indexOf('---');
+  if (firstDelim === -1) return text;
+  const secondDelim = text.indexOf('---', firstDelim + 3);
+  if (secondDelim === -1) return text;
+  const bodyStart = text.indexOf('\n', secondDelim);
+  return bodyStart === -1 ? '' : text.slice(bodyStart + 1);
 }
 
 // --- Tests ---
@@ -345,4 +353,32 @@ describe('Adapter Conformance: Cross-adapter Consistency', () => {
       `Duplicate cli values found: ${cliValues.join(', ')}`
     );
   });
+});
+
+describe('Adapter Conformance: Capability-Quirk Consistency', () => {
+  for (const file of adapterFiles) {
+    describe(file, () => {
+      const filePath = path.join(ADAPTERS_DIR, file);
+      const fm = parseAdapterFrontmatter(filePath);
+      const quirks = fm.known_quirks || [];
+
+      test('agent_spawning: true must not have "no-agent-spawning" quirk', () => {
+        if (fm.capabilities && fm.capabilities.agent_spawning === true) {
+          assert.ok(
+            !quirks.includes('no-agent-spawning'),
+            `${file}: capabilities.agent_spawning is true but known_quirks contains "no-agent-spawning"`
+          );
+        }
+      });
+
+      test('parallel_execution: true must not have "no-parallel-execution" quirk', () => {
+        if (fm.capabilities && fm.capabilities.parallel_execution === true) {
+          assert.ok(
+            !quirks.includes('no-parallel-execution'),
+            `${file}: capabilities.parallel_execution is true but known_quirks contains "no-parallel-execution"`
+          );
+        }
+      });
+    });
+  }
 });

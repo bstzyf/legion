@@ -101,8 +101,9 @@ test.describe('Cross-reference validation: agent files back-referenced in CATALO
   for (const file of agentFiles) {
     const id = file.replace(/\.md$/, '');
     test(`agent "${id}" appears in CATALOG.md`, () => {
+      const pattern = new RegExp('\\|\\s*' + id.replace(/-/g, '\\-') + '\\s*\\|');
       assert.ok(
-        catalogText.includes(id),
+        pattern.test(catalogText),
         `agents/${file} exists but "${id}" is not referenced in CATALOG.md`
       );
     });
