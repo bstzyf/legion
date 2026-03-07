@@ -8,6 +8,12 @@ const ROOT = path.resolve(__dirname, '..');
 const CATALOG_PATH = path.join(ROOT, 'skills', 'agent-registry', 'CATALOG.md');
 const AGENTS_DIR = path.join(ROOT, 'agents');
 
+const COORDINATOR_IDS = new Set([
+  'project-manager-senior',
+  'project-management-project-shepherd',
+  'agents-orchestrator',
+]);
+
 const STOP_WORDS = new Set([
   'a', 'an', 'and', 'the', 'to', 'for', 'of', 'in', 'on', 'with', 'without',
   'need', 'help', 'improving', 'improve', 'our', 'thing', 'please', 'make', 'do',
@@ -88,7 +94,12 @@ function normalizeToken(token) {
 }
 
 function parseCatalog() {
-  const content = fs.readFileSync(CATALOG_PATH, 'utf8');
+  let content;
+  try {
+    content = fs.readFileSync(CATALOG_PATH, 'utf8');
+  } catch {
+    return [];
+  }
   const lines = content.split(/\r?\n/);
   const agents = [];
   let currentDivision = '';
@@ -168,7 +179,7 @@ function parseAgentMetadata() {
   return metadataMap;
 }
 
-function metadataScore(agent, concepts, promptLower) {
+function metadataScore(agent, concepts) {
   if (!agent.metadata) return 0;
   let score = 0;
   const meta = agent.metadata;
@@ -258,7 +269,7 @@ function heuristicScore(agent, concepts, promptLower) {
   return score;
 }
 
-function detectTaskType(concepts, promptLower) {
+function detectTaskType(concepts) {
   for (const concept of concepts) {
     if (TASK_TYPE_MAP[concept]) return TASK_TYPE_MAP[concept];
   }
@@ -301,24 +312,36 @@ function classifyConfidence(topCandidate) {
 }
 
 function recommendAgents({ prompt, topN = 4, memoryScores = {}, archetypeScores = {} }) {
+  if (!prompt || typeof prompt !== 'string') {
+    return {
+      prompt: String(prompt || ''),
+      concepts: [],
+      confidence: 'low',
+      lowConfidencePrompt: 'Invalid prompt. Provide a task description string.',
+      recommendations: [],
+    };
+  }
+  topN = Math.max(0, Math.floor(topN || 4));
   const agents = parseCatalog();
   const agentMetadata = parseAgentMetadata();
   const promptLower = prompt.toLowerCase();
   const concepts = extractConcepts(prompt);
-  const taskType = detectTaskType(concepts, promptLower);
+  const taskType = detectTaskType(concepts);
+  const defaultMeta = { languages: [], frameworks: [], artifact_types: [], review_strengths: [] };
 
   const scored = agents.map((agent) => {
-    agent.metadata = agentMetadata[agent.id] || { languages: [], frameworks: [], artifact_types: [], review_strengths: [] };
-    const semantic = semanticScore(agent, concepts);
-    const heuristic = heuristicScore(agent, concepts, promptLower);
+    const enriched = { ...agent, metadata: agentMetadata[agent.id] || defaultMeta };
+    const semantic = semanticScore(enriched, concepts);
+    const heuristic = heuristicScore(enriched, concepts, promptLower);
     const baseline = semantic + heuristic;
-    const metaBoost = baseline > 0 ? metadataScore(agent, concepts, promptLower) : 0;
-    const memoryBoost = baseline > 0 ? Number(memoryScores[agent.id] || 0) : 0;
-    const archBoost = baseline > 0 ? archetypeBoost(agent.id, taskType, archetypeScores) : 0;
+    const metaBoost = baseline > 0 ? metadataScore(enriched, concepts) : 0;
+    const rawMemory = Number(memoryScores[enriched.id] || 0);
+    const memoryBoost = baseline > 0 ? (Number.isFinite(rawMemory) ? rawMemory : 0) : 0;
+    const archBoost = baseline > 0 ? archetypeBoost(enriched.id, taskType, archetypeScores) : 0;
 
     return {
-      id: agent.id,
-      division: agent.division,
+      id: enriched.id,
+      division: enriched.division,
       semantic,
       heuristic,
       metadataBoost: metaBoost,
@@ -355,8 +378,8 @@ function recommendAgents({ prompt, topN = 4, memoryScores = {}, archetypeScores 
 
   const chosen = shortlist.slice(0, topN);
 
-  if (needsCoordinator(chosen) && !chosen.some((c) => ['project-manager-senior', 'project-management-project-shepherd', 'agents-orchestrator'].includes(c.id))) {
-    const coordinator = scored.find((c) => ['project-manager-senior', 'project-management-project-shepherd', 'agents-orchestrator'].includes(c.id));
+  if (needsCoordinator(chosen) && !chosen.some((c) => COORDINATOR_IDS.has(c.id))) {
+    const coordinator = scored.find((c) => COORDINATOR_IDS.has(c.id));
     if (coordinator) {
       const replaceIndex = Math.max(0, chosen.length - 1);
       chosen[replaceIndex] = coordinator;
@@ -368,7 +391,7 @@ function recommendAgents({ prompt, topN = 4, memoryScores = {}, archetypeScores 
     if (testing) {
       let replaceIndex = -1;
       for (let i = chosen.length - 1; i >= 0; i--) {
-        if (!['project-manager-senior', 'project-management-project-shepherd', 'agents-orchestrator'].includes(chosen[i].id)) {
+        if (!COORDINATOR_IDS.has(chosen[i].id)) {
           replaceIndex = i;
           break;
         }
@@ -435,6 +458,7 @@ module.exports = {
   metadataScore,
   archetypeBoost,
   detectTaskType,
+  classifyConfidence,
 };
 
 

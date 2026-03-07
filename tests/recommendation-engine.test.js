@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const { recommendAgents, parseAgentMetadata, metadataScore, archetypeBoost, detectTaskType } = require(path.join(ROOT, 'scripts', 'recommendation-engine.js'));
+const { recommendAgents, parseAgentMetadata, metadataScore, archetypeBoost, detectTaskType, classifyConfidence } = require(path.join(ROOT, 'scripts', 'recommendation-engine.js'));
 
 const cases = JSON.parse(
   fs.readFileSync(path.join(ROOT, 'tests', 'fixtures', 'recommendation', 'cases.json'), 'utf8')
@@ -72,8 +72,51 @@ test('metadataScore scores exact matches correctly', () => {
       review_strengths: ['security'],
     },
   };
-  const score = metadataScore(agent, ['python', 'django'], '');
+  const score = metadataScore(agent, ['python', 'django']);
   assert.equal(score, 6, 'exact language + framework match should score 6');
+});
+
+test('metadataScore scores artifact_types and review_strengths correctly', () => {
+  const agent = {
+    metadata: {
+      languages: [],
+      frameworks: [],
+      artifact_types: ['api-designs', 'tests'],
+      review_strengths: ['security', 'performance'],
+    },
+  };
+  assert.equal(metadataScore(agent, ['api-designs']), 2, 'artifact_type exact match = 2');
+  assert.equal(metadataScore(agent, ['security']), 2, 'review_strength exact match = 2');
+  assert.equal(metadataScore(agent, ['api-designs', 'security']), 4, 'artifact_type + review_strength = 4');
+});
+
+test('metadataScore scores partial/substring matches correctly', () => {
+  const agent = {
+    metadata: {
+      languages: ['javascript'],
+      frameworks: [],
+      artifact_types: [],
+      review_strengths: [],
+    },
+  };
+  assert.equal(metadataScore(agent, ['java']), 1, 'substring match should score 1');
+});
+
+test('metadataScore returns 0 when agent has no metadata', () => {
+  assert.equal(metadataScore({}, ['python']), 0, 'no metadata should return 0');
+  assert.equal(metadataScore({ metadata: null }, ['python']), 0, 'null metadata should return 0');
+});
+
+test('metadataScore returns 0 for unmatched concepts', () => {
+  const agent = {
+    metadata: {
+      languages: ['python'],
+      frameworks: ['django'],
+      artifact_types: ['tests'],
+      review_strengths: ['security'],
+    },
+  };
+  assert.equal(metadataScore(agent, ['haskell', 'erlang']), 0, 'no matching concepts should return 0');
 });
 
 test('archetypeBoost is present in recommendation output', () => {
@@ -103,24 +146,33 @@ test('archetype_boost_integration: archetypeScores parameter flows through to sc
 });
 
 test('archetype_gating: archetype boost is zero when baseline is zero', () => {
+  // Test directly on archetypeBoost function — gating is applied by recommendAgents
+  const boost = archetypeBoost('marketing-growth-hacker', 'api-development', {
+    'api-development': {
+      agents: ['marketing-growth-hacker'],
+      successRate: 1.0,
+      totalOutcomes: 20,
+      topAgent: 'marketing-growth-hacker',
+    },
+  });
+  // archetypeBoost returns a value, but recommendAgents gates it behind baseline > 0
+  assert.ok(boost > 0, 'archetypeBoost itself returns positive for matching agent');
+
+  // Verify gating at integration level: marketing agent should NOT appear in backend results
   const result = recommendAgents({
-    prompt: 'Need help improving our thing',
+    prompt: 'Build a scalable backend API endpoint',
     topN: 4,
     archetypeScores: {
       'api-development': {
-        agents: ['engineering-backend-architect'],
+        agents: ['marketing-growth-hacker'],
         successRate: 1.0,
-        totalOutcomes: 20,
-        avgImportance: 5.0,
-        topAgent: 'engineering-backend-architect',
+        totalOutcomes: 100,
+        topAgent: 'marketing-growth-hacker',
       },
     },
   });
-  for (const rec of result.recommendations) {
-    if (rec.semanticScore === 0 && rec.heuristicScore === 0) {
-      assert.equal(rec.archetypeBoost, 0, `${rec.id} with zero baseline should have zero archetype boost`);
-    }
-  }
+  const ids = result.recommendations.map((r) => r.id);
+  assert.ok(!ids.includes('marketing-growth-hacker'), 'zero-baseline agent should not be promoted by archetype boost');
 });
 
 test('archetype_top_agent_bonus: top agent gets +1.0 bonus', () => {
@@ -187,17 +239,17 @@ test('no_archetype_data: engine works identically when archetypeScores is not pr
 });
 
 test('detectTaskType_mapping: maps concepts to correct task types', () => {
-  assert.equal(detectTaskType(['react', 'frontend'], ''), 'web-development');
-  assert.equal(detectTaskType(['api', 'endpoint'], ''), 'api-development');
-  assert.equal(detectTaskType(['ml', 'training'], ''), 'ai-ml');
-  assert.equal(detectTaskType(['visionos', 'spatial'], ''), 'spatial-computing');
-  assert.equal(detectTaskType(['security', 'owasp'], ''), 'security-audit');
-  assert.equal(detectTaskType(['deploy', 'infrastructure'], ''), 'devops');
-  assert.equal(detectTaskType(['campaign', 'social'], ''), 'content-marketing');
-  assert.equal(detectTaskType(['design', 'ui'], ''), 'design-ux');
-  assert.equal(detectTaskType(['mobile', 'ios'], ''), 'mobile-development');
-  assert.equal(detectTaskType(['test', 'qa'], ''), 'quality-testing');
-  assert.equal(detectTaskType(['unrelated'], ''), null, 'unknown concepts should return null');
+  assert.equal(detectTaskType(['react', 'frontend']), 'web-development');
+  assert.equal(detectTaskType(['api', 'endpoint']), 'api-development');
+  assert.equal(detectTaskType(['ml', 'training']), 'ai-ml');
+  assert.equal(detectTaskType(['visionos', 'spatial']), 'spatial-computing');
+  assert.equal(detectTaskType(['security', 'owasp']), 'security-audit');
+  assert.equal(detectTaskType(['deploy', 'infrastructure']), 'devops');
+  assert.equal(detectTaskType(['campaign', 'social']), 'content-marketing');
+  assert.equal(detectTaskType(['design', 'ui']), 'design-ux');
+  assert.equal(detectTaskType(['mobile', 'ios']), 'mobile-development');
+  assert.equal(detectTaskType(['test', 'qa']), 'quality-testing');
+  assert.equal(detectTaskType(['unrelated']), null, 'unknown concepts should return null');
 });
 
 test('archetypeBoost returns 0 for agent not in archetype list', () => {
@@ -236,4 +288,46 @@ test('memory boost is additive and does not remove mandatory testing role', () =
 
   const hasTesting = result.recommendations.some((r) => r.division === 'testing');
   assert.ok(hasTesting, 'execution recommendations must include at least one testing agent');
+});
+
+test('classifyConfidence: metadata elevation at threshold 6', () => {
+  assert.equal(
+    classifyConfidence({ semantic: 2, heuristic: 8, metadataBoost: 6 }),
+    'high',
+    'metadataBoost >= 6 should elevate effective semantic to 4, producing high confidence'
+  );
+  assert.equal(
+    classifyConfidence({ semantic: 2, heuristic: 8, metadataBoost: 5 }),
+    'medium',
+    'metadataBoost 5 should NOT trigger elevation — medium confidence'
+  );
+  assert.equal(
+    classifyConfidence({ semantic: 0, heuristic: 3, metadataBoost: 0 }),
+    'low',
+    'low semantic and low heuristic should produce low confidence'
+  );
+  assert.equal(classifyConfidence(null), 'low', 'null candidate should produce low confidence');
+});
+
+test('recommendAgents returns gracefully for invalid prompt', () => {
+  const result = recommendAgents({ prompt: null });
+  assert.equal(result.confidence, 'low');
+  assert.deepEqual(result.recommendations, []);
+  assert.ok(result.lowConfidencePrompt, 'should include guidance for invalid prompt');
+
+  const result2 = recommendAgents({ prompt: 42 });
+  assert.equal(result2.confidence, 'low');
+  assert.deepEqual(result2.recommendations, []);
+});
+
+test('recommendAgents handles non-numeric memoryScores gracefully', () => {
+  const result = recommendAgents({
+    prompt: 'Build a scalable backend API endpoint',
+    topN: 4,
+    memoryScores: { 'engineering-backend-architect': 'not-a-number' },
+  });
+  const topRec = result.recommendations.find((r) => r.id === 'engineering-backend-architect');
+  assert.ok(topRec, 'backend architect should still be recommended');
+  assert.ok(Number.isFinite(topRec.totalScore), 'totalScore should be finite, not NaN');
+  assert.equal(topRec.memoryBoost, 0, 'non-numeric memoryScore should be treated as 0');
 });

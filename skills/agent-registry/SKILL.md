@@ -108,13 +108,13 @@ Constraints:
 - If memory is unavailable, skip silently.
 - Engine produces identical results when metadata fields are absent and archetypeScores is not provided (backward compatible).
 
-### Step 1: Parse Intent and Constraints
+### Step 3: Parse Intent and Constraints
 Extract:
 - Primary objective (build, review, optimize, diagnose, launch)
 - Domain signals (engineering, design, marketing, testing, product, support, spatial)
 - Hard constraints (platform, runtime, deadline, no-new-dependencies, etc.)
 
-### Step 2: Confidence Classification
+### Step 4: Confidence Classification
 Classify confidence from top-candidate quality:
 - **High confidence**: strong semantic alignment (>= 6) or (semantic >= 4 and heuristic >= 8). Metadata boost >= 6 can elevate effective semantic to 4.
 - **Medium confidence**: partial semantic alignment (>= 2) or heuristic >= 5
@@ -153,20 +153,20 @@ This score breakdown is:
 - **Consumed** by wave-executor when writing SUMMARY.md (see OBS-01)
 - **Optional** — if recommendation was skipped (autonomous task), no export is generated
 
-### Step 3: Team Size and Composition Guardrails
+### Step 5: Team Size and Composition Guardrails
 - **2 agents** for single-domain tasks.
 - **3 agents** for standard feature work.
 - **4 agents** for cross-domain work.
 - Never exceed 4 agents for one discrete task; split larger efforts.
 
-### Step 7: Enforce Mandatory Roles
+### Step 6: Enforce Mandatory Roles
 - **Execution teams** (code-writing/deployment) MUST include at least one Testing-division agent.
 - **Cross-division teams** MUST include a coordinator: `project-manager-senior`, `project-management-project-shepherd`, or `agents-orchestrator`.
 - **User-facing change teams** SHOULD include a Design-division reviewer.
 
 Mandatory role additions should be reflected in the score_export with `recommendation_source: "mandatory"`.
 
-### Step 8: Conflict Resolution
+### Step 7: Conflict Resolution
 - If two agents remain tied in one division, prefer broader production reliability for delivery tasks.
 - For exploratory work, prefer rapid-learning profiles (`engineering-rapid-prototyper`, `project-management-experiment-tracker`).
 ---
