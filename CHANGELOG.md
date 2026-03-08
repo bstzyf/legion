@@ -5,6 +5,11 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.1] - 2026-03-08
+
+### Fixed
+- **AskUserQuestion enforcement** — Added explicit instruction in workflow-common-core requiring all `adapter.ask_user` calls to use the `AskUserQuestion` tool instead of outputting questions as raw text.
+
 ## [6.0.0] - 2026-03-07
 
 ### Added
