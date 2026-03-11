@@ -1,6 +1,6 @@
 ---
 cli: windsurf
-cli_display_name: "Windsurf (Codeium)"
+cli_display_name: "Windsurf"
 version: "1.0"
 support_tier: "experimental"
 capabilities:
