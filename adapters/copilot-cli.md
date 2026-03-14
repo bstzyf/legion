@@ -12,10 +12,10 @@ capabilities:
 detection:
   primary: ".github/skills/legion-start/SKILL.md exists or ~/.copilot/skills/legion-start/SKILL.md exists"
   secondary: ".github/agents/legion-orchestrator.agent.md exists or ~/.config/copilot/agents/legion-orchestrator.agent.md exists"
-max_prompt_size: 64000
+max_prompt_size: 128000
 known_quirks:
   - "prompt-prefix-only"
-  - "short-context-window"
+  - "model-dependent-context-window"
 ---
 
 # GitHub Copilot CLI Adapter

@@ -4,10 +4,10 @@ cli_display_name: "OpenCode"
 version: "1.0"
 support_tier: "beta"
 capabilities:
-  parallel_execution: true
+  parallel_execution: false
   agent_spawning: true
   structured_messaging: false
-  native_task_tracking: true
+  native_task_tracking: false
   read_only_agents: true
 detection:
   primary: ".opencode/command/legion-start.md exists in CWD or ~/.config/opencode/command/legion-start.md exists"
@@ -15,11 +15,12 @@ detection:
 max_prompt_size: 128000
 known_quirks:
   - "terminal-ui-only"
+  - "sequential-task-tool"
 ---
 
 # OpenCode Adapter
 
-OpenCode supports native custom commands, custom agents, task-based subagents, and read-only exploration. Legion installs flat command entry points such as `/legion-start` plus a `legion-orchestrator` subagent. Coordination still happens through `.planning/` artifacts rather than runtime mailboxes.
+OpenCode supports native custom commands, custom agents, and read-only exploration. Subagent spawning via the Task tool is available but executes synchronously (blocking) — multiple Task calls in one LLM response run sequentially, not concurrently. Legion installs flat command entry points such as `/legion-start` plus a `legion-orchestrator` subagent. Coordination still happens through `.planning/` artifacts rather than runtime mailboxes.
 
 ## Tool Mappings
 
@@ -28,7 +29,7 @@ OpenCode supports native custom commands, custom agents, task-based subagents, a
 | `spawn_agent_personality` | Invoke the installed `legion-orchestrator` agent and load the matching Legion workflow from `.legion/commands/legion/`. |
 | `spawn_agent_autonomous` | Run the matching installed OpenCode command directly. |
 | `spawn_agent_readonly` | Use the built-in Explore agent (`@explore`) — cannot modify files, enforced at the platform level. Provide personality + task in the prompt. |
-| `coordinate_parallel` | Spawn multiple subagents in parallel via the Task tool. Each writes results to a file. |
+| `coordinate_parallel` | Not available natively — Task tool executes subagents sequentially (blocking). Execute plans one at a time within each wave. |
 | `collect_results` | Each agent writes its structured result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`. The coordinator reads these files after each wave. |
 | `shutdown_agents` | No-op — subagents complete and return naturally. |
 | `cleanup_coordination` | No-op — no team infrastructure to clean up. |
@@ -62,13 +63,11 @@ Write a wave checklist to `.planning/phases/{NN}/WAVE-CHECKLIST.md` for tracking
 
 ### Wave Execution
 
-OpenCode supports parallel subagent spawning. For waves with multiple plans:
-1. Spawn all subagents for the wave in parallel via the Task tool
-2. Each subagent writes its result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`
-3. Coordinator reads result files after all plans in the wave complete
-4. Parse results and build wave summary
-
-For single-plan waves, spawn one subagent and wait for completion.
+Plans execute sequentially (Task tool is blocking):
+1. For each plan in the wave, spawn a subagent via the Task tool
+2. Wait for subagent completion before spawning the next
+3. Each subagent writes its result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`
+4. After all plans in the wave complete, parse results and build wave summary
 
 ### Read-Only Agents
 

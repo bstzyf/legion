@@ -156,6 +156,17 @@ Step 1: Try Claude Code's native agents directory
     → Log: "AGENTS_DIR: {AGENTS_DIR} (installed)"
     → Done.
 
+Step 1.5: Try Legion's generic agents directory (non-Claude runtimes)
+  - Run: Bash  ls ~/.legion/agents/agents-orchestrator.md 2>/dev/null && echo "FOUND"
+  - If output contains "FOUND":
+    - Run: Bash  cd ~/.legion/agents && pwd
+    - Store the absolute path as AGENTS_DIR
+    → Log: "AGENTS_DIR: {AGENTS_DIR} (legion-global)"
+    → Done.
+  - This path is used by runtimes with storageLayout: 'legion' (Codex CLI,
+    Cursor, Copilot CLI, Gemini CLI, Kiro CLI, Windsurf, OpenCode, Aider).
+    Checking it before local/manifest avoids unnecessary fallbacks.
+
 Step 2: Try local (CWD) path — for plugin development
   - Attempt to Read agents/agents-orchestrator.md from the current working directory
   - If the file exists and is readable:
@@ -301,7 +312,7 @@ After any significant operation:
 | Execution/Implementation | `adapter.model_execution` | /legion:build, agent task execution |
 | Lightweight Checks | `adapter.model_check` | /legion:status, quick validations, simple queries |
 
-Set via the adapter's model fields. Each CLI maps these to its own model names (e.g., Claude Code: opus/sonnet/haiku; Codex CLI: o3/codex/o3-mini).
+Set via the adapter's model fields. Each CLI maps these to its own model names (e.g., Claude Code: opus/sonnet/haiku; Codex CLI: gpt-5.4/gpt-5.3-codex/gpt-5.1-codex-mini).
 
 ## Skill Loading Protocol
 

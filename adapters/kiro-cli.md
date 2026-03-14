@@ -16,6 +16,7 @@ max_prompt_size: 128000
 known_quirks:
   - "no-native-slash-commands"
   - "steering-sensitive"
+  - "subagent-tool-restrictions"
 ---
 
 # Kiro CLI Adapter
@@ -73,3 +74,11 @@ No team teardown is required. Remove only temporary task artifacts that the curr
 - The installed `@legion-orchestrator` custom agent is the primary Legion entry point
 - Steering files map legacy `/legion:*` aliases to the authoritative workflow files in `.legion/commands/legion/`
 - Hooks and permission policies can enforce safer Legion runs when the user wants read-only or approval-heavy behavior
+
+## Subagent Tool Limitations
+
+Kiro subagents have restricted tool availability compared to the main agent session:
+- **Available in subagents:** `execute_bash`, `fs_read`, `fs_write`, `grep`, `glob` (core tools)
+- **NOT available in subagents:** MCP tools, `web_search`, `web_fetch`
+- Unavailable tools silently degrade — the subagent still runs but without those capabilities
+- Plan tasks that require web research or MCP integrations should run in the main agent session, not in spawned subagents

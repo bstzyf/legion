@@ -4,7 +4,7 @@ cli_display_name: "Google Gemini CLI"
 version: "1.0"
 support_tier: "beta"
 capabilities:
-  parallel_execution: false
+  parallel_execution: true
   agent_spawning: true
   structured_messaging: false
   native_task_tracking: false
@@ -12,9 +12,10 @@ capabilities:
 detection:
   primary: ".gemini/commands/legion/start.toml exists in CWD or ~/.gemini/commands/legion/start.toml exists"
   secondary: "GEMINI.md exists in CWD or ~/.gemini/extensions/ exists"
-max_prompt_size: 1000000
+max_prompt_size: 1048576
 known_quirks:
   - "no-structured-messaging"
+  - "experimental-agent-spawning"
 ---
 
 # Google Gemini CLI Adapter
@@ -28,7 +29,7 @@ Gemini CLI supports native custom commands stored as TOML files under `.gemini/c
 | `spawn_agent_personality` | Load the matching Legion workflow from `.legion/commands/legion/`, then spawn a Gemini subagent when the workflow calls for delegation. |
 | `spawn_agent_autonomous` | Run the matching Legion custom command and execute the workflow directly. |
 | `spawn_agent_readonly` | Spawn a subagent with explicit read-only instructions. Gemini CLI does not enforce read-only at the platform level. |
-| `coordinate_parallel` | Not available — subagents are sequential. Execute plans one at a time within each wave. |
+| `coordinate_parallel` | Spawn multiple subagents in parallel via Gemini's greedy tool scheduler (shipped Jan 2026). Each writes results to a file. Note: v1 parallel does not handle agents modifying the same files. |
 | `collect_results` | Each agent writes its result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`. |
 | `shutdown_agents` | No-op — subagents return naturally. |
 | `cleanup_coordination` | No-op. |
@@ -52,13 +53,18 @@ Write a wave checklist to `.planning/phases/{NN}/WAVE-CHECKLIST.md`.
 
 ### Wave Execution
 
-Plans execute sequentially (no parallelism):
+Gemini CLI supports parallel subagent spawning (v1, shipped Jan 2026). For waves with multiple plans:
 1. For each plan in the wave, read the matching Legion workflow file from `.legion/commands/legion/`
 2. If assigned agent: load personality via `Read {AGENTS_DIR}/{agent-id}.md`, spawn subagent with personality prefix + plan task
 3. If autonomous: spawn subagent with plan task only
-4. Wait for subagent completion
-5. Write result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`
-6. Update WAVE-CHECKLIST.md
+4. Spawn all subagents for the wave — Gemini's greedy scheduler handles concurrent execution
+5. Each subagent writes result to `.planning/phases/{NN}/{NN}-{PP}-RESULT.md`
+6. Read result files after all plans in the wave complete
+7. Update WAVE-CHECKLIST.md
+
+For single-plan waves, spawn one subagent and wait for completion.
+
+**Note:** Agent spawning requires opt-in via `{"experimental": {"enableAgents": true}}` in Gemini CLI's `settings.json`. Subagents cannot call other subagents (no recursion).
 
 ### Result Collection
 

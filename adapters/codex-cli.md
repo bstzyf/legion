@@ -10,17 +10,17 @@ capabilities:
   native_task_tracking: false
   read_only_agents: false
 detection:
-  primary: "CODEX_VERSION environment variable is set"
-  secondary: "AGENTS.md file exists at ~/.codex/AGENTS.md"
+  primary: ".codex/prompts/legion-start.md or ~/.codex/prompts/legion-start.md exists"
+  secondary: ".agents/skills/legion/SKILL.md or ~/.agents/skills/legion/SKILL.md exists"
 max_prompt_size: 128000
 known_quirks:
-  - "sandbox-execution-only"
-  - "no-interactive-prompts"
+  - "sandbox-by-approval-mode"
+  - "no-structured-question-tool"
 ---
 
 # OpenAI Codex CLI Adapter
 
-Codex CLI supports agent spawning via `spawn_agents_on_csv` and custom prompt commands via `.codex/prompts`, but lacks native inter-agent messaging or team coordination. Personality injection works by prefixing the agent prompt. Execution is sequential within waves.
+Codex CLI supports native multi-agent spawning (including `spawn_agents_on_csv` for batch work and direct subagent threads), custom prompt commands via `.codex/prompts/` (deprecated — skills in `.agents/skills/` are preferred), and personality-prefixed subagent prompts. It lacks native inter-agent messaging or team coordination. Personality injection works by prefixing the agent prompt. Execution is sequential within waves.
 
 ## Tool Mappings
 
@@ -34,9 +34,9 @@ Codex CLI supports agent spawning via `spawn_agents_on_csv` and custom prompt co
 | `shutdown_agents` | No-op — agents complete and return naturally. No persistent agent sessions to shut down. |
 | `cleanup_coordination` | No-op — no team infrastructure to clean up. |
 | `ask_user` | Print numbered choices in plain text and wait for user input. |
-| `model_planning` | `o3` (or user-configured planning model) |
-| `model_execution` | `codex` (GPT-5.3-Codex or configured default) |
-| `model_check` | `o3-mini` (or configured lightweight model) |
+| `model_planning` | `gpt-5.4` (or user-configured planning model) |
+| `model_execution` | `gpt-5.3-codex` (or configured default) |
+| `model_check` | `gpt-5.1-codex-mini` (or configured lightweight model) |
 | `global_config_dir` | `~/.legion/` |
 | `plugin_discovery_glob` | `<home>/.legion/agents/agents-orchestrator.md` — **resolve `<home>` first**: run `echo $HOME` (bash) or use `os.homedir()` to get the absolute path, then substitute it into the glob pattern. Do NOT pass `~`, `$HOME`, `{HOME}`, or any variable literal to the Glob tool. |
 | `commit_signature` | `Co-Authored-By: Codex <noreply@openai.com>` |

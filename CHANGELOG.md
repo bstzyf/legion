@@ -5,6 +5,22 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.4] - 2026-03-13
+
+### Fixed
+- **Codex CLI detection mismatch** — `detection.primary` was checking a nonexistent `CODEX_VERSION` environment variable instead of the actual `.codex/prompts/legion-start.md` file path used by workflow-common and the installer. Detection now matches across all three sources.
+- **Codex CLI model names outdated** — Replaced legacy `o3`/`codex`/`o3-mini` model references with current `gpt-5.4`/`gpt-5.3-codex`/`gpt-5.1-codex-mini`. Restored verified `spawn_agents_on_csv` reference and noted `.codex/prompts/` deprecation in favor of skills.
+- **Codex CLI quirk accuracy** — `sandbox-execution-only` renamed to `sandbox-by-approval-mode` (sandbox behavior depends on approval mode). `no-interactive-prompts` renamed to `no-structured-question-tool` (CLI is interactive, just lacks structured question tools).
+- **Gemini CLI parallel execution outdated** — Updated `parallel_execution` from `false` to `true` (shipped Jan 2026). Rewrote wave execution section for parallel subagent dispatch. Added `experimental-agent-spawning` quirk. Corrected `max_prompt_size` from 1000000 to 1048576.
+- **OpenCode capabilities overstated** — `parallel_execution` corrected from `true` to `false` (Task tool blocks synchronously). `native_task_tracking` corrected from `true` to `false` (not a built-in feature). Added `sequential-task-tool` quirk.
+- **Copilot CLI context window** — `max_prompt_size` updated from 64000 to 128000. Renamed `short-context-window` quirk to `model-dependent-context-window`.
+- **Kiro CLI subagent limitations undocumented** — Added `subagent-tool-restrictions` quirk and new documentation section listing tools unavailable in subagents (no MCP, no web_search, no web_fetch).
+
+### Added
+- **Detection cross-reference test** — New conformance test verifying that each adapter's `detection.primary` value is semantically consistent with the corresponding workflow-common Step 1 entry. Prevents detection mismatches like the Codex bug from going undetected.
+- **Prompt size enforcement** — Wave executor Step 4.9 estimates token count before spawning and warns at 80% of `adapter.max_prompt_size`, blocks at 95%. Operationalizes the previously declared-but-unenforced `max_prompt_size` field.
+- **Agent path resolution for non-Claude runtimes** — Step 1.5 in the Agent Path Resolution Protocol now checks `~/.legion/agents/` before falling through to manifest.json, matching the `storageLayout: 'legion'` used by 8 of 9 runtimes.
+
 ## [6.0.3] - 2026-03-11
 
 ### Fixed

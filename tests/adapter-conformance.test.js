@@ -355,6 +355,100 @@ describe('Adapter Conformance: Cross-adapter Consistency', () => {
   });
 });
 
+describe('Adapter Conformance: Detection Cross-Reference with workflow-common', () => {
+  // Parse the detection entries from workflow-common SKILL.md Step 1
+  const workflowCommonPath = path.join(ROOT, 'skills', 'workflow-common', 'SKILL.md');
+  const wcText = fs.readFileSync(workflowCommonPath, 'utf8');
+
+  // Extract the Step 1 detection block (between "Step 1:" and "Step 2:")
+  const step1Match = wcText.match(
+    /Step 1: Tool probe \(primary detection\)([\s\S]*?)(?=Step (?:1\.5|2):)/
+  );
+  const step1Block = step1Match ? step1Match[1] : '';
+
+  // Build a map of CLI display name → detection text from workflow-common
+  const wcDetectionMap = {};
+  const detectionLines = step1Block.split(/\r?\n/);
+  for (const line of detectionLines) {
+    const match = line.match(/^\s+-\s+([\w\s()]+?):\s+(.+)/);
+    if (match) {
+      const cliName = match[1].trim();
+      const detectionText = match[2].trim();
+      wcDetectionMap[cliName] = detectionText;
+    }
+  }
+
+  // Map adapter cli values to their workflow-common display names
+  const cliToDisplayName = {
+    'claude-code': 'Claude Code',
+    'codex-cli': 'Codex CLI',
+    cursor: 'Cursor',
+    'copilot-cli': 'Copilot CLI',
+    'gemini-cli': 'Gemini CLI',
+    'kiro-cli': 'Kiro CLI',
+    windsurf: 'Windsurf',
+    opencode: 'OpenCode',
+    aider: 'Aider',
+  };
+
+  for (const file of adapterFiles) {
+    describe(file, () => {
+      const filePath = path.join(ADAPTERS_DIR, file);
+      const fm = parseAdapterFrontmatter(filePath);
+      const wcDisplayName = cliToDisplayName[fm.cli];
+
+      test('has a matching entry in workflow-common Step 1', () => {
+        assert.ok(
+          wcDisplayName && wcDetectionMap[wcDisplayName],
+          `${file}: adapter cli "${fm.cli}" (display: "${wcDisplayName}") has no detection entry in workflow-common Step 1. ` +
+            `Found entries for: ${Object.keys(wcDetectionMap).join(', ')}`
+        );
+      });
+
+      test('detection.primary shares key paths with workflow-common entry', () => {
+        if (!wcDisplayName || !wcDetectionMap[wcDisplayName]) return; // skip if no entry
+
+        const adapterPrimary = fm.detection.primary.toLowerCase();
+        const wcEntry = wcDetectionMap[wcDisplayName].toLowerCase();
+
+        // Extract filesystem paths (dotfile patterns like .codex/prompts, .cursor/rules, etc.)
+        const pathPattern = /[.~][\w/.-]+/g;
+        const adapterPaths = (adapterPrimary.match(pathPattern) || []).map((p) =>
+          p.replace(/^~\//, '')
+        );
+        const wcPaths = (wcEntry.match(pathPattern) || []).map((p) => p.replace(/^~\//, ''));
+
+        // For tool-based detection (Claude Code), check for keyword overlap instead
+        if (adapterPaths.length === 0 && wcPaths.length === 0) {
+          // Both use non-path detection (e.g., "TeamCreate tool is available")
+          // Check that at least one significant keyword appears in both
+          const adapterWords = new Set(adapterPrimary.split(/\s+/).filter((w) => w.length > 3));
+          const wcWords = new Set(wcEntry.split(/\s+/).filter((w) => w.length > 3));
+          const overlap = [...adapterWords].filter((w) => wcWords.has(w));
+          assert.ok(
+            overlap.length > 0,
+            `${file}: adapter detection.primary "${fm.detection.primary}" shares no keywords with ` +
+              `workflow-common entry "${wcDetectionMap[wcDisplayName]}"`
+          );
+          return;
+        }
+
+        // At least one filesystem path from the adapter should appear in the workflow-common entry
+        if (adapterPaths.length > 0) {
+          const anyPathMatch = adapterPaths.some(
+            (ap) => wcPaths.some((wp) => wp.includes(ap) || ap.includes(wp))
+          );
+          assert.ok(
+            anyPathMatch,
+            `${file}: adapter detection paths [${adapterPaths.join(', ')}] don't match ` +
+              `workflow-common paths [${wcPaths.join(', ')}]. These should be consistent.`
+          );
+        }
+      });
+    });
+  }
+});
+
 describe('Adapter Conformance: Capability-Quirk Consistency', () => {
   for (const file of adapterFiles) {
     describe(file, () => {

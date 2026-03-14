@@ -430,6 +430,23 @@ Step 4: Construct the agent execution prompt
   - **Errors**: error details if failed (or "None")
   """
 
+Step 4.9: Estimate prompt size and warn if approaching adapter limit
+  Before spawning, estimate the token count of the assembled prompt:
+  - Approximate tokens ≈ (character count of full prompt) / 4
+  - Compare against adapter.max_prompt_size (from adapter YAML frontmatter)
+  - If estimated tokens > 80% of adapter.max_prompt_size:
+    Log WARNING: "Prompt for plan {NN}-{PP} is ~{estimated} tokens, which is
+    {percentage}% of {cli_display_name}'s {max_prompt_size}-token limit.
+    The agent may lose context or produce truncated output."
+  - If estimated tokens > 95% of adapter.max_prompt_size:
+    Log ERROR: "Prompt for plan {NN}-{PP} (~{estimated} tokens) exceeds
+    {cli_display_name}'s {max_prompt_size}-token limit. Reduce plan scope
+    or personality size before spawning."
+    → Do NOT spawn. Report the oversized prompt to the user and stop.
+  - If estimated tokens ≤ 80%: proceed silently.
+  - Note: This is a safety net, not a precise measurement. Different
+    tokenizers vary. The 80% threshold leaves room for agent output.
+
 Step 5: Spawn the agent per adapter protocol
   Use adapter.spawn_agent_personality with:
   - prompt: {constructed prompt from Step 4}
