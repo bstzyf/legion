@@ -197,6 +197,62 @@ Step 5: Present assumption inventory
 
 ---
 
+## Section 2.5: Completeness Check (COMP-01)
+
+Evaluates whether the plan specifies sufficient coverage for error handling, edge cases, and state management. Runs as part of plan critique alongside pre-mortem and assumption hunting.
+
+```
+Completeness Check:
+
+Input: all plan files for the phase
+
+Step 1: Error handling coverage
+  For each plan task:
+  - Does the task description mention error handling?
+  - If the task creates/modifies code: are error paths specified?
+  - If the task creates API endpoints: are error response codes listed?
+  Flag gaps: "{task} modifies {file} but doesn't specify error handling behavior"
+
+Step 2: Edge case enumeration
+  For each plan task:
+  - Are boundary conditions mentioned (empty inputs, max values, null/undefined)?
+  - Are concurrent access scenarios considered (if applicable)?
+  - Are timeout/failure scenarios for external dependencies addressed?
+  Flag gaps: "{task} interacts with {external service} but no timeout/failure handling specified"
+
+Step 3: UI state coverage (if frontend tasks present)
+  For each plan task that modifies UI:
+  - Are empty states specified?
+  - Are loading states specified?
+  - Are error states specified?
+  - Are success/confirmation states specified?
+  Flag gaps: "{task} creates {component} but only specifies the happy-path state"
+
+Step 4: API contract coverage (if API tasks present)
+  For each plan task that creates/modifies API endpoints:
+  - Are all response codes documented (200, 400, 401, 403, 404, 500)?
+  - Are error response formats consistent?
+  Flag gaps: "{task} creates {endpoint} but only specifies success response"
+
+Step 5: Produce completeness findings
+  For each gap found:
+
+  | # | Gap | Plan | Task | Category | Suggestion |
+  |---|-----|------|------|----------|-----------|
+  | 1 | {gap description} | {plan PP} | {task X} | error-handling / edge-case / ui-state / api-contract | {specific addition to plan} |
+
+  Completeness score: (tasks with adequate coverage / total tasks) × 100
+
+  If score < 70: verdict includes CAUTION flag for completeness
+  If score < 50: verdict includes REWORK recommendation for completeness
+
+Note: Completeness check is advisory — it identifies gaps for the user to decide on.
+Not all gaps need fixing (some may be intentionally deferred). The goal is to surface
+what might be missed, not to mandate 100% coverage.
+```
+
+---
+
 ## Section 3: Critique Report and Routing
 
 How to synthesize both passes and route to user action.
@@ -210,6 +266,7 @@ Step 1: Merge findings
   - Wave file overlap BLOCKERs (Section 6)
   - Pre-mortem critical risks (Section 1)
   - Assumption critical/warning items (Section 2)
+  - Completeness gaps (Section 2.5)
   Deduplicate: if a pre-mortem finding and an assumption point to the same
   plan section with the same root issue, merge into one entry.
   Schema BLOCKERs are never deduplicated — they always appear individually.

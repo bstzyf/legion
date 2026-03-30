@@ -80,7 +80,7 @@ test.describe('Cross-reference validation: CATALOG.md agent file references', ()
   }
 
   test('catalog contains agent IDs', () => {
-    assert.ok(catalogIds.length >= 50, `Expected at least 50 agent IDs in catalog, found ${catalogIds.length}`);
+    assert.ok(catalogIds.length >= 45, `Expected at least 45 agent IDs in catalog, found ${catalogIds.length}`);
   });
 
   for (const id of catalogIds) {

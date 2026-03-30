@@ -1,10 +1,9 @@
 ---
 intent_mappings:
   harden:
-    - testing-reality-checker
+    - testing-qa-verification-specialist
     - engineering-security-engineer
     - testing-api-tester
-    - testing-evidence-collector
   document:
     - product-technical-writer
     - engineering-frontend-developer
@@ -15,7 +14,7 @@ intent_mappings:
 
 # Agent Catalog
 
-Complete catalog of all 53 built-in agents across 9 divisions, plus any custom agents created via `/legion:agent`. Also contains the Task Type Index (reverse mapping from project need to recommended agents).
+Complete catalog of all 49 built-in agents across 9 divisions, plus any custom agents created via `/legion:agent`. Also contains the Task Type Index (reverse mapping from project need to recommended agents).
 
 The recommendation algorithm and team assembly patterns are in `SKILL.md` in this directory.
 
@@ -27,7 +26,7 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 
 ---
 
-> **Metadata Enrichment (Phase 5):** All 53 agents now include `languages`, `frameworks`, `artifact_types`, and `review_strengths` fields in their YAML frontmatter. These fields enable structured filtering and scoring for agent recommendation. Phase 6 (Recommendation Engine v2) will score against these fields.
+> **Metadata Enrichment (Phase 5):** All 49 agents now include `languages`, `frameworks`, `artifact_types`, and `review_strengths` fields in their YAML frontmatter. These fields enable structured filtering and scoring for agent recommendation. Phase 6 (Recommendation Engine v2) will score against these fields.
 
 ## Section 1: Agent Catalog
 
@@ -48,7 +47,7 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 |----|------|-----------|------------|
 | engineering-ai-engineer | `agents/engineering-ai-engineer.md` | Expert AI/ML engineer specializing in machine learning model development, deployment, and integration into production systems | ai-ml, model-training, data-pipelines, ml-ops, intelligent-features |
 | engineering-backend-architect | `agents/engineering-backend-architect.md` | Senior backend architect specializing in scalable system design, database architecture, API development, and cloud infrastructure | backend, api-development, database-design, microservices, cloud-architecture |
-| engineering-devops-automator | `agents/engineering-devops-automator.md` | Expert DevOps engineer specializing in infrastructure automation, CI/CD pipeline development, and cloud operations | ci-cd, infrastructure, automation, deployment, cloud-ops |
+| engineering-infrastructure-devops | `agents/engineering-infrastructure-devops.md` | Expert infrastructure and DevOps engineer specializing in system reliability, CI/CD pipelines, cloud operations, and infrastructure automation | ci-cd, infrastructure, automation, deployment, cloud-ops, system-reliability, monitoring, cloud-management |
 | engineering-frontend-developer | `agents/engineering-frontend-developer.md` | Expert frontend developer specializing in modern web technologies, React/Vue/Angular frameworks, UI implementation, and performance optimization | frontend, react, web-performance, responsive-design, spa |
 | engineering-laravel-specialist | `agents/engineering-laravel-specialist.md` | Laravel/Livewire/FluxUI implementation specialist for high-fidelity product delivery, performance, and maintainable PHP architecture | laravel, livewire, fluxui, php, blade |
 | engineering-mobile-app-builder | `agents/engineering-mobile-app-builder.md` | Specialized mobile application developer with expertise in native iOS/Android development and cross-platform frameworks | mobile-ios, mobile-android, cross-platform, react-native, flutter |
@@ -56,16 +55,14 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | engineering-security-engineer | `agents/engineering-security-engineer.md` | Expert security engineer specializing in application security, OWASP Top 10 remediation, STRIDE threat modeling, and secure code review | owasp, stride, security-audit, vulnerability-assessment, secure-code-review |
 | engineering-senior-developer | `agents/engineering-senior-developer.md` | Stack-agnostic senior implementation lead for production-grade software delivery across web, backend, and platform systems | full-stack, architecture, refactoring, reliability, code-quality |
 
-### Marketing Division (6 agents)
+### Marketing Division (4 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
 | marketing-app-store-optimizer | `agents/marketing-app-store-optimizer.md` | Expert app store marketing specialist focused on ASO, conversion rate optimization, and app discoverability | aso, app-store, conversion-optimization, app-marketing, keyword-optimization |
-| marketing-content-creator | `agents/marketing-content-creator.md` | Expert content strategist and creator for multi-platform campaigns, editorial calendars, compelling copy, and brand storytelling | content-strategy, copywriting, editorial-calendar, brand-storytelling, multi-platform |
+| marketing-content-social-strategist | `agents/marketing-content-social-strategist.md` | Expert content strategist and cross-platform social media planner for multi-platform campaigns, editorial calendars, content mix strategy, and channel allocation | content-strategy, copywriting, editorial-calendar, brand-storytelling, multi-platform, cross-platform-strategy, platform-selection, content-mix, channel-allocation |
 | marketing-growth-hacker | `agents/marketing-growth-hacker.md` | Expert growth strategist specializing in rapid user acquisition through data-driven experimentation, viral loops, and conversion funnels | growth-hacking, user-acquisition, viral-loops, conversion-funnels, experimentation |
-| marketing-instagram-curator | `agents/marketing-instagram-curator.md` | Expert Instagram marketing specialist focused on visual storytelling, community building, and multi-format content optimization | instagram, visual-content, community-building, reels, aesthetic-curation |
-| marketing-social-media-strategist | `agents/marketing-social-media-strategist.md` | Cross-platform social media strategist deciding which platforms, what content mix, and how to allocate resources across all social channels | cross-platform-strategy, platform-selection, content-mix, social-media-audit, channel-allocation |
-| marketing-twitter-engager | `agents/marketing-twitter-engager.md` | Expert Twitter marketing specialist focused on real-time engagement, thought leadership building, and community-driven growth | twitter, real-time-engagement, thought-leadership, community-growth, social-listening |
+| marketing-social-platform-specialist | `agents/marketing-social-platform-specialist.md` | Expert social platform marketing specialist focused on platform-specific engagement, visual storytelling, community building, and real-time audience growth across Instagram, Twitter/X, and emerging platforms | instagram, twitter, visual-content, community-building, real-time-engagement, thought-leadership, social-listening, aesthetic-curation |
 
 ### Product Division (4 agents)
 
@@ -106,25 +103,23 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | lsp-index-engineer | `agents/lsp-index-engineer.md` | Language Server Protocol specialist building unified code intelligence systems through LSP client orchestration and semantic indexing | lsp, code-intelligence, semantic-indexing, language-servers, developer-tooling |
 | polymath | `agents/polymath.md` | Pre-flight alignment specialist who crystallizes raw ideas through structured exploration and research-first questioning | exploration, clarification, research-first, structured-questions, gap-detection |
 
-### Support Division (6 agents)
+### Support Division (5 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
 | support-analytics-reporter | `agents/support-analytics-reporter.md` | Operational analytics specialist consuming clean data to produce executive dashboards, KPI tracking, and stakeholder-ready reports. Post-analysis delivery. | dashboards, kpi-reporting, business-intelligence, executive-summaries |
 | support-executive-summary-generator | `agents/support-executive-summary-generator.md` | Consultant-grade AI specialist transforming complex business inputs into concise, actionable executive summaries using McKinsey SCQA, BCG Pyramid, and Bain frameworks | executive-summaries, strategy-consulting, c-suite-reporting, business-communication, frameworks |
 | support-finance-tracker | `agents/support-finance-tracker.md` | Expert financial analyst and controller specializing in financial planning, budget management, and business performance analysis | financial-planning, budget-management, cash-flow, investment-analysis, financial-risk |
-| support-infrastructure-maintainer | `agents/support-infrastructure-maintainer.md` | Expert infrastructure specialist focused on system reliability, performance optimization, and technical operations management | infrastructure, system-reliability, monitoring, cloud-management, cost-optimization |
 | support-legal-compliance-checker | `agents/support-legal-compliance-checker.md` | Expert legal and compliance specialist ensuring business operations, data handling, and content comply with laws, regulations, and industry standards | legal-compliance, risk-assessment, policy-development, regulatory, gdpr-privacy |
 | support-support-responder | `agents/support-support-responder.md` | Expert customer support specialist delivering exceptional customer service, issue resolution, and user experience optimization | customer-support, issue-resolution, multi-channel-support, customer-success, user-experience |
 
-### Testing Division (7 agents)
+### Testing Division (6 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
 | testing-api-tester | `agents/testing-api-tester.md` | Expert API testing specialist focused on comprehensive API validation, performance testing, and quality assurance across all systems | api-testing, integration-testing, performance-testing, security-testing, test-automation |
-| testing-evidence-collector | `agents/testing-evidence-collector.md` | Screenshot-obsessed, fantasy-allergic QA specialist requiring visual proof for everything; defaults to finding 3-5 issues | visual-qa, screenshot-evidence, bug-verification, proof-collection, reality-checks |
 | testing-performance-benchmarker | `agents/testing-performance-benchmarker.md` | Expert performance testing and optimization specialist focused on measuring, analyzing, and improving system performance | performance-benchmarking, load-testing, optimization, metrics-analysis, capacity-planning |
-| testing-reality-checker | `agents/testing-reality-checker.md` | Stops fantasy approvals with evidence-based certification; defaults to "NEEDS WORK" and requires overwhelming proof for production readiness | production-readiness, certification, evidence-review, go-no-go, quality-gates |
+| testing-qa-verification-specialist | `agents/testing-qa-verification-specialist.md` | Evidence-based QA verification specialist combining visual proof collection, screenshot-driven bug verification, and production-readiness certification with strict evidence requirements | visual-qa, screenshot-evidence, bug-verification, proof-collection, reality-checks, production-readiness, certification, evidence-review, go-no-go, quality-gates |
 | testing-test-results-analyzer | `agents/testing-test-results-analyzer.md` | Expert test analysis specialist focused on comprehensive test result evaluation, quality metrics analysis, and actionable insight generation | test-analysis, quality-metrics, test-reporting, trend-analysis, continuous-improvement |
 | testing-tool-evaluator | `agents/testing-tool-evaluator.md` | Expert technology assessment specialist evaluating, testing, and recommending tools, software, and platforms for business use | tool-evaluation, technology-assessment, competitive-comparison, adoption-strategy, productivity-tools |
 | testing-workflow-optimizer | `agents/testing-workflow-optimizer.md` | Testing and QA workflow optimization specialist focused on test pipeline efficiency, CI optimization, QA process improvement, and test automation strategy | test-pipeline-optimization, ci-optimization, qa-process-improvement, test-automation-strategy, flaky-test-detection |
@@ -148,7 +143,7 @@ Intent flags (`--just-*`, `--skip-*`) dynamically compose agent teams for specif
 
 | Intent | Mode | Primary Agents | Secondary Agents | Description |
 |--------|------|----------------|------------------|-------------|
-| harden | ad_hoc | testing-reality-checker, engineering-security-engineer | testing-api-tester, testing-evidence-collector | Security audit with Testing + Security divisions |
+| harden | ad_hoc | testing-qa-verification-specialist, engineering-security-engineer | testing-api-tester | Security audit with Testing + Security divisions |
 | document | filter_plans | product-technical-writer | engineering-frontend-developer | Generate documentation without implementation |
 | skip-frontend | filter_plans | — | — | Exclude frontend/UI tasks and agents |
 | skip-backend | filter_plans | — | — | Exclude backend/API tasks and agents |
@@ -156,7 +151,7 @@ Intent flags (`--just-*`, `--skip-*`) dynamically compose agent teams for specif
 
 ### Cross-Reference with Divisions
 
-- **harden**: Combines Testing (reality-checker, api-tester, evidence-collector) + Engineering (security-engineer)
+- **harden**: Combines Testing (qa-verification-specialist, api-tester) + Engineering (security-engineer)
 - **document**: Uses Product (technical-writer) + Engineering (frontend-developer for component docs)
 - **security-only**: Security-focused subset of harden team for review filtering
 
@@ -192,21 +187,21 @@ Reverse mapping from common project needs to recommended agents.
 ### Design & UX
 - **Primary**: design-ui-designer, design-ux-architect, design-ux-researcher
 - **Creative**: design-brand-guardian, design-visual-storyteller, design-whimsy-injector
-- **Validation**: testing-evidence-collector, product-feedback-synthesizer
+- **Validation**: testing-qa-verification-specialist, product-feedback-synthesizer
 
 ### Content & Marketing
-- **Strategy**: marketing-social-media-strategist, marketing-growth-hacker, marketing-content-creator
-- **Platform-specific**: marketing-twitter-engager, marketing-instagram-curator
+- **Strategy**: marketing-content-social-strategist, marketing-growth-hacker
+- **Platform-specific**: marketing-social-platform-specialist
 - **Support**: design-visual-storyteller, design-brand-guardian, marketing-app-store-optimizer
 
 ### Quality & Testing
-- **Core**: testing-api-tester, testing-evidence-collector, testing-reality-checker
+- **Core**: testing-api-tester, testing-qa-verification-specialist
 - **Security**: engineering-security-engineer
 - **Analysis**: testing-test-results-analyzer, testing-performance-benchmarker
 - **Process**: testing-workflow-optimizer, testing-tool-evaluator
 
 ### DevOps & Infrastructure
-- **Primary**: engineering-devops-automator, support-infrastructure-maintainer
+- **Primary**: engineering-infrastructure-devops
 - **Support**: engineering-backend-architect, testing-performance-benchmarker
 - **Oversight**: project-management-studio-operations
 

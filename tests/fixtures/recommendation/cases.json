@@ -11,7 +11,7 @@
     "prompt": "Design a TikTok and Instagram growth campaign with viral referral loop",
     "expectedTop": "marketing-growth-hacker",
     "expectedConfidence": "high",
-    "mustInclude": ["marketing-instagram-curator"]
+    "mustInclude": ["marketing-social-platform-specialist"]
   },
   {
     "name": "ambiguous-low-confidence",
@@ -58,7 +58,7 @@
   {
     "name": "devops-deployment",
     "prompt": "Deploy a CI-CD pipeline with infrastructure automation and container orchestration",
-    "expectedTop": "engineering-devops-automator",
+    "expectedTop": "engineering-infrastructure-devops",
     "expectedConfidence": "high",
     "mustInclude": []
   },

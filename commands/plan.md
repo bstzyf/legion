@@ -1,7 +1,7 @@
 ---
 name: legion:plan
 description: Plan a specific phase with agent recommendations and wave-structured tasks
-argument-hint: <phase-number> [--dry-run]
+argument-hint: <phase-number> [--dry-run] [--auto] [--auto --skip-board] [--auto --skip-security]
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
 ---
 
@@ -48,7 +48,19 @@ DRY-RUN MODE (deterministic, no side effects)
    - `skills/workflow-common-domains/SKILL.md` only for MKT-* or DSN-* requirements (or matching domain keywords).
    - `skills/plan-critique/SKILL.md` only when user opts into plan critique.
    - `skills/spec-pipeline/SKILL.md` only when user opts into spec creation or an existing spec is present.
+   - `skills/security-review/SKILL.md` only when --auto flag includes security scan, or --security flag present, or security-sensitive files detected.
    If a condition is not met, skip that skill silently and continue.
+
+   AUTO-PIPELINE MODE
+   If `$ARGUMENTS` contains `--auto`:
+   - Skip all user confirmation gates (steps 3.5b, 3.6b, 6, 8.5) — auto-select recommended defaults
+   - Run the full pipeline without pausing: board quick-assess → decomposition → plan critique → design review (if applicable) → security scan (if applicable)
+   - Each stage feeds structured output to the next
+   - If any stage raises a BLOCKER-severity escalation: halt the pipeline and present to user
+   - Supports selective skips:
+     - `--auto --skip-board`: skip board quick-assessment
+     - `--auto --skip-security`: skip security surface scan
+   - After pipeline completes, display consolidated summary of all stages and proceed to state update
 1. PARSE PHASE NUMBER
    - Read $ARGUMENTS for a phase number (e.g., "3" from `/legion:plan 3`)
    - If no phase number given: auto-detect the next unplanned phase
@@ -127,15 +139,18 @@ DRY-RUN MODE (deterministic, no side effects)
          "user persona", "user journey", "information architecture", "visual design")
    - If design phase detected:
      a. Read design-workflows skill for domain-specific patterns
-     b. In step 4 (decomposition), use design-specific wave pattern:
+     b. In step 4 (decomposition), use design-specific wave pattern (design-workflows Section 6.1):
         Wave 1: Research & Foundation (UX Researcher + Brand Guardian)
-        Wave 2: Design System & Creation (UI Designer + UX Architect + Visual Storyteller)
-        Wave 3 (optional): Polish & Validation (Whimsy Injector + review agents)
+        Wave 2A: Backend Architecture Design (Backend Architect + UX Architect) — only if backend/API in scope
+        Wave 2B: Frontend Design System (UI Designer + Visual Storyteller)
+        Wave 3: Integration Design (Senior Developer + UX Architect) — only if both 2A and 2B ran
+        Wave 4 (optional): Polish & Validation (Whimsy Injector + review agents)
      c. In step 5 (agent recommendation), use design team assembly pattern:
         Required: Design Lead (design-ui-designer) + Research Lead (design-ux-researcher)
         Per-discipline: specialist per relevant discipline
      d. Before generating plan files, run design brief questioning
-        (design-workflows Section 2.1) and generate design documents
+        (design-workflows Section 2.1) followed by design consultation
+        (design-workflows Section 8) and generate design documents
         at .planning/designs/{project-slug}-system.md
      e. All plan files reference the design documents in their context section
    - If not design phase:
@@ -282,7 +297,52 @@ DRY-RUN MODE (deterministic, no side effects)
       - CAUTION: user chooses to apply mitigations or proceed
       - REWORK: user chooses to revise plans or proceed anyway
 
-   If user selects "Skip critique": proceed directly to Step 9
+   If user selects "Skip critique": proceed directly to Step 8.7
+
+8.6. DESIGN REVIEW GATE (auto-pipeline or explicit)
+   Only if design phase was detected in step 3:
+
+   a. If `--auto` flag is set OR user explicitly requests:
+      - Run 7-pass plan-stage design review (design-workflows Section 7)
+      - Score each dimension 0-10
+      - For scores below 7: auto-remediate by editing plan files
+      - Append design review summary to CONTEXT.md
+      - If average score < 5: WARN user (halt auto-pipeline for confirmation)
+
+   b. If NOT auto and NOT explicitly requested:
+      - Skip design review gate (standard planning flow)
+      - Design review will run during /legion:review instead
+
+8.7. SECURITY SURFACE SCAN (auto-pipeline or explicit)
+   Only if security-review skill is loaded (step 0 condition met):
+
+   a. If `--auto` flag is set (and --skip-security is NOT present) OR --security flag present:
+      - Run security-review skill attack surface mapping on plan deliverables
+      - For each planned file that touches auth/crypto/API routes:
+        Flag security-relevant changes and ensure plan includes security considerations
+      - Append security scan summary to CONTEXT.md
+      - If CRITICAL security findings: HALT pipeline, present to user
+
+   b. If NOT auto and NOT explicitly requested:
+      - Skip security scan (will run during /legion:review if evaluator is active)
+
+8.8. AUTO-PIPELINE SUMMARY (only if --auto)
+   If `--auto` flag was set, display consolidated pipeline summary:
+
+   ```
+   ## Auto-Pipeline Complete — Phase {N}
+
+   | Stage | Status | Key Findings |
+   |-------|--------|-------------|
+   | Board Assessment | {RAN/SKIPPED} | {summary or "N/A"} |
+   | Decomposition | COMPLETE | {plan_count} plans, {wave_count} waves |
+   | Plan Critique | {PASS/CAUTION/REWORK} | {finding count} findings |
+   | Design Review | {RAN/SKIPPED} | {avg_score}/10 |
+   | Security Scan | {RAN/SKIPPED} | {finding count} findings |
+   ```
+
+   If any stage returned BLOCKER/REWORK: pipeline already halted at that stage.
+   Otherwise: proceed to step 9.
 
 9. GITHUB ISSUE CREATION (optional)
    Follow github-sync Section 8 (Graceful Degradation) caller pattern:

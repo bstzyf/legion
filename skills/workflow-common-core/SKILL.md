@@ -109,6 +109,9 @@ Use resolved path for all personality reads:
 | `/legion:agent` | workflow-common-core, agent-registry, agent-creator | workflow-common-domains |
 | `/legion:advise` | workflow-common-core, agent-registry | workflow-common-domains |
 | `/legion:board`     | workflow-common-core, agent-registry, board-of-directors, cli-dispatch | workflow-common-memory, workflow-common-github |
+| `/legion:retro` | workflow-common-core, memory-manager, execution-tracker | workflow-common-memory |
+| `/legion:ship` | workflow-common-core, ship-pipeline, execution-tracker | github-sync, workflow-common-github |
+| `/legion:learn` | workflow-common-core, memory-manager | workflow-common-memory |
 | `/legion:update` | workflow-common-core | workflow-common-github |
 
 ## Context Budget Ceiling (Core)

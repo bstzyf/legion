@@ -5,6 +5,30 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.1.0] - 2026-03-30
+
+### Added
+- **`/legion:retro`** — Structured sprint retrospective command. Reviews completed phases/milestones, identifies what worked vs. didn't, surfaces reusable patterns, and writes findings to `.planning/memory/RETRO.md`. Supports `--phase N`, `--milestone M`, cross-project mode, and `--dry-run`.
+- **`/legion:ship`** — Ship & deploy pipeline command. Pre-ship quality gate (6 checks), structured PR creation, deployment verification, and optional canary monitoring loop (`--canary`). Extends the plan → build → review lifecycle with a formal shipping stage.
+- **`/legion:learn`** — Explicit pattern recording command. Record, recall, and list project-specific patterns, pitfalls, and preferences. Operationalizes the memory-manager's PATTERNS.md, ERRORS.md, and PREFERENCES.md files.
+- **Ship pipeline skill** (`skills/ship-pipeline/`) — Pre-ship gates, ship report generation, PR body template, and canary monitoring protocol.
+- **Security review skill** (`skills/security-review/`) — OWASP Top 10 structured checklist and STRIDE threat modeling. Plugs into review-evaluators as 5th evaluator type.
+- **Security Evaluator** and **Completeness Evaluator** — 5th and 6th review evaluator types in review-evaluators skill.
+- **Plan-stage 7-pass design review** (design-workflows Section 7) — Scores design completeness across 7 dimensions (0-10) during `/legion:plan`.
+- **Design consultation workflow** (design-workflows Section 8) — Aesthetic direction proposals, safe-vs-risk framing, AI slop blacklist, font guidance, coherence validation.
+- **Post-implementation design audit** (design-workflows Section 9) — 74-item audit across 10 categories with dual A-F scoring.
+- **Auto-pipeline mode** (`/legion:plan --auto`) — Chains board → decomposition → critique → design review → security scan without user gates.
+- **Backend-frontend parallel design waves** — Wave 2A (backend architecture) + Wave 2B (frontend design) + Wave 3 (integration design).
+
+### Changed
+- **Agent roster consolidated (53 → 49)** — 4 merges: Evidence Collector + Reality Checker → QA Verification Specialist; Instagram Curator + Twitter Engager → Social Platform Specialist; Content Creator + Social Media Strategist → Content & Social Strategist; Infrastructure Maintainer + DevOps Automator → Infrastructure & DevOps Engineer.
+- **9 agents enhanced** with gstack-inspired traits: sprint-prioritizer (10-star thinking, scope modes), senior-developer (architecture lock-in, code review authority), ui-designer (7-pass scoring, AI slop detection, font expertise), ux-architect (performance-as-design), ux-researcher (3-layer competitive analysis), security-engineer (OWASP checklist, STRIDE), technical-writer (post-release doc sync).
+- **Completeness checks** added to plan-critique skill.
+- **Marketing division** restructured: 8 → 4 agents with clear strategy → execution hierarchy.
+
+### Stats
+- 16 commands, 30 skills, 49 agents
+
 ## [7.0.0] - 2026-03-19
 
 ### Added

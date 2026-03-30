@@ -1,6 +1,6 @@
 # Legion
 
-A multi-CLI plugin for orchestrating 53 AI specialist personalities as a coordinated legion. Works with Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Kiro CLI, Windsurf, OpenCode, and Aider.
+A multi-CLI plugin for orchestrating 49 AI specialist personalities as a coordinated legion. Works with Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Kiro CLI, Windsurf, OpenCode, and Aider.
 
 ## MANDATORY: User Interaction Rule
 
@@ -16,38 +16,41 @@ A multi-CLI plugin for orchestrating 53 AI specialist personalities as a coordin
 | `/legion:review` | Run quality review cycle with testing/QA agents |
 | `/legion:status` | Show progress dashboard and route to next action |
 | `/legion:quick <task>` | Run ad-hoc task with intelligent agent selection |
-| `/legion:advise` | Get read-only expert consultation from any of the 53 agent personalities |
+| `/legion:advise` | Get read-only expert consultation from any of the 49 agent personalities |
 | `/legion:portfolio` | Multi-project dashboard with dependency tracking |
 | `/legion:milestone` | Milestone completion, archiving, and metrics |
 | `/legion:agent` | Create a new agent personality through a guided workflow |
 | `/legion:explore` | Pre-flight exploration with Polymath — crystallize, onboard, compare, or debate |
 | `/legion:board` | Convene board of directors for governance decisions |
+| `/legion:retro` | Run structured retrospective on completed phases or milestones |
+| `/legion:ship` | Pre-ship checklist, PR creation, deployment verification, canary monitoring |
+| `/legion:learn` | Record, recall, and manage project-specific patterns, pitfalls, and preferences |
 | `/legion:update` | Check for updates and install latest version from npm |
 
 ## Project Structure
 
 ```
 bin/                  — npm installer (install.js)
-commands/             — 13 /legion: command entry points
-skills/               — 28 reusable workflow skills (SKILL.md per directory)
-agents/               — 53 agent personality .md files (flat, with division in frontmatter)
+commands/             — 16 /legion: command entry points
+skills/               — 30 reusable workflow skills (SKILL.md per directory)
+agents/               — 49 agent personality .md files (flat, with division in frontmatter)
 adapters/             — Per-CLI adapter files (claude-code.md, codex-cli.md, cursor.md, etc.)
 .planning/            — Project state (PROJECT.md, ROADMAP.md, STATE.md)
   milestones/         — Archived requirements and roadmaps
   phases/             — Phase plan and summary files
 ```
 
-## Agent Divisions (53 total)
+## Agent Divisions (49 total)
 
 | Division | Count | Focus |
 |----------|-------|-------|
-| Engineering | 8 | Full-stack, backend, frontend, AI, DevOps, mobile, prototyping, Laravel specialization |
+| Engineering | 9 | Full-stack, backend, frontend, AI, infrastructure/DevOps, mobile, prototyping, Laravel, security |
 | Design | 6 | UI/UX, branding, visual storytelling, research |
-| Marketing | 8 | Content, social media, growth, platform strategies |
-| Testing | 7 | QA, evidence collection, performance, API testing |
-| Product | 3 | Sprint planning, feedback synthesis, trends |
+| Marketing | 4 | Content & social strategy, platform execution, growth, ASO |
+| Testing | 6 | QA verification, performance, API testing, workflow optimization |
+| Product | 4 | Sprint planning, feedback synthesis, trends, technical writing |
 | Project Management | 5 | Coordination, portfolio, operations, experiments |
-| Support | 6 | Analytics, finance, legal, infrastructure |
+| Support | 5 | Analytics, finance, legal, executive summaries, support |
 | Spatial Computing | 6 | VisionOS, XR, Metal, terminal integration |
 | Specialized | 4 | Orchestration, data analytics, LSP indexing, exploration |
 
@@ -56,11 +59,12 @@ Agent frontmatter includes enriched metadata: `languages`, `frameworks`, `artifa
 ## Workflow
 
 ```
-/legion:start → /legion:plan 1 → /legion:build → /legion:review → /legion:plan 2 → ...
+/legion:start → /legion:plan 1 → /legion:build → /legion:review → /legion:ship → /legion:retro → /legion:plan 2 → ...
 ```
 
-Each phase: plan (decompose + assign agents) → build (execution — parallel or sequential per CLI) → review (QA loop)
+Each phase: plan (decompose + assign agents) → build (execution — parallel or sequential per CLI) → review (QA loop) → ship (deploy) → retro (learn)
 
+Learning: `/legion:learn <lesson>` — record patterns, pitfalls, and preferences to project memory
 Advisory: `/legion:advise <topic>` — standalone consultation, no phase context needed
 Advisory: `/legion:board meet <topic>` — governance escalation for high-stakes decisions
 Advisory: `/legion:board review` — quick strategic assessments
