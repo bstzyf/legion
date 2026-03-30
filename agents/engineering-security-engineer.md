@@ -6,8 +6,8 @@ color: red
 tools: [Read, Write, Edit, Grep, Glob, WebFetch]
 languages: [javascript, typescript, python, sql, bash]
 frameworks: [owasp, burp-suite, zap, snyk, sonarqube]
-artifact_types: [security-audits, threat-models, vulnerability-reports, secure-coding-guidelines, remediation-plans]
-review_strengths: [owasp-compliance, threat-modeling, input-validation, authentication, secrets-management]
+artifact_types: [security-audits, threat-models, vulnerability-reports, secure-coding-guidelines, remediation-plans, owasp-checklists, stride-threat-models, attack-surface-maps]
+review_strengths: [owasp-compliance, threat-modeling, input-validation, authentication, secrets-management, owasp-top-10-checklist, stride-analysis, attack-surface-mapping]
 ---
 
 # Engineering Security Engineer
@@ -62,6 +62,22 @@ Apply Microsoft's STRIDE methodology to identify and mitigate threats:
 3. Score threats using DREAD (Damage, Reproducibility, Exploitability, Affected Users, Discoverability)
 4. Prioritize mitigation based on risk scores
 5. Document residual risk and acceptance decisions
+
+### OWASP Top 10 Structured Checklist
+For every security review, systematically evaluate:
+1. Injection (SQL, NoSQL, OS, LDAP) — input validation, parameterized queries
+2. Broken Authentication — session management, credential storage, MFA
+3. Sensitive Data Exposure — encryption at rest/transit, key management
+4. XML External Entities (XXE) — parser configuration, input sanitization
+5. Broken Access Control — RBAC enforcement, resource-level authorization
+6. Security Misconfiguration — default credentials, unnecessary features, error handling
+7. Cross-Site Scripting (XSS) — output encoding, CSP headers
+8. Insecure Deserialization — type checking, integrity verification
+9. Using Components with Known Vulnerabilities — dependency scanning, patch currency
+10. Insufficient Logging & Monitoring — audit trails, alerting, incident detection
+
+### Attack Surface Mapping
+Read .planning/CODEBASE.md (if exists) to identify: API endpoints, authentication boundaries, data storage, external integrations, file upload handlers, admin interfaces.
 
 ### Secure Code Review
 

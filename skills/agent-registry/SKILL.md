@@ -1,14 +1,14 @@
 ---
 name: legion:agent-registry
-description: Maps all 53 Legion agents by division, capability, and task type for intelligent team assembly
+description: Maps all 49 Legion agents by division, capability, and task type for intelligent team assembly
 triggers: [agent, recommend, team, catalog, assign, match]
 token_cost: low
-summary: "Maps all 53 agents by division, capability, and task type. Recommendation algorithm is semantic-first with heuristic tiebreak scoring. Use when assembling teams or selecting agents for plans."
+summary: "Maps all 49 agents by division, capability, and task type. Recommendation algorithm is semantic-first with heuristic tiebreak scoring. Use when assembling teams or selecting agents for plans."
 ---
 
 # Legion Agent Registry
 
-Complete catalog of all agent personalities. Includes 53 built-in agents across 9 divisions plus any custom agents created via `/legion:agent`. Use this registry to assemble the right team for any project task.
+Complete catalog of all agent personalities. Includes 49 built-in agents across 9 divisions plus any custom agents created via `/legion:agent`. Use this registry to assemble the right team for any project task.
 
 > Agent catalog and task-type index are in `CATALOG.md` in this directory.
 
@@ -183,7 +183,7 @@ Pre-configured team compositions for common project scenarios.
 | Lead Developer | engineering-frontend-developer | engineering |
 | Backend | engineering-backend-architect | engineering |
 | UI/UX | design-ui-designer | design |
-| QA | testing-evidence-collector | testing |
+| QA | testing-qa-verification-specialist | testing |
 
 ### API Development
 > Backend service, API endpoint, or integration work.
@@ -210,11 +210,11 @@ Pre-configured team compositions for common project scenarios.
 
 | Role | Agent | Division |
 |------|-------|----------|
-| Strategy | marketing-social-media-strategist | marketing |
-| Content | marketing-content-creator | marketing |
+| Strategy | marketing-content-social-strategist | marketing |
+| Content | marketing-content-social-strategist | marketing |
 | Visual | design-visual-storyteller | design |
 | Analytics | support-analytics-reporter | support |
-| Platform Lead (pick 1-2) | marketing-twitter-engager / marketing-instagram-curator / marketing-app-store-optimizer / marketing-growth-hacker | marketing |
+| Platform Lead (pick 1-2) | marketing-social-platform-specialist / marketing-app-store-optimizer / marketing-growth-hacker | marketing |
 
 ### Full Launch
 > End-to-end product launch spanning all divisions. Split into sub-tasks and coordinate.
@@ -226,7 +226,7 @@ Pre-configured team compositions for common project scenarios.
 | Frontend | engineering-frontend-developer | engineering |
 | Backend | engineering-backend-architect | engineering |
 | UI/UX | design-ui-designer | design |
-| QA Lead | testing-reality-checker | testing |
+| QA Lead | testing-qa-verification-specialist | testing |
 | Marketing | marketing-growth-hacker | marketing |
 | Analytics | data-analytics-reporter | specialized |
 
@@ -236,7 +236,7 @@ Pre-configured team compositions for common project scenarios.
 | Role | Agent | Division |
 |------|-------|----------|
 | Developer | engineering-senior-developer / engineering-laravel-specialist (Laravel stacks) | engineering |
-| QA Verification | testing-evidence-collector | testing |
+| QA Verification | testing-qa-verification-specialist | testing |
 
 ### XR / Spatial Computing Build
 > Immersive experience development for visionOS, WebXR, or spatial platforms.

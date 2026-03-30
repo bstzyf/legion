@@ -616,14 +616,26 @@ In phase-decomposer, after reading ROADMAP phase details:
         Agents: design-ux-researcher (research lead) + design-brand-guardian (brand audit)
         Produces: Research brief, user insights, brand foundation, design principles
 
-      Wave 2: Design System & Creation
-        Agents: design-ui-designer (design lead) + design-ux-architect + design-visual-storyteller
-        Input: Wave 1 research + brand guidelines as context
-        Produces: Design system document, component specs, visual language
+      Wave 2A: Backend Architecture Design (parallel with 2B)
+        Agents: engineering-backend-architect + design-ux-architect
+        Input: Wave 1 research + project constraints
+        Produces: API contract design, data model specifications, error response standards, authentication flows
+        Note: Only activates if phase scope includes backend/API work. Skip for frontend-only design phases.
 
-      Wave 3 (optional -- only if phase scope includes polish/validation):
+      Wave 2B: Frontend Design System (parallel with 2A)
+        Agents: design-ui-designer (design lead) + design-visual-storyteller
+        Input: Wave 1 research + brand guidelines as context
+        Produces: Design system document, component specs, visual language, interaction patterns
+
+      Wave 3: Integration Design (only if both 2A and 2B ran)
+        Agents: engineering-senior-developer + design-ux-architect
+        Input: Wave 2A API contracts + Wave 2B design system
+        Produces: Frontend-backend contract alignment, state management patterns, API-to-UI data mapping, error state mapping
+        Note: Skip if only frontend (2B) or only backend (2A) ran. This wave ensures API responses map cleanly to UI states.
+
+      Wave 4 (optional -- only if phase scope includes polish/validation):
         Agents: design-whimsy-injector + review agents
-        Input: Wave 2 design system + components
+        Input: Wave 2B design system + Wave 3 integration contracts (if present)
         Produces: Enhanced specs with delight, audit reports
 
    f. Generate plan files with design-aware task descriptions
@@ -646,15 +658,28 @@ During wave-executor for design phases:
    - Research findings (if UX research was conducted)
    - Brand audit results and design principles
    - Token definitions and component requirements
-   - This is the key handoff artifact between Wave 1 and Wave 2
+   - This is the key handoff artifact between Waves 2A/2B
 
-3. Wave 2 agents receive:
+3. Wave 2A agents (backend architecture) receive:
+   - Wave 1 SUMMARY.md (research findings, project constraints)
+   - .planning/CODEBASE.md (if exists -- brownfield API surface)
+   - Existing API contracts or schema files from project
+   Only dispatched when phase scope includes backend/API work.
+
+4. Wave 2B agents (frontend design) receive:
    - Design system document (from .planning/designs/)
    - Wave 1 SUMMARY.md (contains research findings and brand guidelines)
    - Their discipline-specific assignments from the design document
    - Platform-specific requirements for their target platforms
 
-4. If Wave 3 exists:
+5. Wave 3 agents (integration) receive:
+   - Wave 2A SUMMARY.md (API contracts, data models, error responses)
+   - Wave 2B SUMMARY.md (component specs, interaction patterns, UI states)
+   - Focus: align API responses to UI states, map error codes to user-facing messages,
+     define state management patterns for data flow
+   Only dispatched when both 2A and 2B ran.
+
+6. If Wave 4 exists:
    - Polish/validation agents receive all prior summaries
    - Focus is on enhancement and validation, not creation
 ```
@@ -691,6 +716,391 @@ This is identical to the Marketing, GitHub, Memory, and Brownfield degradation p
 
 ---
 
+## Section 7: Plan-Stage Design Review (7-Pass Method)
+
+Structured design completeness gate that runs during `/legion:plan` to score design dimensions and remediate gaps before implementation. Inspired by multi-pass design audit methodologies. Only activates when design phase is detected (Section 1 heuristic).
+
+### 7.1: When to Run
+
+Run the 7-pass review after phase decomposition (Section 6.1 steps 2a-2e) and before plan finalization (step 2f). The review evaluates the plan's design specifications, not implemented code.
+
+If design-workflows is not active (non-design phase): skip this section entirely.
+
+### 7.2: The 7 Passes
+
+Each pass is rated 0-10. Scores below 7 trigger remediation (the plan is edited to fill gaps). Scores 8+ receive a quick acknowledgment. Agent: `design-ui-designer` performs the review.
+
+**Pass 1: Information Architecture**
+- Is visual hierarchy defined (primary, secondary, tertiary elements)?
+- Is navigation flow specified (user paths between screens/sections)?
+- Is content prioritization documented (what appears first, what's progressive)?
+- Rating criteria: 10 = every screen has explicit hierarchy and flow documented
+
+**Pass 2: Interaction State Coverage**
+- Are loading states specified for async operations?
+- Are empty states defined (first-use, no-data, search-no-results)?
+- Are error states specific (not just "error occurred" but contextual messages)?
+- Are success/confirmation states defined?
+- Are partial/degraded states covered (offline, slow connection, partial data)?
+- Rating criteria: 10 = every interactive element has all 5 state types documented
+
+**Pass 3: User Journey & Emotional Arc**
+- Visceral (first 5 seconds): What is the user's immediate impression?
+- Behavioral (first 5 minutes): Is the core task completable without confusion?
+- Reflective (long-term): Does the design build trust and encourage return?
+- Rating criteria: 10 = explicit consideration of all three time horizons
+
+**Pass 4: AI Slop Detection**
+Flag generic AI-generated patterns that signal lazy design:
+
+| Anti-Pattern | Why It's Slop | Better Alternative |
+|---|---|---|
+| Purple/blue gradient backgrounds | Default AI aesthetic, no brand connection | Brand-derived color with intentional use |
+| 3-column icon-in-circle feature grid | Most copied AI layout pattern | Layout that matches content hierarchy |
+| Centered-everything layout | Avoids layout decisions | Intentional alignment based on reading flow |
+| Uniform border-radius on all elements | Ignores component hierarchy | Radius scale (sharp for data, rounded for CTAs) |
+| Decorative gradient blobs | Visual filler with no information | Purposeful illustration or whitespace |
+| Generic hero with stock photo | No brand differentiation | Product-specific imagery or typography-led hero |
+| Emoji as design elements | Substitutes for real iconography | Custom or curated icon set |
+
+Rating criteria: 10 = zero AI slop patterns detected; each pattern found drops 1 point
+
+**Pass 5: Design System Alignment**
+- Does the plan reference existing design documents at `.planning/designs/`?
+- Are component names consistent with established design system vocabulary?
+- Are new components specified using existing tokens (colors, spacing, typography)?
+- Are deviations from the system documented with rationale?
+- Rating criteria: 10 = full alignment with existing system, deviations justified
+
+**Pass 6: Responsive & Accessibility**
+- Are mobile/tablet layouts specified (not just "stacked on mobile")?
+- Is keyboard navigation documented for interactive elements?
+- Are touch targets specified (minimum 44x44px for mobile)?
+- Are color contrast requirements stated (WCAG AA: 4.5:1 text, 3:1 UI)?
+- Is screen reader support specified (ARIA labels, roles, landmarks)?
+- Is reduced-motion behavior documented for animations?
+- Rating criteria: 10 = all 6 criteria explicitly addressed
+
+**Pass 7: Unresolved Design Decisions**
+- Surface ambiguities that would force implementers into ad-hoc choices
+- Examples: "What happens when the user's name is 47 characters?", "How does the modal behave on mobile?", "What's the maximum items in this list before pagination?"
+- Each unresolved decision is presented to the user via AskUserQuestion for resolution or explicit deferral
+- Rating criteria: 10 = zero unresolved decisions remaining
+
+### 7.3: Review Output
+
+After all 7 passes, produce a completion summary:
+
+```markdown
+## Design Review Summary
+
+| Pass | Dimension | Pre-Score | Post-Score | Status |
+|------|-----------|-----------|------------|--------|
+| 1 | Information Architecture | {N}/10 | {N}/10 | {PASS/REMEDIATED} |
+| 2 | Interaction State Coverage | {N}/10 | {N}/10 | {PASS/REMEDIATED} |
+| 3 | User Journey & Emotional Arc | {N}/10 | {N}/10 | {PASS/REMEDIATED} |
+| 4 | AI Slop Detection | {N}/10 | {N}/10 | {PASS/REMEDIATED} |
+| 5 | Design System Alignment | {N}/10 | {N}/10 | {PASS/REMEDIATED} |
+| 6 | Responsive & Accessibility | {N}/10 | {N}/10 | {PASS/REMEDIATED} |
+| 7 | Unresolved Decisions | {N}/10 | {N}/10 | {PASS/DEFERRED} |
+
+**Overall Design Readiness:** {average score}/10
+```
+
+Append this summary to the plan's CONTEXT.md for downstream consumption by build and review agents.
+
+### 7.4: Integration with /legion:plan
+
+In the plan command, after step 2e (wave pattern) and before step 2f (plan file generation):
+
+```
+If design phase detected AND settings.review.evaluator_depth == "multi-pass":
+  Run 7-pass design review (Section 7.2)
+  For each pass scoring < 7:
+    Edit the plan to address gaps
+    Re-score the pass
+  Append review summary to CONTEXT.md
+  If average score < 5: warn user that design specifications are weak
+  Proceed to step 2f with enriched plan
+```
+
+---
+
+## Section 8: Design Consultation
+
+Enhanced design brief methodology that goes beyond questioning to provide opinionated design direction proposals. Extends Section 2.1 (Design Brief Questioning) with aesthetic direction, safe-vs-risk framing, and coherence validation. Agent: `design-ui-designer` with `design-brand-guardian` for brand alignment.
+
+### 8.1: Aesthetic Direction Proposals
+
+After the initial design brief questions (Section 2.1, Q1-Q5), propose 3-5 coherent aesthetic directions. Each direction includes rationale tied to the product's users and positioning.
+
+**Built-in direction catalog** (select 3-5 most relevant to the product type):
+
+| Direction | Character | Best For | Risk Level |
+|---|---|---|---|
+| Brutally Minimal | Stark, high-contrast, typography-led | Developer tools, productivity apps | Medium -- can feel cold |
+| Refined / Luxury | Generous whitespace, serif accents, muted palette | Premium products, financial services | Low -- safe but potentially generic |
+| Playful / Friendly | Rounded forms, warm colors, illustrated elements | Consumer apps, onboarding flows | Medium -- can feel unserious |
+| Editorial / Content-First | Strong type hierarchy, reading-optimized layouts | Publishing, documentation, blogs | Low -- proven but distinctive |
+| Data-Dense / Dashboard | Compact spacing, monospace accents, information-rich | Analytics, admin panels, monitoring | Medium -- can feel overwhelming |
+| Bold / Expressive | Large type, strong color, unconventional layout | Marketing sites, creative portfolios | High -- memorable but polarizing |
+
+Present directions via AskUserQuestion:
+```
+"Which aesthetic direction best fits your product?"
+Options: [3-5 selected directions with descriptions]
+```
+
+### 8.2: Safe Choice vs. Creative Risk Framing
+
+For each major design decision (typography, color, layout, motion), frame options as:
+
+**SAFE CHOICE**: The category baseline -- what users expect from this type of product.
+- Example: "Inter/system font for a SaaS dashboard" (every competitor uses it, zero friction)
+
+**CREATIVE RISK**: A deliberate departure from convention with explicit tradeoff.
+- Example: "Instrument Serif for headings in a SaaS dashboard" (distinctive, memorable, but users may find it unexpected)
+- Each risk must articulate: what you gain, what you risk, why it works for THIS product
+
+Present each decision via AskUserQuestion with safe and risk options clearly labeled.
+
+### 8.3: Anti-Slop Pattern Blacklist
+
+Injected into all design creation and review contexts. These patterns signal generic AI-generated design:
+
+**Blacklisted patterns** (never use without explicit user override):
+- Purple-to-blue gradient backgrounds
+- 3-column icon-in-colored-circle feature grids
+- Centered-everything layouts with no intentional alignment
+- Uniform border-radius on all elements (use a radius scale instead)
+- Decorative gradient blobs with no information purpose
+- Generic hero sections with stock photography
+- Emoji used as design elements (use proper iconography)
+- Cookie-cutter alternating left-right section rhythm
+- Gradient buttons as the only call-to-action style
+- Colored left-border accent cards
+
+When generating or reviewing design specifications, flag any of these patterns and suggest product-specific alternatives.
+
+### 8.4: Font Guidance
+
+**Contemporary recommendations by role:**
+
+| Role | Recommended | Why |
+|---|---|---|
+| Display / Headings | Satoshi, General Sans, Instrument Serif, Fraunces | Distinctive, well-crafted, underused |
+| Body text | DM Sans, Geist, Outfit, Plus Jakarta Sans | Excellent readability, modern, not overused |
+| Monospace / Code | JetBrains Mono, Geist Mono, Berkeley Mono | Purpose-built for code, ligature support |
+| System fallback | system-ui stack | Zero loading cost, platform-native |
+
+**Overused defaults to avoid** (not blacklisted, but recommend alternatives):
+Inter, Roboto, Open Sans, Lato, Montserrat, Poppins
+
+**Blacklisted fonts** (never use):
+Papyrus, Comic Sans, Impact, Copperplate, Brush Script
+
+Include font loading strategy in design specifications: prefer `font-display: swap` with subset preloading for custom fonts.
+
+### 8.5: Coherence Validation
+
+After all design decisions are made, validate that choices reinforce each other:
+
+```
+Check 1: Aesthetic × Typography
+  Brutalist direction + decorative serif → WARN: "Mismatch -- brutalist typically uses geometric sans or monospace"
+  Playful direction + condensed grotesque → WARN: "Mismatch -- playful typically uses rounded, open typefaces"
+
+Check 2: Aesthetic × Motion
+  Minimal direction + expressive animations → WARN: "Mismatch -- minimal design uses purposeful, restrained motion"
+  Bold direction + no motion → WARN: "Missed opportunity -- bold direction benefits from intentional motion"
+
+Check 3: Aesthetic × Color
+  Data-dense direction + limited palette → WARN: "Data visualization may need a wider color range"
+  Luxury direction + saturated primary colors → WARN: "Luxury typically uses muted, desaturated tones"
+
+Check 4: Spacing × Content Density
+  Dashboard direction + generous spacing → WARN: "Dashboard users need information density -- consider tighter spacing"
+  Editorial direction + tight spacing → WARN: "Reading-focused layouts need generous line-height and margins"
+```
+
+Present warnings as gentle suggestions, not blockers. The user has final say on all design decisions.
+
+### 8.6: Integration with Design Brief
+
+Design Consultation (Section 8) extends, not replaces, Design Brief Questioning (Section 2.1):
+
+```
+1. Run Design Brief Questions (Section 2.1, Q1-Q5) — gather scope and constraints
+2. Run Design Consultation (Section 8) — propose directions and refine choices:
+   a. Aesthetic Direction Proposals (8.1) — user picks a direction
+   b. For each major decision: Safe vs. Risk framing (8.2)
+   c. Apply Anti-Slop Blacklist (8.3) — flag any generic patterns in proposals
+   d. Font Guidance (8.4) — recommend fonts aligned with chosen direction
+   e. Coherence Validation (8.5) — check all choices work together
+3. Generate Design System Document (Section 2.2) — enriched with consultation outputs
+```
+
+If the user wants a quick design phase without consultation, they can answer Q1 with "UI implementation / Screen design" which signals an existing design system and skips consultation (proceeds directly to Section 2.2).
+
+---
+
+## Section 9: Post-Implementation Design Audit
+
+Design audit pass for `/legion:review` that evaluates implemented code against design specifications. Complements the three-lens review (Section 4) by checking what was actually built versus what was specified. Agent: `design-ui-designer` (visual audit) + `design-ux-architect` (technical audit).
+
+### 9.1: Activation
+
+Runs during `/legion:review` when ALL of these conditions are met:
+1. Design phase detected (Section 1 heuristic)
+2. Design documents exist at `.planning/designs/`
+3. Implementation has been completed (SUMMARY.md files exist for build plans)
+4. `settings.review.evaluator_depth == "multi-pass"` (standard review mode uses three-lens only)
+
+When not all conditions are met: skip silently. Never block review for non-design phases.
+
+### 9.2: Audit Categories (10 categories)
+
+Each category contains specific check items. Findings are classified as HIGH (affects usability/accessibility), MEDIUM (visual inconsistency), or LOW (polish opportunity).
+
+**Category 1: Visual Hierarchy & Composition** (8 items)
+- [ ] Clear focal point on each screen/section
+- [ ] Eye flow follows intended reading pattern (F-pattern for text, Z-pattern for marketing)
+- [ ] Visual noise minimized (no competing elements at same prominence)
+- [ ] Information density appropriate for content type
+- [ ] Above-fold content communicates primary value proposition
+- [ ] White space is intentional, not just "leftover"
+- [ ] Squint test passes (hierarchy visible at 25% zoom)
+- [ ] Z-index layering is correct (no overlapping elements that shouldn't overlap)
+
+**Category 2: Typography** (10 items)
+- [ ] Font count ≤ 3 (including weights as "fonts")
+- [ ] Type scale follows consistent ratios (not arbitrary sizes)
+- [ ] Line-height appropriate for font size (1.4-1.6 for body, 1.1-1.3 for headings)
+- [ ] Measure (line length) between 45-75 characters for body text
+- [ ] Heading hierarchy is clear and consistent (h1 > h2 > h3 visually distinct)
+- [ ] Weight contrast creates clear distinction (not just 400 vs 500)
+- [ ] No blacklisted fonts used (Section 8.4)
+- [ ] Curly quotes used where appropriate (not straight quotes in prose)
+- [ ] Text wrapping handled gracefully (no orphans, widows managed)
+- [ ] Font loading doesn't cause layout shift (FOUT/FOIT managed)
+
+**Category 3: Color & Contrast** (8 items)
+- [ ] Color palette matches design system tokens
+- [ ] WCAG AA contrast met for all text (4.5:1 normal, 3:1 large)
+- [ ] Semantic colors used consistently (error = red, success = green across all contexts)
+- [ ] Dark mode handled (if specified in design system)
+- [ ] Color not used as only indicator (colorblind-safe patterns)
+- [ ] Interactive element colors distinct from decorative colors
+- [ ] Hover/focus state colors maintain contrast
+- [ ] Brand colors applied per design system guidelines
+
+**Category 4: Spacing & Layout** (8 items)
+- [ ] Spacing follows design token scale (not arbitrary pixel values)
+- [ ] Grid system applied consistently
+- [ ] Alignment is intentional (elements on shared baselines/edges)
+- [ ] Vertical rhythm maintained (consistent spacing between sections)
+- [ ] Border-radius follows component hierarchy (not uniform across all elements)
+- [ ] Padding consistent within component types
+- [ ] Margin collapse handled correctly
+- [ ] Content containers respect max-width constraints
+
+**Category 5: Interaction States** (8 items)
+- [ ] Hover states on all interactive elements
+- [ ] Focus indicators visible and meet WCAG requirements
+- [ ] Active/pressed states provide feedback
+- [ ] Disabled states clearly communicate non-interactivity
+- [ ] Loading states show progress (spinner, skeleton, or progress bar)
+- [ ] Empty states are warm and guide user toward action
+- [ ] Error messages are specific and suggest resolution
+- [ ] Touch targets ≥ 44x44px on mobile
+
+**Category 6: Responsive Design** (6 items)
+- [ ] Mobile layout is designed (not just "stacked desktop")
+- [ ] Touch targets adequate on all breakpoints
+- [ ] No horizontal scroll on any viewport
+- [ ] Images responsive (srcset or CSS-based)
+- [ ] Text readable without zoom on mobile
+- [ ] Navigation adapts appropriately (hamburger, bottom nav, etc.)
+
+**Category 7: Motion & Animation** (5 items)
+- [ ] Easing follows consistent convention (not linear for UI transitions)
+- [ ] Duration appropriate (50-300ms for micro-interactions, 300-700ms for page transitions)
+- [ ] Animation has clear purpose (not decorative without function)
+- [ ] `prefers-reduced-motion` respected
+- [ ] Transition properties are explicit (not `all`)
+
+**Category 8: Content & Microcopy** (6 items)
+- [ ] Empty states have warm, helpful copy (not "No data")
+- [ ] Error messages are specific (not "Something went wrong")
+- [ ] Active voice used for actions ("Save changes" not "Changes will be saved")
+- [ ] No placeholder text (lorem ipsum) in production
+- [ ] Long text truncated with ellipsis and full text accessible
+- [ ] Confirmation messages acknowledge what happened ("Project saved" not "Success")
+
+**Category 9: AI Slop Detection** (10 items)
+- [ ] No purple/blue gradient backgrounds without brand rationale
+- [ ] No 3-column icon-in-circle feature grids
+- [ ] No centered-everything layout without intentional alignment
+- [ ] No uniform border-radius across all element types
+- [ ] No decorative gradient blobs
+- [ ] No generic hero sections with stock photography
+- [ ] No emoji used as design elements
+- [ ] No cookie-cutter alternating left-right sections
+- [ ] No gradient buttons as only CTA style
+- [ ] No colored left-border accent cards without system rationale
+
+**Category 10: Performance as Design** (5 items)
+- [ ] Largest Contentful Paint < 2.5s (perceived load speed)
+- [ ] Cumulative Layout Shift < 0.1 (visual stability)
+- [ ] Skeleton screens match final layout structure
+- [ ] Images optimized (WebP/AVIF, appropriate dimensions)
+- [ ] Font loading strategy prevents FOUT flash
+
+### 9.3: Scoring
+
+**Design Score (A-F):** Weighted average across all 10 categories.
+- Each HIGH finding: -1 letter grade
+- Each MEDIUM finding: -0.5 letter grade
+- LOW findings noted but don't affect grade
+- Starting grade: A (no findings)
+
+**AI Slop Score (A-F):** Standalone grade from Category 9 only.
+- Each slop pattern found: -1 letter grade
+- A = zero patterns, F = 5+ patterns
+
+### 9.4: Integration with /legion:review
+
+When review command runs for a design phase with multi-pass evaluators active:
+
+```
+1. Three-lens review runs first (Section 4 -- brand, accessibility, usability)
+2. If multi-pass active: Post-Implementation Design Audit runs as additional pass
+   a. design-ui-designer performs Categories 1-4, 7-9 (visual audit)
+   b. design-ux-architect performs Categories 5-6, 10 (technical audit)
+   c. Findings merged and deduplicated with three-lens findings
+   d. Scoring computed (Section 9.3)
+   e. Results appended to REVIEW.md with both scores
+3. Findings with severity HIGH are added to the fix cycle (same as review-loop)
+4. MEDIUM findings are reported but do not block phase completion
+5. LOW findings are logged for future improvement
+```
+
+### 9.5: Relationship to Three-Lens Review
+
+The design audit (Section 9) and three-lens review (Section 4) are complementary:
+
+| Aspect | Three-Lens (Section 4) | Design Audit (Section 9) |
+|---|---|---|
+| **When** | Always on design phases | Only with multi-pass evaluators |
+| **What** | Brand compliance, accessibility compliance, usability heuristics | Implementation fidelity to specs |
+| **Who** | brand-guardian, ux-architect, ux-researcher | ui-designer, ux-architect |
+| **Depth** | Checklist-based (6-8 items per lens) | Deep audit (74 items across 10 categories) |
+| **Output** | Pass/fail findings | Scored letter grades + itemized findings |
+
+Both run in parallel when conditions are met. Findings are merged in the final review output.
+
+---
+
 ## References
 
 This skill is consumed by:
@@ -698,12 +1108,15 @@ This skill is consumed by:
 | Consumer | Operation | Section |
 |----------|-----------|---------|
 | `phase-decomposer.md` | Design domain detection, design-aware decomposition | Sections 1, 6.1 |
-| `plan.md` | Design brief questioning, document generation | Sections 2, 6.1 |
-| `build.md` | Design wave execution, research-to-design handoff | Sections 3.5, 6.2 |
-| `review.md` | Three-lens design review | Sections 4, 6.3 |
+| `plan.md` | Design brief questioning, consultation, document generation | Sections 2, 6.1, 7, 8 |
+| `build.md` | Design wave execution, research-to-design handoff, backend-frontend integration | Sections 3.5, 6.2 |
+| `review.md` | Three-lens design review, post-implementation audit | Sections 4, 6.3, 9 |
 | `workflow-common.md` | Design Workflow Conventions, design paths | Section 1 (constants) |
 | `agent-registry.md` | Design Sprint team assembly pattern | Section 2.3 (team assembly) |
 
 Design document format is defined in Section 5.
 Design domain detection is defined in Section 1 and must be checked before applying design patterns.
+Plan-stage design review (Section 7) runs during planning when multi-pass evaluators are active.
+Design consultation (Section 8) extends the design brief with aesthetic direction and coherence validation.
+Post-implementation audit (Section 9) runs during review when multi-pass evaluators are active.
 All consumers should handle non-design phases silently per Section 6.4 caller contract.

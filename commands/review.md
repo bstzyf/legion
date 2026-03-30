@@ -57,6 +57,8 @@ Examples:
    - `skills/workflow-common-domains/SKILL.md` only for design/marketing domain review contexts.
 
    - `skills/review-evaluators/SKILL.md` only if `settings.review.evaluator_depth` is `"multi-pass"` (default).
+   - `skills/security-review/SKILL.md` only if `--just-security` flag is set, or security-sensitive files detected in SUMMARY.md (auth/crypto/permission/token/session files).
+   - `skills/design-workflows/SKILL.md` only for design phases when multi-pass evaluators are active (enables post-implementation design audit, Section 9).
    If a condition is not met, skip that skill silently and continue.
 
 ## Step 0.5: INTENT DETECTION AND VALIDATION

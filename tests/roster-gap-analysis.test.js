@@ -17,7 +17,7 @@ const INTENT_TEAMS_PATH = path.join(__dirname, '..', '.planning', 'config', 'int
 const CATALOG_PATH = path.join(__dirname, '..', 'skills', 'agent-registry', 'CATALOG.md');
 
 // Expected values
-const EXPECTED_AGENT_LIMIT = 52;
+const EXPECTED_AGENT_LIMIT = 48;
 const EXPECTED_DIVISIONS = [
   'Design', 'Engineering', 'Marketing', 'Product',
   'Project Management', 'Spatial Computing', 'Specialized', 'Support', 'Testing'
@@ -520,7 +520,7 @@ describe('52-Agent Limit Enforcement', () => {
     assert.strictEqual(typeof count, 'number', 'Count should be numeric');
   });
 
-  test('ROSTER-04: should detect limit exceeded (53 agents)', () => {
+  test('ROSTER-04: should detect limit exceeded (49 agents)', () => {
     const count = countAgents();
     const isOverLimit = count > EXPECTED_AGENT_LIMIT;
     

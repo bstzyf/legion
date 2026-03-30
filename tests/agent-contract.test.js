@@ -41,9 +41,9 @@ function listAgents() {
   return fs.readdirSync(AGENTS_DIR).filter((f) => f.endsWith('.md')).sort();
 }
 
-test('agent contract: 53 agents, minimum size, and required sections', () => {
+test('agent contract: 49 agents, minimum size, and required sections', () => {
   const files = listAgents();
-  assert.equal(files.length, 53, 'expected 53 built-in agent files');
+  assert.equal(files.length, 49, 'expected 49 built-in agent files');
 
   for (const file of files) {
     const fullPath = path.join(AGENTS_DIR, file);
@@ -92,7 +92,7 @@ test('agent contract: metadata fields valid when present', () => {
   }
 });
 
-test('agent contract: all 53 agents have metadata (completeness gate)', () => {
+test('agent contract: all 49 agents have metadata (completeness gate)', () => {
   const files = listAgents();
   const missing = [];
   for (const file of files) {

@@ -41,6 +41,7 @@ Step 1: Determine base evaluator set from phase_type
   code | api          → [Code Quality Evaluator, Integration Evaluator]
   design | frontend   → [UI/UX Evaluator]
   business            → [Business Logic Evaluator]
+  security            → [Security Evaluator]
   full-stack          → [Code Quality Evaluator, Integration Evaluator, UI/UX Evaluator]
   (default)           → [Code Quality Evaluator]
 
@@ -50,8 +51,13 @@ Step 2: Augment from files_modified signals
     If file matches *.css | *.scss | *.vue | *.jsx | *.tsx → add UI/UX Evaluator (if absent)
     If file matches *api* | *route* | *controller* | *endpoint* → add Integration Evaluator (if absent)
     If file matches *service* | *domain* | *use-case* | *business* → add Business Logic Evaluator (if absent)
+    If file matches *auth* | *security* | *permission* | *token* | *session* | *middleware* → add Security Evaluator (if absent)
 
-Step 3: Deduplicate evaluator list (preserve order: CQ → UIUX → INT → BL)
+Step 2b: Always add Completeness Evaluator
+  The Completeness Evaluator runs for ALL phase types. It evaluates whether error handling,
+  edge cases, and state coverage are adequate regardless of domain.
+
+Step 3: Deduplicate evaluator list (preserve order: CQ → UIUX → INT → BL → SEC → COMP)
 
 Step 4: Report selection
   Log: "Evaluators selected: {evaluator_list}"
@@ -63,7 +69,7 @@ Step 4: Report selection
 When more than one evaluator is selected:
 
 ```
-- Run evaluators in order: Code Quality → UI/UX → Integration → Business Logic
+- Run evaluators in order: Code Quality → UI/UX → Integration → Business Logic → Security → Completeness
 - Each evaluator produces its own structured result (one result per evaluator)
 - Deduplication runs across all evaluator results (Section 7)
 - Each evaluator's findings are tagged with its evaluator type for traceability
@@ -78,6 +84,8 @@ When more than one evaluator is selected:
 | UI/UX | design, frontend, full-stack | Gemini (ui_design) | 7 |
 | Integration | code, api, full-stack | Internal | 6 |
 | Business Logic | business | Internal | 6 |
+| Security | security, api, full-stack | Internal (engineering-security-engineer) | 10 (OWASP) |
+| Completeness | all types | Internal | 6 |
 
 ---
 
@@ -883,7 +891,130 @@ Rationale: {one sentence}
 
 ---
 
-## Section 6: Execution Model
+## Section 6: Security Evaluator
+
+Evaluates security posture using OWASP Top 10 checklist and STRIDE threat modeling. Uses `engineering-security-engineer` agent. Full methodology defined in `skills/security-review/SKILL.md`.
+
+### Activation
+Activates when:
+- Phase type is `security` or `api`
+- Files modified include auth/security/permission/token/session/middleware patterns
+- `--just-security` intent flag is set
+
+### Passes (10 — one per OWASP category)
+
+| Pass | OWASP Category | Focus |
+|------|---------------|-------|
+| 1 | Injection | SQL/NoSQL/OS/LDAP injection via user input |
+| 2 | Broken Authentication | Session management, credential storage, MFA |
+| 3 | Sensitive Data Exposure | Encryption at rest/transit, key management, PII |
+| 4 | XML External Entities | Parser configuration, entity processing |
+| 5 | Broken Access Control | RBAC, resource-level auth, IDOR, CORS |
+| 6 | Security Misconfiguration | Defaults, debug mode, error handling |
+| 7 | Cross-Site Scripting | Output encoding, CSP, DOM safety |
+| 8 | Insecure Deserialization | Type checking, integrity verification |
+| 9 | Known Vulnerabilities | Dependency scanning, patch currency |
+| 10 | Insufficient Logging | Audit trails, alerting, log hygiene |
+
+### Additional Analysis
+- **STRIDE threat model** on system boundaries (API endpoints, data stores, external integrations)
+- **Attack surface mapping** from `.planning/CODEBASE.md` if available
+
+### Result Format
+Same structured finding format as other evaluators:
+```
+Finding: {description}
+Severity: CRITICAL | HIGH | MEDIUM | LOW | INFO
+OWASP: A{N}:{category_name}
+File(s): {affected files}
+Remediation: {specific fix}
+```
+
+### Verdict
+- Any CRITICAL finding → FAIL (blocks ship)
+- Any HIGH finding → NEEDS WORK
+- Only MEDIUM/LOW/INFO → PASS
+
+---
+
+## Section 7: Completeness Evaluator ("Boil the Lake")
+
+Evaluates whether implementation covers error handling, edge cases, and state management comprehensively. Runs for ALL phase types. Inspired by the principle that when AI makes implementation cheap, completeness should be the default — not a stretch goal.
+
+### Passes (6)
+
+**Pass 1: Error Handling Coverage**
+- Are error paths specified and tested for each code path?
+- Do API endpoints return appropriate error codes (not just 500)?
+- Are error messages specific and actionable (not "Something went wrong")?
+- Is there a consistent error handling pattern across the codebase?
+- Rating: PASS (all major paths covered), NEEDS WORK (gaps in non-happy paths), FAIL (error handling missing)
+
+**Pass 2: Edge Case Identification**
+- Are boundary conditions addressed (empty inputs, max values, null/undefined)?
+- Are concurrent access scenarios considered (race conditions, stale data)?
+- Are timeout scenarios handled (network, database, external API)?
+- Are permission edge cases covered (expired tokens, revoked access mid-operation)?
+- Rating: PASS (edge cases enumerated and handled), NEEDS WORK (some gaps), FAIL (edge cases not considered)
+
+**Pass 3: Empty/Loading/Error State UI**
+- For frontend work: are empty states defined (first-use, no-data, search-no-results)?
+- Are loading states specified (spinner, skeleton, progress bar)?
+- Are error states specific (not just a generic error page)?
+- Are partial/degraded states covered (offline, slow connection)?
+- For non-frontend phases: mark N/A and PASS
+- Rating: PASS (all states specified), NEEDS WORK (some states missing), FAIL (states not considered)
+
+**Pass 4: API Contract Completeness**
+- Are all response codes documented (200, 201, 400, 401, 403, 404, 409, 422, 500)?
+- Are error response formats consistent and documented?
+- Are pagination, filtering, and sorting behaviors specified?
+- Are rate limiting and throttling responses documented?
+- For non-API phases: mark N/A and PASS
+- Rating: PASS (full contract), NEEDS WORK (gaps in error responses), FAIL (contract incomplete)
+
+**Pass 5: Test Coverage vs. Business Logic**
+- Does test coverage meet the `settings.review.coverage_thresholds.business_logic` threshold (default 90%)?
+- Are critical business rules tested with multiple scenarios (happy + error + edge)?
+- Are integration points tested (API calls, database queries)?
+- Rating: PASS (meets thresholds), NEEDS WORK (below threshold but close), FAIL (significantly below)
+
+**Pass 6: Documentation Completeness**
+- Do docs match implementation (no stale references)?
+- Are new APIs/features documented?
+- Are breaking changes documented?
+- For documentation-only phases: this is the primary evaluation
+- Rating: PASS (docs match code), NEEDS WORK (gaps), FAIL (docs stale or missing)
+
+### Completeness Score
+
+```
+completeness_score = (passes_passed / 6) × 100
+  (N/A passes count as PASS for scoring)
+
+Score interpretation:
+  90-100: Excellent completeness — ready to ship
+  70-89:  Good completeness — minor gaps to address
+  50-69:  Moderate completeness — significant gaps
+  0-49:   Poor completeness — substantial work needed
+```
+
+### Result Format
+```
+Completeness Score: {score}/100
+| Pass | Dimension | Rating | Notes |
+|------|-----------|--------|-------|
+| 1 | Error Handling | PASS/NEEDS WORK/FAIL | {detail} |
+| 2 | Edge Cases | PASS/NEEDS WORK/FAIL | {detail} |
+| 3 | UI States | PASS/NEEDS WORK/N/A | {detail} |
+| 4 | API Contracts | PASS/NEEDS WORK/N/A | {detail} |
+| 5 | Test Coverage | PASS/NEEDS WORK/FAIL | {detail} |
+| 6 | Documentation | PASS/NEEDS WORK/FAIL | {detail} |
+```
+
+---
+
+## Section 8: Execution Model
 
 How evaluators run and how cost is managed.
 
@@ -971,7 +1102,7 @@ Evaluator Result Structure:
 
 ---
 
-## Section 7: Finding Deduplication
+## Section 9: Finding Deduplication
 
 Cross-pass and cross-evaluator deduplication to eliminate redundant findings before synthesis.
 
@@ -1075,7 +1206,7 @@ If line_number is absent from a finding:
 
 ---
 
-## Section 8: Dispatch Integration
+## Section 10: Dispatch Integration
 
 How evaluators use `cli-dispatch` (from the wave-executor and review-loop dispatch patterns) for external CLI routing.
 

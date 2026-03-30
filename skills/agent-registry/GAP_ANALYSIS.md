@@ -175,7 +175,7 @@ checkAgentLimit(currentCount, limit, candidates) → LimitStatus
 5. Build limit status report:
    ```yaml
    limit_status:
-     current: 53
+     current: 49
      limit: 52
      status: EXCEEDED
      overage: 1
@@ -225,11 +225,11 @@ The gap analysis engine successfully identifies coverage gaps through:
 
 | Role | Covering Agents | Coverage Strength | Gaps |
 |------|-----------------|-------------------|------|
-| sre_reliability_engineer | support-infrastructure-maintainer | PARTIAL (0.5) | Formal SLOs, error budgets, incident response playbooks |
-| sre_reliability_engineer | engineering-devops-automator | PARTIAL (0.5) | Reliability focus, SRE practices |
+| sre_reliability_engineer | engineering-infrastructure-devops | PARTIAL (0.5) | Formal SLOs, error budgets, incident response playbooks |
+| sre_reliability_engineer | engineering-infrastructure-devops | PARTIAL (0.5) | Reliability focus, SRE practices |
 | chaos_engineer | testing-performance-benchmarker | MINIMAL (0.2) | Failure injection, game days |
-| platform_engineer | engineering-devops-automator | PARTIAL (0.5) | Developer platforms, self-service |
-| observability_engineer | support-infrastructure-maintainer | PARTIAL (0.5) | Distributed tracing, advanced metrics |
+| platform_engineer | engineering-infrastructure-devops | PARTIAL (0.5) | Developer platforms, self-service |
+| observability_engineer | engineering-infrastructure-devops | PARTIAL (0.5) | Distributed tracing, advanced metrics |
 | observability_engineer | data-analytics-reporter | MINIMAL (0.2) | Data-focused, not observability-focused |
 
 **Composite Coverage:**
@@ -254,7 +254,7 @@ missing_capabilities:
 ```
 
 **Recommendation:**
-- Short-term: Enhance support-infrastructure-maintainer with SRE capabilities
+- Short-term: Enhance engineering-infrastructure-devops with SRE capabilities
 - Long-term: Consider dedicated SRE agent or rename/expand existing agent
 
 ### ROSTER-03: Security-Auditor Coverage ⚠️ HIGH GAP
@@ -356,7 +356,7 @@ The `/legion:agent` workflow is functional and documented in:
 
 ```yaml
 limit_analysis:
-  current_count: 53
+  current_count: 49
   agent_limit: 52
   status: EXCEEDED
   overage: 1
@@ -366,8 +366,8 @@ limit_analysis:
     without removing another agent to maintain limit.
     
   compliance_options:
-    - option: accept_53
-      description: "Update roadmap to accept 53-agent roster"
+    - option: accept_49
+      description: "Update roadmap to accept 49-agent roster"
       effort: low
       impact: "Violates original constraint, requires documentation update"
       
@@ -404,10 +404,10 @@ This section documents specific findings from intent team validation.
 **Referenced Agents:**
 | Agent | Exists | Impact |
 |-------|--------|--------|
-| testing-reality-checker | ✓ YES | Available |
+| testing-qa-verification-specialist | ✓ YES | Available |
 | **engineering-security-engineer** | ✗ **NO** | **CRITICAL GAP** |
 | testing-api-tester | ✓ YES | Available |
-| testing-evidence-collector | ✓ YES | Available |
+| testing-qa-verification-specialist | ✓ YES | Available |
 
 **Impact Analysis:**
 The `harden` intent references `engineering-security-engineer` as a **primary agent**. Without this agent:
@@ -465,16 +465,16 @@ The `security-only` intent is designed for security-focused reviews. Without the
 
 | Division | Count | Agents |
 |----------|-------|--------|
-| Engineering | 8 | ai-engineer, backend-architect, devops-automator, frontend-developer, mobile-app-builder, rapid-prototyper, senior-developer, laravel-specialist |
+| Engineering | 9 | ai-engineer, backend-architect, infrastructure-devops, frontend-developer, mobile-app-builder, rapid-prototyper, security-engineer, senior-developer, laravel-specialist |
 | Design | 6 | brand-guardian, ui-designer, ux-architect, ux-researcher, visual-storyteller, whimsy-injector |
-| Marketing | 8 | app-store-optimizer, content-creator, growth-hacker, instagram-curator, reddit-community-builder, social-media-strategist, tiktok-strategist, twitter-engager |
-| Product | 3 | feedback-synthesizer, sprint-prioritizer, trend-researcher |
+| Marketing | 4 | app-store-optimizer, content-social-strategist, growth-hacker, social-platform-specialist |
+| Product | 4 | feedback-synthesizer, sprint-prioritizer, technical-writer, trend-researcher |
 | Project Management | 5 | experiment-tracker, project-shepherd, studio-operations, studio-producer, senior-project-manager |
 | Spatial Computing | 6 | metal-engineer, terminal-specialist, visionos-spatial-engineer, cockpit-specialist, immersive-developer, interface-architect |
-| Specialized | 4 | orchestrator, analytics-reporter, lsp-engineer, **polymath** |
-| Support | 6 | support-responder, legal-compliance, infrastructure-maintainer, finance-tracker, executive-summary, **analytics-reporter** |
-| Testing | 7 | api-tester, evidence-collector, performance-benchmarker, reality-checker, results-analyzer, tool-evaluator, workflow-optimizer |
-| **TOTAL** | **53** | — |
+| Specialized | 4 | orchestrator, analytics-reporter, lsp-engineer, polymath |
+| Support | 5 | support-responder, legal-compliance, finance-tracker, executive-summary, analytics-reporter |
+| Testing | 6 | api-tester, qa-verification-specialist, performance-benchmarker, results-analyzer, tool-evaluator, workflow-optimizer |
+| **TOTAL** | **49** | — |
 
 ### Limit Violation Details
 
@@ -482,7 +482,7 @@ The `security-only` intent is designed for security-focused reviews. Without the
 ┌─────────────────────────────────────────────────────────┐
 │              52-AGENT LIMIT STATUS                       │
 ├─────────────────────────────────────────────────────────┤
-│  Current: 53 agents                                      │
+│  Current: 49 agents                                      │
 │  Limit:   52 agents                                      │
 │  Status:  ❌ EXCEEDED by 1                               │
 └─────────────────────────────────────────────────────────┘
@@ -490,7 +490,7 @@ The `security-only` intent is designed for security-focused reviews. Without the
 
 ### Compliance Options Analysis
 
-**Option 1: Accept 53-Agent Roster**
+**Option 1: Accept 49-Agent Roster**
 - **Effort**: Low
 - **Pros**: Simplest solution, no agent changes
 - **Cons**: Violates original constraint, sets precedent for future increases
@@ -802,7 +802,7 @@ function generateGapReport(
 **`/legion:agent` - Creation Validation**
 - Integration: Agent creation checks limit before proceeding
 - Purpose: Prevent creating agents when over limit
-- Validation: Block creation if 53+ agents exist
+- Validation: Block creation if 49+ agents exist
 - Output: Error message with consolidation suggestions
 
 ### Updates
@@ -840,7 +840,7 @@ Output is informational only:
 ---
 phase: 40-roster-gap-analysis
 date: 2026-03-05
-agent_count: 53
+agent_count: 49
 agent_limit: 52
 limit_status: EXCEEDED
 ---
@@ -849,7 +849,7 @@ limit_status: EXCEEDED
 
 ## Executive Summary
 
-**Current Roster:** 53 agents across 9 divisions
+**Current Roster:** 49 agents across 9 divisions
 **Agent Limit:** 52 (EXCEEDED by 1)
 **Critical Gaps:** 2
 **High Priority Gaps:** 2
