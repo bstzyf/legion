@@ -9,6 +9,9 @@ Thumbs.db
 .claude-plugin/
 .legion/
 
+# Legion worktree isolation (wave-executor parallel agents)
+.legion-worktrees/
+
 # Build/gen artifacts
 public/
 

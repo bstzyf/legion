@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Legion Plan Summary",
+  "description": "Schema for SUMMARY.md structured content",
+  "type": "object",
+  "required": ["plan_id", "agent", "outcome", "completed_tasks", "files_modified"],
+  "properties": {
+    "plan_id": {
+      "type": "string",
+      "pattern": "^\\d{2}-\\d{2}$"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["success", "partial", "failed"]
+    },
+    "completed_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["task_number", "description", "status"],
+        "properties": {
+          "task_number": { "type": "integer" },
+          "description": { "type": "string" },
+          "status": { "type": "string", "enum": ["done", "partial", "failed", "skipped"] },
+          "verification_passed": { "type": "boolean" }
+        }
+      }
+    },
+    "files_modified": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "decisions_made": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "handoff_context": {
+      "type": "object",
+      "properties": {
+        "key_outputs": { "type": "array", "items": { "type": "string" } },
+        "conventions_established": { "type": "array", "items": { "type": "string" } },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "escalations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "severity": { "type": "string", "enum": ["info", "warning", "blocker"] },
+          "type": { "type": "string" },
+          "decision": { "type": "string" },
+          "context": { "type": "string" }
+        }
+      }
+    },
+    "verification_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "command": { "type": "string" },
+          "exit_code": { "type": "integer" },
+          "passed": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

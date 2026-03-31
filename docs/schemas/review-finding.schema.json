@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Legion Review Finding",
+  "description": "Schema for a single review finding in REVIEW.md",
+  "type": "object",
+  "required": ["id", "severity", "category", "description", "file"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^F-\\d{3,}$" },
+    "severity": { "type": "string", "enum": ["blocker", "critical", "major", "minor", "advisory"] },
+    "category": { "type": "string" },
+    "description": { "type": "string" },
+    "file": { "type": "string" },
+    "line_range": { "type": "string" },
+    "suggested_fix": { "type": "string" },
+    "agent": { "type": "string" },
+    "status": { "type": "string", "enum": ["open", "fixed", "accepted", "deferred"] },
+    "cycle": { "type": "integer", "minimum": 1 }
+  }
+}

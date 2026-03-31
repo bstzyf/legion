@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Legion Outcome Record",
+  "description": "Schema for a single OUTCOMES.md record",
+  "type": "object",
+  "required": ["id", "date", "phase", "plan", "agent", "task_type", "outcome", "importance"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^O-\\d{3,}$" },
+    "date": { "type": "string", "format": "date" },
+    "branch": { "type": "string" },
+    "phase": { "type": "integer" },
+    "plan": { "type": "string", "pattern": "^\\d{2}-\\d{2}$" },
+    "agent": { "type": "string" },
+    "task_type": { "type": "string" },
+    "outcome": { "type": "string", "enum": ["success", "partial", "failed"] },
+    "importance": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "tags": { "type": "string" },
+    "summary": { "type": "string" }
+  }
+}

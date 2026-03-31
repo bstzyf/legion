@@ -4,7 +4,8 @@
   "models": {
     "planning": "adapter_default",
     "execution": "adapter_default",
-    "check": "adapter_default"
+    "check": "adapter_default",
+    "planning_reasoning": false
   },
   "planning": {
     "max_tasks_per_plan": 3,
@@ -14,7 +15,8 @@
   "execution": {
     "auto_commit": true,
     "commit_prefix": "legion",
-    "agent_personality_verbosity": "full"
+    "agent_personality_verbosity": "full",
+    "use_worktrees": false
   },
   "review": {
     "default_mode": "panel",

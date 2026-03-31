@@ -34,6 +34,18 @@ Before decomposition, resolve planning limits from `settings.json`:
 - If missing or invalid, default to `3`
 - Carry this value as `{max_tasks_per_plan}` for all rules and templates below
 
+### Extended Thinking Mode
+
+If `settings.json` `models.planning_reasoning` is `true` AND the active adapter's `supports_extended_thinking` is `true`:
+- Use `adapter.model_planning` (e.g., `opus`) for the decomposition agent
+- Extended thinking provides deeper analysis of:
+  - Requirement dependencies and implicit constraints
+  - Wave ordering rationale (why plan A must precede plan B)
+  - Agent selection justification (why this agent over alternatives)
+- The decomposition output is identical in format; only the reasoning depth changes
+
+If `models.planning_reasoning` is `false`: use `adapter.model_execution` as normal
+
 ---
 
 ## Section 2: Phase Analysis

@@ -59,6 +59,12 @@ Step 2: Update STATE.md
     - Update the progress bar: [####...] {pct}% — {completed}/{total} plans complete
   Write updated STATE.md
 
+Schema reference: docs/schemas/summary.schema.json defines the structured format.
+  When generating summaries, agents SHOULD produce data conforming to this schema
+  before rendering to markdown. This enables downstream tooling to parse summaries
+  programmatically. The markdown rendering is the canonical format; the schema
+  documents the expected structure.
+
 Step 2.5: Record outcome in memory (optional)
   Follow memory-manager Section 6 (Graceful Degradation) caller pattern:
   - Check if .planning/memory/OUTCOMES.md exists OR if .planning/memory/ directory exists

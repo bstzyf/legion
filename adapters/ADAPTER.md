@@ -31,6 +31,7 @@ Adapters bridge Legion's generic workflow concepts to the specific tools and con
 | `structured_messaging` | boolean | Can agents send structured messages back to the coordinator? |
 | `native_task_tracking` | boolean | Does this CLI have built-in task/todo tracking? |
 | `read_only_agents` | boolean | Does this CLI support read-only agent modes (no file writes)? |
+| `supports_extended_thinking` | boolean | Whether the CLI supports extended thinking / chain-of-thought reasoning modes for deeper analysis |
 
 ### Detection (YAML frontmatter)
 

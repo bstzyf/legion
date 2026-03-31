@@ -60,6 +60,18 @@ Execution engine for pre-flight alignment workflows. Consumed by `/legion:explor
 
 **Critical rule:** Research must complete in under 2 minutes. If deeper research needed, flag as a gap to explore, don't block the conversation.
 
+### Extended Thinking Mode
+
+If `settings.json` `models.planning_reasoning` is `true` AND the active adapter's `supports_extended_thinking` is `true`:
+- Use `adapter.model_planning` (e.g., `opus`) for the research synthesis and crystallization phases
+- Extended thinking provides deeper analysis of:
+  - Cross-source pattern recognition (connecting codebase findings with external research)
+  - Gap detection accuracy (identifying implicit unknowns the user hasn't surfaced)
+  - Crystallization quality (sharper summaries with better-justified recommendations)
+- The exploration output format is identical; only the reasoning depth changes
+
+If `models.planning_reasoning` is `false`: use `adapter.model_execution` as normal
+
 ---
 
 ## Section 2: Structured Choice Protocol

@@ -9,6 +9,7 @@ capabilities:
   structured_messaging: true
   native_task_tracking: true
   read_only_agents: true
+  supports_extended_thinking: true
 detection:
   primary: "TeamCreate tool is available in the tool list"
   secondary: "~/.claude/ directory exists"
@@ -105,4 +106,19 @@ TeamDelete()
 ```
 
 This MUST run on both success and failure paths. Never leave orphaned agents or stale Team configurations.
+
+## Extended Thinking Support
+
+Claude Code supports extended thinking via the `model` parameter on Agent calls. When `models.planning_reasoning` is set in settings.json, planning agents use `opus` with extended thinking for deeper requirement decomposition and agent selection rationale.
+
+Usage in Legion:
+- Phase decomposition (phase-decomposer): extended thinking improves wave dependency analysis
+- Polymath exploration (polymath-engine): extended thinking improves research synthesis
+- Plan critique (plan-critique): extended thinking improves assumption hunting
+
+The `model` override is passed via the Agent tool's `model` parameter: `Agent(model: "opus", ...)`.
+
+## Worktree Support
+
+Claude Code fully supports worktree isolation mode (`execution.use_worktrees`). The `Agent` tool accepts directory context, and agents spawned in worktrees operate on the isolated file tree. EnterWorktree/ExitWorktree tools are available but NOT used by Legion — Legion manages worktree lifecycle directly via git commands for cross-CLI compatibility.
 

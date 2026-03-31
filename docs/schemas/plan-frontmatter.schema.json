@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Legion Plan Frontmatter",
+  "description": "Schema for PLAN.md YAML frontmatter fields",
+  "type": "object",
+  "required": ["phase", "plan", "wave", "agent"],
+  "properties": {
+    "phase": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Phase number this plan belongs to"
+    },
+    "plan": {
+      "type": "string",
+      "pattern": "^\\d{2}-\\d{2}$",
+      "description": "Plan ID in NN-PP format (e.g., 04-01)"
+    },
+    "wave": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Execution wave number"
+    },
+    "agent": {
+      "type": "string",
+      "description": "Agent ID from the registry (e.g., engineering-backend-architect)"
+    },
+    "autonomous": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if plan runs without agent personality injection"
+    },
+    "depends_on": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^\\d{2}-\\d{2}$" },
+      "description": "Plan IDs that must complete before this plan"
+    },
+    "files_modified": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "File paths this plan creates or modifies"
+    },
+    "files_forbidden": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "File paths this plan must NOT modify"
+    },
+    "sequential_files": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Files requiring single-agent sequential access"
+    },
+    "requirements": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Requirement IDs covered by this plan"
+    },
+    "expected_artifacts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Expected output file paths"
+    },
+    "verification_commands": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Bash commands proving plan success"
+    }
+  },
+  "additionalProperties": false
+}

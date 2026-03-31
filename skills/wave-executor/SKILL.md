@@ -42,11 +42,110 @@ These rules govern all execution decisions. Do not deviate from them.
 5. **Each plan produces a summary** — after an agent completes, write a `{NN}-{PP}-SUMMARY.md` file to the phase directory, whether the result is success or failure.
 6. **Orchestrator stays in main context** — the `/legion:build` command itself does not execute plan work. It reads, validates, dispatches, and collects. On CLIs without spawning, personality injection is temporary and dropped after each plan.
 7. **Failed wave blocks subsequent waves** — if any plan in a wave fails, do not proceed to the next wave. Report wave status and pause for user decision.
-8. **Files isolation per wave** — plans within the same wave must not share files_modified entries. This is guaranteed by plan authoring (see phase-decomposer.md), but flag a warning if a conflict is detected.
+8. **Files isolation per wave** — plans within the same wave must not share files_modified entries. This is guaranteed by plan authoring (see phase-decomposer.md), but flag a warning if a conflict is detected. When `execution.use_worktrees` is `true`, this constraint is relaxed — each agent operates in its own git worktree, providing filesystem-level isolation. See Section 1.5.
 9. **Sequential file ordering** — when plans in the same wave declare `sequential_files`, the wave-executor must serialize dispatch for plans that share a sequential file. Plans with no sequential file overlap still execute in parallel. This constraint applies even when `adapter.parallel_execution` is true.
 10. **One coordination context per phase** — per adapter protocol: one Team on Claude Code, one checklist file on other CLIs. Not per wave.
 11. **Agents report via adapter.collect_results** — spawned agents send their structured completion summary per the adapter's result collection method. This keeps the coordinator's context window small.
 12. **Verification-gated completion** — after each task, the agent MUST run all `> verification:` commands from the task's action block. If any verification command returns a non-zero exit code, the task is marked as failed and the agent must report the failure. Do not proceed to the next task until all verifications pass.
+
+---
+
+## Section 1.5: Worktree Isolation Mode
+
+When `settings.json` `execution.use_worktrees` is `true`, the wave-executor creates isolated git worktrees for each agent in a wave, eliminating the need for `files_modified` disjointness checking.
+
+### When to Use
+
+- Multiple agents in the same wave need to modify overlapping files
+- The `files_modified` disjointness constraint (Principle 8) is too restrictive for the task
+- Maximum isolation is needed for safety during parallel execution
+
+### Prerequisites
+
+- `adapter.parallel_execution` must be `true` (worktrees are pointless for sequential execution)
+- Git must be available and the project must be a git repository
+- Sufficient disk space for worktree copies
+- If prerequisites are not met: fall back to standard execution with a warning
+
+### Worktree Lifecycle
+
+```
+Phase Start:
+  For each wave with 2+ parallel plans:
+
+    Step 1: Create worktrees
+      For each plan in the wave:
+        - branch_name = "legion-wt-{NN}-{PP}-{timestamp}"
+        - Run: git worktree add .legion-worktrees/{NN}-{PP} -b {branch_name} HEAD
+        - Store worktree_path = .legion-worktrees/{NN}-{PP}
+
+    Step 2: Spawn agents in worktrees
+      For each plan:
+        - Set agent cwd to the worktree path instead of the project root
+        - All agent file operations happen in the isolated worktree
+        - Agent personality injection and execution is unchanged
+
+    Step 3: Collect results
+      Wait for all agents in the wave to complete (same as standard execution)
+
+    Step 4: Merge worktrees back
+      For each completed worktree (in plan order):
+        a. Check for changes: git -C {worktree_path} diff --name-only HEAD
+        b. If no changes: skip (agent made no modifications)
+        c. Commit changes in worktree:
+           git -C {worktree_path} add -A
+           git -C {worktree_path} commit -m "legion: plan {NN}-{PP} execution"
+        d. Merge into main working tree:
+           git merge {branch_name} --no-ff -m "legion: merge plan {NN}-{PP}"
+        e. If merge conflict:
+           - Record conflicting files
+           - Abort merge: git merge --abort
+           - Add to conflict_report for user resolution
+           - Continue with remaining worktrees
+
+    Step 5: Cleanup
+      For each worktree:
+        - git worktree remove .legion-worktrees/{NN}-{PP} --force
+        - git branch -D {branch_name}
+      - Remove .legion-worktrees/ directory if empty
+
+    Step 6: Report conflicts (if any)
+      If conflict_report is non-empty:
+        Display:
+        "## Merge Conflicts Detected
+
+        The following plans produced conflicting changes:
+        | Plan | Conflicting Files |
+        |------|------------------|
+        | {NN}-{PP} | {file_list} |
+
+        Resolve conflicts manually, then run `/legion:build --resume` to continue."
+
+        Halt execution — do not proceed to next wave
+```
+
+### Integration with Existing Principles
+
+When worktree mode is active:
+- **Principle 8 (Files isolation per wave)** is relaxed — worktrees provide filesystem-level isolation instead of plan-level file list disjointness
+- **Principle 9 (Sequential file ordering)** is NOT relaxed — sequential_files still serialize dispatch even in worktree mode, because merge order matters for files that require single-writer semantics
+- **Principle 12 (Verification-gated completion)** runs inside the worktree — verification commands execute against the worktree's file state, not the main tree
+
+### Adapter Requirements
+
+| Adapter Capability | Worktree Support |
+|-------------------|-----------------|
+| Claude Code | Full support — Agent tool accepts cwd override |
+| Cursor/Windsurf | Partial — file-based result collection works, but agents may not respect cwd |
+| Sequential CLIs | N/A — worktrees disabled for sequential execution |
+
+### Error Handling
+
+- **Worktree creation fails**: Fall back to standard execution, warn user
+- **Merge conflict**: Halt wave, report conflicts, preserve worktrees for manual resolution
+- **Disk space**: If worktree creation fails with disk space error, fall back with warning
+- **Git not available**: Fall back to standard execution (should never happen — git is required for Legion)
+- **Orphaned worktrees**: On next `/legion:build`, check for stale `.legion-worktrees/` and offer cleanup
 
 ---
 
@@ -68,6 +167,10 @@ Step 2: List all files in the phase directory
   - Sort plans by plan number (PP) ascending
 
 Step 3: Read each plan file's YAML frontmatter
+  Schema reference: docs/schemas/plan-frontmatter.schema.json defines the required
+  and optional frontmatter fields. Plan files MUST conform to this schema. The
+  /legion:validate command checks plan frontmatter against this schema.
+
   For each plan file, parse the frontmatter block (between --- delimiters):
   - wave: integer (required — which execution wave this plan belongs to)
   - depends_on: list of "NN-PP" strings (plans that must complete before this one)
