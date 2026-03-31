@@ -5,6 +5,35 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.2.0] - 2026-03-31
+
+### Added
+- **`/legion:validate`** — State file integrity checker for `.planning/` artifacts. Validates schema conformance, cross-references between plans and state, and detects corruption. Supports `--ci` flag for pipeline integration and `--fix` for auto-remediation.
+- **Hooks integration skill** (`skills/hooks-integration/`) — Claude Code hooks for lifecycle automation: pre-build plan validation, post-build notification, pre-ship security gate. All opt-in with graceful degradation.
+- **Structured output schemas** (`docs/schemas/`) — JSON Schema validation for plan frontmatter, summaries, outcomes records, and review findings.
+- **Git worktrees** — Opt-in filesystem isolation during parallel agent waves via `execution.use_worktrees` setting. Full lifecycle: create → spawn → merge with conflict detection → cleanup.
+- **Extended thinking for planning** — `models.planning_reasoning` setting enables deeper requirement analysis and wave ordering rationale in phase-decomposer and polymath-engine.
+- **Quick `--fix` flag** — Inline review + PR creation in a single `/legion:quick` command with GitHub issue linking support.
+- **Plan `--auto-refine` flag** — Automatic re-planning when plan critique returns CRITICAL findings. Max 2 refinement cycles with user fallback.
+- **Memory pruning** — OUTCOMES.md pruning with archive mechanism via `--prune` flag on `/legion:learn`. Configurable `auto_prune`, `prune_threshold`, and `prune_age_days` settings.
+- **Post-execution boundary verification** — Authority-enforcer validates agents stayed within `files_modified` scope after execution. Guarded mode warns; surgical mode auto-reverts.
+- **State file quick validation** — workflow-common-core runs lightweight state validation on every command invocation.
+
+### Changed
+- **10 agents enriched** — Thin agents (88-131 lines) expanded to 200-338 lines with domain-specific depth: code review rubrics, refactoring frameworks, spatial interaction patterns, Livewire lifecycle edge cases, growth experiment templates.
+- **Agent roster consolidated (49 → 48)** — data-analytics-reporter + support-analytics-reporter merged into data-analytics-engineer.
+- **Security review hardened** — Dependency vulnerability scanning (6 ecosystems), secret detection (12+ patterns), supply chain integrity checks.
+- **OpenCode adapter enriched** — Model routing and troubleshooting guidance.
+- **Aider adapter downgraded** — Reclassified to community-contributed tier with manual operation guide.
+- **Update command enriched** — `--check` flag, changelog display, post-install verification.
+- **Advise command enriched** — Memory recording for advisory sessions.
+- **Retro command enriched** — Plan feedback loop via RETRO.md consumption in subsequent planning.
+
+### Stats
+- 17 commands, 31 skills, 48 agents
+- Agent personality line range: 155-677
+- 61 files changed, +2528/-710 lines across Tier 1+2+3
+
 ## [7.1.0] - 2026-03-30
 
 ### Added
@@ -27,7 +56,7 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Marketing division** restructured: 8 → 4 agents with clear strategy → execution hierarchy.
 
 ### Stats
-- 16 commands, 30 skills, 49 agents
+- 16 commands, 30 skills, 49 agents (at time of release)
 
 ## [7.0.0] - 2026-03-19
 
