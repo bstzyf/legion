@@ -1,6 +1,6 @@
 # Legion
 
-A multi-CLI plugin for orchestrating 48 AI specialist personalities as a coordinated legion. Works with Codex, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Kiro CLI, Windsurf, OpenCode, and Aider.
+A multi-CLI plugin for orchestrating 48 AI specialist personalities as a coordinated legion. Works with Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot CLI, Google Gemini CLI, Kiro CLI, Windsurf, OpenCode, and Aider.
 
 ## MANDATORY: User Interaction Rule
 
@@ -21,16 +21,21 @@ A multi-CLI plugin for orchestrating 48 AI specialist personalities as a coordin
 | `/legion:milestone` | Milestone completion, archiving, and metrics |
 | `/legion:agent` | Create a new agent personality through a guided workflow |
 | `/legion:explore` | Pre-flight exploration with Polymath — crystallize, onboard, compare, or debate |
+| `/legion:board` | Convene board of directors for governance decisions |
+| `/legion:retro` | Run structured retrospective on completed phases or milestones |
+| `/legion:ship` | Pre-ship checklist, PR creation, deployment verification, canary monitoring |
+| `/legion:learn` | Record, recall, and manage project-specific patterns, pitfalls, and preferences |
 | `/legion:update` | Check for updates and install latest version from npm |
+| `/legion:validate` | Validate .planning/ state file integrity, schema conformance, and cross-references |
 
 ## Project Structure
 
 ```
 bin/                  — npm installer (install.js)
-commands/             — 12 /legion: command entry points
-skills/               — 25 reusable workflow skills (SKILL.md per directory)
+commands/             — 17 /legion: command entry points
+skills/               — 31 reusable workflow skills (SKILL.md per directory)
 agents/               — 48 agent personality .md files (flat, with division in frontmatter)
-adapters/             — Per-CLI adapter files (Codex.md, codex-cli.md, cursor.md, etc.)
+adapters/             — Per-CLI adapter files (claude-code.md, codex-cli.md, cursor.md, etc.)
 .planning/            — Project state (PROJECT.md, ROADMAP.md, STATE.md)
   milestones/         — Archived requirements and roadmaps
   phases/             — Phase plan and summary files
@@ -40,27 +45,61 @@ adapters/             — Per-CLI adapter files (Codex.md, codex-cli.md, cursor.
 
 | Division | Count | Focus |
 |----------|-------|-------|
-| Engineering | 8 | Full-stack, backend, frontend, AI, DevOps, mobile, prototyping, Laravel specialization |
+| Engineering | 9 | Full-stack, backend, frontend, AI, infrastructure/DevOps, mobile, prototyping, Laravel, security |
 | Design | 6 | UI/UX, branding, visual storytelling, research |
-| Marketing | 6 | Content, social media, growth, platform strategies |
-| Testing | 6 | QA, verification, performance, API testing |
-| Product | 3 | Sprint planning, feedback synthesis, trends |
+| Marketing | 4 | Content & social strategy, platform execution, growth, ASO |
+| Testing | 6 | QA verification, performance, API testing, workflow optimization |
+| Product | 4 | Sprint planning, feedback synthesis, trends, technical writing |
 | Project Management | 5 | Coordination, portfolio, operations, experiments |
-| Support | 5 | Analytics, finance, legal, customer support |
+| Support | 4 | Finance, legal, executive summaries, support |
 | Spatial Computing | 6 | VisionOS, XR, Metal, terminal integration |
-| Specialized | 4 | Orchestration, data analytics, LSP indexing, exploration |
+| Specialized | 4 | Orchestration, data analytics engineering, LSP indexing, exploration |
 
 Agent frontmatter includes enriched metadata: `languages`, `frameworks`, `artifact_types`, and `review_strengths` fields enable metadata-aware agent selection by the recommendation engine.
+
+## Dynamic Knowledge Index
+
+IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for Agent Personas, Skills, and Workflows. When assigned a specific agent persona (e.g., during `/legion:build`, `/legion:review`, `/legion:quick`, or `/legion:advise`), or when a workflow skill is loaded, use the `Read` tool to read their exact markdown file from the index below before generating any code, plans, or reviews. Do NOT rely on pre-trained knowledge about what an agent does — the personality file IS the source of truth.
+
+```
+[Legion Agents Index]|root: {AGENTS_DIR} (resolve via workflow-common-core Agent Path Resolution)
+|engineering:{engineering-ai-engineer.md,engineering-backend-architect.md,engineering-frontend-developer.md,engineering-infrastructure-devops.md,engineering-laravel-specialist.md,engineering-mobile-app-builder.md,engineering-rapid-prototyper.md,engineering-security-engineer.md,engineering-senior-developer.md}
+|design:{design-brand-guardian.md,design-ui-designer.md,design-ux-architect.md,design-ux-researcher.md,design-visual-storyteller.md,design-whimsy-injector.md}
+|marketing:{marketing-app-store-optimizer.md,marketing-content-social-strategist.md,marketing-growth-hacker.md,marketing-social-platform-specialist.md}
+|product:{product-feedback-synthesizer.md,product-sprint-prioritizer.md,product-technical-writer.md,product-trend-researcher.md}
+|testing:{testing-api-tester.md,testing-performance-benchmarker.md,testing-qa-verification-specialist.md,testing-test-results-analyzer.md,testing-tool-evaluator.md,testing-workflow-optimizer.md}
+|project-management:{project-management-experiment-tracker.md,project-management-project-shepherd.md,project-management-studio-operations.md,project-management-studio-producer.md,project-manager-senior.md}
+|support:{support-executive-summary-generator.md,support-finance-tracker.md,support-legal-compliance-checker.md,support-support-responder.md}
+|spatial:{macos-spatial-metal-engineer.md,terminal-integration-specialist.md,visionos-spatial-engineer.md,xr-cockpit-interaction-specialist.md,xr-immersive-developer.md,xr-interface-architect.md}
+|specialized:{agents-orchestrator.md,data-analytics-engineer.md,lsp-index-engineer.md,polymath.md}
+
+[Legion Skills Index]|root: ./skills
+|core:{workflow-common/SKILL.md,workflow-common-core/SKILL.md,workflow-common-domains/SKILL.md,workflow-common-github/SKILL.md,workflow-common-memory/SKILL.md}
+|planning:{phase-decomposer/SKILL.md,plan-critique/SKILL.md,spec-pipeline/SKILL.md}
+|execution:{cli-dispatch/SKILL.md,execution-tracker/SKILL.md,wave-executor/SKILL.md}
+|review:{review-evaluators/SKILL.md,review-loop/SKILL.md,review-panel/SKILL.md,security-review/SKILL.md}
+|agents:{agent-creator/SKILL.md,agent-registry/SKILL.md,authority-enforcer/SKILL.md}
+|integration:{github-sync/SKILL.md,hooks-integration/SKILL.md}
+|intelligence:{codebase-mapper/SKILL.md,intent-router/SKILL.md,polymath-engine/SKILL.md}
+|tracking:{memory-manager/SKILL.md,milestone-tracker/SKILL.md,portfolio-manager/SKILL.md}
+|domain:{design-workflows/SKILL.md,marketing-workflows/SKILL.md}
+|governance:{board-of-directors/SKILL.md}
+|deployment:{ship-pipeline/SKILL.md}
+|onboarding:{questioning-flow/SKILL.md}
+```
 
 ## Workflow
 
 ```
-/legion:start → /legion:plan 1 → /legion:build → /legion:review → /legion:plan 2 → ...
+/legion:start → /legion:plan 1 → /legion:build → /legion:review → /legion:ship → /legion:retro → /legion:plan 2 → ...
 ```
 
-Each phase: plan (decompose + assign agents) → build (execution — parallel or sequential per CLI) → review (QA loop)
+Each phase: plan (decompose + assign agents) → build (execution — parallel or sequential per CLI) → review (QA loop) → ship (deploy) → retro (learn)
 
+Learning: `/legion:learn <lesson>` — record patterns, pitfalls, and preferences to project memory
 Advisory: `/legion:advise <topic>` — standalone consultation, no phase context needed
+Advisory: `/legion:board meet <topic>` — governance escalation for high-stakes decisions
+Advisory: `/legion:board review` — quick strategic assessments
 
 Intent routing: `/legion:status` and other commands use natural language intent parsing with context-aware suggestions, routing ambiguous inputs to the most relevant command based on project state.
 

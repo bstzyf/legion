@@ -90,6 +90,7 @@ Use resolved path for all personality reads:
 
 ## Personality Injection (Core)
 
+- **Retrieval-led reasoning**: ALWAYS read the agent personality file before spawning. Do NOT substitute pre-trained knowledge for the personality file contents. The Dynamic Knowledge Index in AGENTS.md provides the complete file map — use it to locate agent files by division, then Read the full file. This is non-negotiable.
 - Load full personality markdown for assigned agent.
 - Inject personality content + task instructions into adapter spawn prompt.
 - Use `adapter.model_execution` for execution agents unless command overrides it.
