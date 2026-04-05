@@ -5,6 +5,18 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.3.0] - 2026-04-05
+
+### Added
+- **Dynamic Knowledge Index** — Compressed pipe-delimited directory index in AGENTS.md and CLAUDE.md mapping all 48 agents (by division) and 31 skills (by category). Combined with "Prefer retrieval-led reasoning over pre-training-led reasoning" directive, eliminates LLM laziness during agent spawning by making file locations always-in-context. Based on [Vercel's Context Engineering research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals).
+- **`scripts/generate-knowledge-index.js`** — Generator script that scans `agents/` and `skills/` directories to rebuild the compressed index. Supports `--patch` flag to update AGENTS.md and CLAUDE.md in-place. Reports uncategorized files as warnings.
+- **Agent-creator index regeneration** — `agent-creator` skill now calls `generate-knowledge-index.js --patch` after creating new agents to keep the index current.
+
+### Changed
+- **wave-executor Step 2** — Personality file read now labeled `RETRIEVAL-LED — MANDATORY` with explicit failure mode description and reference to Dynamic Knowledge Index.
+- **workflow-common-core Personality Injection** — Added retrieval-led reasoning directive as non-negotiable requirement.
+- **AGENTS.md synced with CLAUDE.md** — Added 5 missing commands (board, retro, ship, learn, validate), fixed stale division counts, updated workflow section.
+
 ## [7.2.0] - 2026-03-31
 
 ### Added

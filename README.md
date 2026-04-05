@@ -582,6 +582,19 @@ New `hooks-integration` skill defining opt-in hook configurations for lifecycle 
 
 `models.planning_reasoning` setting (default: false) enables deeper requirement analysis, wave ordering rationale, and research synthesis in phase-decomposer and polymath-engine. Requires adapter `supports_extended_thinking` capability.
 
+### Dynamic Knowledge Index (Context Engineering)
+
+A compressed directory index embedded in AGENTS.md and CLAUDE.md that maps every agent and skill file by division/category using a pipe-delimited format. Paired with a retrieval-led reasoning directive that shifts the LLM's default from pre-trained knowledge to file retrieval.
+
+Based on [Vercel's Context Engineering research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals), which showed that an always-in-context compressed index achieves 100% tool-use success vs. 53-79% for skills-based approaches. The mechanism: removing the *decision* to consult documentation eliminates the failure mode entirely.
+
+**Three reinforcement layers:**
+1. **AGENTS.md / CLAUDE.md** — the index is always in context with the "Prefer retrieval-led reasoning" directive
+2. **wave-executor Step 2** — personality file read is labeled `RETRIEVAL-LED — MANDATORY` with explicit failure mode description
+3. **workflow-common-core** — Personality Injection core contract states retrieval-led reasoning is non-negotiable
+
+A generator script (`scripts/generate-knowledge-index.js`) rebuilds the index when agents or skills change. The `--patch` flag updates both AGENTS.md and CLAUDE.md in-place. The agent-creator skill calls this automatically after creating new agents.
+
 ## Standing on the Shoulders of Giants
 
 Legion didn't invent its patterns from scratch. It cherry-picked the best ideas from twelve proven Claude Code projects, combined them into something greater than the sum of its parts, and left behind the complexity that made each hard to adopt.
@@ -720,7 +733,7 @@ Legion intentionally optimizes for orchestration ergonomics (few commands, markd
 
 | Design Axis | Typical Alternative | Legion Choice | Tradeoff |
 |-------------|---------------------|---------------|----------|
-| Command surface | 15-33+ command sets | 16 commands | Faster onboarding, but less granular command specialization |
+| Command surface | 15-33+ command sets | 17 commands | Faster onboarding, but less granular command specialization |
 | State storage | JSON/DB/hybrid state | Markdown-only `.planning/` | Human-readable and git-native, but less strict schema enforcement |
 | Setup model | CLI bootstrap + config | `npx` installer | Simpler install path, but runtime capabilities can vary more |
 | Agent model | Generic role prompts | 48 full personalities | Higher domain specificity, but larger context footprint |
@@ -824,6 +837,7 @@ legion/                     <- Project root
 - **Wave execution**: Plans grouped by dependency; parallel within waves, sequential between. File overlap detection and `sequential_files` prevent conflicts
 - **Control modes**: Four presets (autonomous, guarded, advisory, surgical) adjust authority enforcement per-project
 - **Observability**: Decision logging in SUMMARY.md and cycle-over-cycle diffs in REVIEW.md provide agent decision audit trails
+- **Retrieval-led reasoning**: A compressed Dynamic Knowledge Index in AGENTS.md maps every agent and skill file by division/category. Combined with a "prefer retrieval over pre-training" directive, this eliminates LLM laziness during agent spawning — agents always read their personality files instead of hallucinating personas. Based on [Vercel's Context Engineering research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals).
 - **Graceful degradation**: Optional features (GitHub, memory, marketing, design, panels, critique) activate when available, skip silently when not
 - **Read-only advisory**: Consultation agents explore but never modify — tool-level enforcement via Explore subagent type
 - **Domain-weighted review**: Each reviewer evaluates against non-overlapping criteria scoped to their expertise, not generic checklists
