@@ -58,6 +58,37 @@ adapters/             — Per-CLI adapter files (claude-code.md, codex-cli.md, c
 
 Agent frontmatter includes enriched metadata: `languages`, `frameworks`, `artifact_types`, and `review_strengths` fields enable metadata-aware agent selection by the recommendation engine.
 
+## Dynamic Knowledge Index
+
+IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for Agent Personas, Skills, and Workflows. When assigned a specific agent persona (e.g., during `/legion:build`, `/legion:review`, `/legion:quick`, or `/legion:advise`), or when a workflow skill is loaded, use the `Read` tool to read their exact markdown file from the index below before generating any code, plans, or reviews. Do NOT rely on pre-trained knowledge about what an agent does — the personality file IS the source of truth.
+
+```
+[Legion Agents Index]|root: {AGENTS_DIR} (resolve via workflow-common-core Agent Path Resolution)
+|engineering:{engineering-ai-engineer.md,engineering-backend-architect.md,engineering-frontend-developer.md,engineering-infrastructure-devops.md,engineering-laravel-specialist.md,engineering-mobile-app-builder.md,engineering-rapid-prototyper.md,engineering-security-engineer.md,engineering-senior-developer.md}
+|design:{design-brand-guardian.md,design-ui-designer.md,design-ux-architect.md,design-ux-researcher.md,design-visual-storyteller.md,design-whimsy-injector.md}
+|marketing:{marketing-app-store-optimizer.md,marketing-content-social-strategist.md,marketing-growth-hacker.md,marketing-social-platform-specialist.md}
+|product:{product-feedback-synthesizer.md,product-sprint-prioritizer.md,product-technical-writer.md,product-trend-researcher.md}
+|testing:{testing-api-tester.md,testing-performance-benchmarker.md,testing-qa-verification-specialist.md,testing-test-results-analyzer.md,testing-tool-evaluator.md,testing-workflow-optimizer.md}
+|project-management:{project-management-experiment-tracker.md,project-management-project-shepherd.md,project-management-studio-operations.md,project-management-studio-producer.md,project-manager-senior.md}
+|support:{support-executive-summary-generator.md,support-finance-tracker.md,support-legal-compliance-checker.md,support-support-responder.md}
+|spatial:{macos-spatial-metal-engineer.md,terminal-integration-specialist.md,visionos-spatial-engineer.md,xr-cockpit-interaction-specialist.md,xr-immersive-developer.md,xr-interface-architect.md}
+|specialized:{agents-orchestrator.md,data-analytics-engineer.md,lsp-index-engineer.md,polymath.md}
+
+[Legion Skills Index]|root: ./skills
+|core:{workflow-common/SKILL.md,workflow-common-core/SKILL.md,workflow-common-domains/SKILL.md,workflow-common-github/SKILL.md,workflow-common-memory/SKILL.md}
+|planning:{phase-decomposer/SKILL.md,plan-critique/SKILL.md,spec-pipeline/SKILL.md}
+|execution:{cli-dispatch/SKILL.md,execution-tracker/SKILL.md,wave-executor/SKILL.md}
+|review:{review-evaluators/SKILL.md,review-loop/SKILL.md,review-panel/SKILL.md,security-review/SKILL.md}
+|agents:{agent-creator/SKILL.md,agent-registry/SKILL.md,authority-enforcer/SKILL.md}
+|integration:{github-sync/SKILL.md,hooks-integration/SKILL.md}
+|intelligence:{codebase-mapper/SKILL.md,intent-router/SKILL.md,polymath-engine/SKILL.md}
+|tracking:{memory-manager/SKILL.md,milestone-tracker/SKILL.md,portfolio-manager/SKILL.md}
+|domain:{design-workflows/SKILL.md,marketing-workflows/SKILL.md}
+|governance:{board-of-directors/SKILL.md}
+|deployment:{ship-pipeline/SKILL.md}
+|onboarding:{questioning-flow/SKILL.md}
+```
+
 ## Workflow
 
 ```

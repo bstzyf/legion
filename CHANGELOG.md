@@ -8,6 +8,9 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [7.3.0] - 2026-04-07
 
 ### Added
+- **Dynamic Knowledge Index** — Compressed pipe-delimited directory index in AGENTS.md and CLAUDE.md mapping all 48 agents (by division) and 31 skills (by category). Combined with "Prefer retrieval-led reasoning over pre-training-led reasoning" directive, eliminates LLM laziness during agent spawning by making file locations always-in-context. Based on [Vercel's Context Engineering research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals).
+- **`scripts/generate-knowledge-index.js`** — Generator script that scans `agents/` and `skills/` directories to rebuild the compressed index. Supports `--patch` flag to update AGENTS.md and CLAUDE.md in-place. Reports uncategorized files as warnings.
+- **Agent-creator index regeneration** — `agent-creator` skill now calls `generate-knowledge-index.js --patch` after creating new agents to keep the index current.
 - **`/legion:e2e`** — User-initiated multi-dimensional E2E testing command. Scans accumulated changes from plan/build stages, reconciles with live codebase (dual-source), generates/supplements test cases across 6 quality dimensions, and runs full Playwright regression. Supports `--analyze-only` (write tests without executing) and `--force-run` flags.
 - **6 quality dimensions** — E2E tests cover functional journeys, visual regression (`toHaveScreenshot`), accessibility (axe-core WCAG 2.1 AA), performance (Web Vitals budgets), responsive (multi-device viewports), and API contract validation (`APIRequestContext`).
 - **E2E runner agent** (`agents/e2e-runner.md`, 241 lines) — Lean agent personality with three operating modes: DELTA (build-time, new journeys only), REGRESSION (review-time, all specs), CUMULATIVE (`/legion:e2e`, all sources + all dimensions).
@@ -21,6 +24,9 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **E2E user guide** (`docs/e2e-guide.md`) — Chinese-language guide covering the full E2E workflow from zero to execution.
 
 ### Changed
+- **wave-executor Step 2** — Personality file read now labeled `RETRIEVAL-LED — MANDATORY` with explicit failure mode description and reference to Dynamic Knowledge Index.
+- **workflow-common-core Personality Injection** — Added retrieval-led reasoning directive as non-negotiable requirement.
+- **AGENTS.md synced with CLAUDE.md** — Added 5 missing commands (board, retro, ship, learn, validate), fixed stale division counts, updated workflow section.
 - **Agent roster 48 → 49** — e2e-runner added to Testing division in agent-registry CATALOG.md.
 - **Agent registry** — `e2e`/`end-to-end`/`journey`/`playwright` keywords mapped to `e2e-testing` task type.
 - **settings.json** — New `testing.e2e_change_tracking` setting (default: true) controls passive change recording.
@@ -33,7 +39,7 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Stats
 - 18 commands, 33 skills, 49 agents
-- New files: 5 | Modified files: 10 | Total: +433 lines across 15 files
+- New files: 5 | Modified files: 10 | Total: +1115 lines across 15 files
 
 ## [7.2.0] - 2026-03-31
 

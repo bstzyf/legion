@@ -406,6 +406,16 @@ Your new agent '{agent-name}' is ready. It will appear in
 `/legion:plan` recommendations for tasks matching: {tags}.
 ```
 
+### Regenerate Dynamic Knowledge Index
+
+After creating the agent file and updating the registry, regenerate the compressed knowledge index:
+
+```bash
+node scripts/generate-knowledge-index.js --patch
+```
+
+This updates the Dynamic Knowledge Index in AGENTS.md and CLAUDE.md to include the new agent. If the script is not available (e.g., global install without scripts/), skip this step — the index can be regenerated later.
+
 ### Commit Handling
 
 Do NOT automatically commit. The calling command (`/legion:agent`) handles git commit in its Step 8. This skill focuses on file creation and registry update only.

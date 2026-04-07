@@ -247,12 +247,19 @@ Step 1.5: Validate the agent-id against actual files
        If ZERO matches: fall back to autonomous mode and log:
        "No agent file found for {original-id}. Executing plan autonomously."
 
-Step 2: Read the complete personality file
-  - Use the Read tool to load the ENTIRE agent .md file
+Step 2: Read the complete personality file (RETRIEVAL-LED — MANDATORY)
+  - IMPORTANT: Use retrieval-led reasoning, not pre-training-led reasoning.
+    Do NOT rely on what you "know" about an agent's role. The personality file
+    IS the agent's identity. Without reading it, you are hallucinating a persona.
+  - Use the Read tool to load the ENTIRE agent .md file from the Dynamic Knowledge
+    Index in AGENTS.md: {AGENTS_DIR}/{agent-id}.md
   - Do not truncate, summarize, or excerpt any portion
   - The personality content includes: the agent's identity, specialization, behavioral
     traits, communication style, technical focus areas, and working principles
   - Capture this as: PERSONALITY_CONTENT
+  - If you skip this step, the spawned agent will operate on generic pre-trained
+    behavior instead of Legion's carefully designed specialist persona. This is
+    the single most common failure mode in agent orchestration.
 
 Step 3: Read the complete plan file
   - Use the Read tool to load the full plan .md file
