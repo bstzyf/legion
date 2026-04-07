@@ -706,7 +706,9 @@ function parseNaturalLanguage(input) {
         'document': { command: '/legion:build', flags: ['--just-document'] },
         'skip-frontend': { command: '/legion:build', flags: ['--skip-frontend'] },
         'skip-backend': { command: '/legion:build', flags: ['--skip-backend'] },
-        'security-only': { command: '/legion:review', flags: ['--just-security'] }
+        'security-only': { command: '/legion:review', flags: ['--just-security'] },
+        'e2e-test': { command: '/legion:e2e', flags: [] },
+        'e2e-analyze': { command: '/legion:e2e', flags: ['--analyze-only'] }
       };
       const route = intentToFlag[intentName] || { command: null, flags: [] };
       candidates.push({
@@ -898,6 +900,8 @@ Natural language phrases mapped to Legion commands. Intent flags are matched via
 | Explore/research | "explore options", "research", "crystallize" | `/legion:explore` |
 | Harden | "harden security", "security audit", "fix vulnerabilities" | `/legion:build --just-harden` |
 | Document | "write docs", "generate documentation" | `/legion:build --just-document` |
+| E2E test | "run e2e", "end-to-end test", "browser test", "user journey test", "run playwright", "e2e regression" | `/legion:e2e` |
+| E2E analyze | "analyze e2e", "what needs testing", "test coverage gaps", "e2e status" | `/legion:e2e --analyze-only` |
 
 **Cross-command detection**: When NL parsing within one command (e.g., `/legion:build`) matches a different command (e.g., `/legion:review`), the system suggests the correct command rather than silently redirecting:
 ```

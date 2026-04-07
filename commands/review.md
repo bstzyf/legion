@@ -172,6 +172,26 @@ c. **No match**: If NL parsing returns confidence 0 or no candidates, proceed wi
        6. If git diff fails or memory not available: skip silently
        This is informational — manual edit detection never blocks review.
 
+   3.7. E2E SUGGESTION (soft prompt — informational, never blocks review)
+      Before spawning review agents, perform a quick E2E status check:
+      a. Check if any E2E spec files exist: Glob `e2e/**/*.spec.{ts,js}` or `**/*.e2e.{ts,js}`
+      b. Read `.planning/E2E_CHANGE_LOG.md` (if exists) — check for uncovered phases
+         (sections with `- [ ] Not yet covered by E2E tests`)
+      
+      **If BOTH spec files exist AND uncovered changes detected:**
+      Use AskUserQuestion:
+      "E2E tests exist and there are uncovered changes since the last run.
+       Consider running /legion:e2e before or after review."
+      Options:
+      - "Proceed with review (I'll run E2E later)" → continue review normally
+      - "Cancel review — I'll run /legion:e2e first" → exit review, suggest user run /legion:e2e
+
+      **If spec files exist but NO uncovered changes:** skip silently (E2E is up to date)
+      **If NO spec files exist:** skip silently (E2E not yet set up for this project)
+      **If E2E_CHANGE_LOG.md doesn't exist:** skip silently
+
+      This step is purely informational. It never blocks review from proceeding.
+
 4. SELECT REVIEW AGENTS
 
    **4.0 Choose Review Mode**

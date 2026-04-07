@@ -84,12 +84,26 @@ Check 6: Clean Working Tree
     {list of modified/untracked files}
     Commit or stash changes before shipping"
 
+Check 7: E2E Coverage Status (advisory — does not block ship)
+  How to verify:
+    1. Read `.planning/E2E_CHANGE_LOG.md` (if exists)
+    2. Count uncovered phases (sections with `- [ ] Not yet covered by E2E tests`)
+    3. Read `e2e-manifest.md` (if exists) for last run date and journey count
+  Pass criteria: No uncovered phases, OR no E2E_CHANGE_LOG.md exists (E2E not enabled)
+  Advisory (not blocking): Uncovered phases exist — E2E has not been run for all changes
+  Advisory output: "E2E coverage advisory:
+    {N} phase(s) have changes not yet validated by E2E tests.
+    Consider running `/legion:e2e` before shipping.
+    This is advisory only — it does not block the ship."
+  Note: This check is ALWAYS advisory. It reports status but never blocks.
+    Even if uncovered phases exist, the ship gate does not fail on Check 7.
+
 Gate Result:
-  If all 6 checks pass:
-    Log: "Pre-ship gate: PASSED (6/6 checks)"
+  If all 6 mandatory checks pass (Check 7 is advisory only):
+    Log: "Pre-ship gate: PASSED (6/6 mandatory checks){' + E2E advisory' if Check 7 has advisory}"
     Proceed to Section 2 (Ship Report Generation)
 
-  If any check fails:
+  If any mandatory check (1-6) fails:
     Log: "Pre-ship gate: FAILED at check {N} ({check_name})"
     Display remediation for the first failing check.
     Do NOT proceed to Section 2.

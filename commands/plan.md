@@ -382,6 +382,30 @@ DRY-RUN MODE (deterministic, no side effects)
    If any stage returned BLOCKER/REWORK: pipeline already halted at that stage.
    Otherwise: proceed to step 9.
 
+8.9. E2E CHANGE RECORDING (lightweight — records only, does not create E2E plans)
+   If `settings.testing.e2e_change_tracking` is not explicitly false (default: true):
+   a. Read all {NN}-{PP}-PLAN.md files in `.planning/phases/{NN}-{slug}/`
+   b. For each plan with code files in `files_modified` (`.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.go`, `.java`, `.kt`, `.rb`, `.vue`, `.svelte`):
+      - Extract mentioned routes, pages, components, API endpoints from plan description and task list
+      - Infer affected user journeys from plan title and requirements
+   c. Append to `.planning/E2E_CHANGE_LOG.md` under a new section:
+      ```markdown
+      ## Phase {N}: {phase-name}
+
+      ### Planned Impact (recorded at plan stage)
+      - New routes: {list or "none detected"}
+      - New/modified pages: {list or "none detected"}
+      - User journeys affected: {list or "none detected"}
+      - APIs: {list or "none detected"}
+      - Components: {list or "none detected"}
+
+      ### E2E Coverage Status
+      - [ ] Not yet covered by E2E tests
+      ```
+   d. One-line log: "E2E change log updated with Phase {N} planned impact"
+   
+   If setting is false or file can't be created: skip silently. Never warn. Never block.
+
 9. GITHUB ISSUE CREATION (optional)
    Follow github-sync Section 8 (Graceful Degradation) caller pattern:
    - Check GitHub availability: gh auth status && git remote get-url origin

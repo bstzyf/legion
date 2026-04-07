@@ -48,6 +48,10 @@
     "prune_threshold": 200,
     "prune_age_days": 90
   },
+  "testing": {
+    "e2e_change_tracking": true,
+    "e2e_change_log_path": ".planning/E2E_CHANGE_LOG.md"
+  },
   "integrations": {
     "github": "prompt"
   }

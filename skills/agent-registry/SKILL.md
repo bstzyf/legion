@@ -86,6 +86,7 @@ If archetypeScores are provided by the caller for the detected task_type:
 - `mobile`, `ios`, `android`, `flutter` -> `mobile-development`
 - `ml`, `ai`, `model`, `training` -> `ai-ml`
 - `test`, `qa`, `benchmark` -> `quality-testing`
+- `e2e`, `end-to-end`, `journey`, `playwright`, `browser`, `user-flow` -> `e2e-testing`
 - `campaign`, `social`, `content` -> `content-marketing`
 - `visionos`, `xr`, `webxr`, `spatial` -> `spatial-computing`
 - `security`, `owasp`, `stride` -> `security-audit`
@@ -184,6 +185,7 @@ Pre-configured team compositions for common project scenarios.
 | Backend | engineering-backend-architect | engineering |
 | UI/UX | design-ui-designer | design |
 | QA | testing-qa-verification-specialist | testing |
+| E2E | e2e-runner | testing |
 
 ### API Development
 > Backend service, API endpoint, or integration work.
@@ -227,6 +229,7 @@ Pre-configured team compositions for common project scenarios.
 | Backend | engineering-backend-architect | engineering |
 | UI/UX | design-ui-designer | design |
 | QA Lead | testing-qa-verification-specialist | testing |
+| E2E | e2e-runner | testing |
 | Marketing | marketing-growth-hacker | marketing |
 | Analytics | data-analytics-engineer | specialized |
 

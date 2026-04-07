@@ -154,7 +154,21 @@ Step 2: Update STATE.md
 Step 3: Update ROADMAP.md progress table
   - Status: "Complete" if all plans passed, "Partial" if some failed
 
-Step 3.5: Suggest semantic compaction (optional)
+Step 3.5: E2E Status Summary (lightweight — informational only)
+  If `.planning/E2E_CHANGE_LOG.md` exists:
+    a. Count uncovered phases (sections with `- [ ] Not yet covered by E2E tests`)
+    b. Read `e2e-manifest.md` (if exists) to get total journeys and last run date
+    c. Include in progress display:
+       ```
+       E2E Status: {covered_phases}/{total_phases} phases covered
+       Journeys: {total_journeys} tracked | Last run: {date or "never"}
+       Uncovered changes: {count} phase(s) since last E2E run
+       → Run `/legion:e2e` when ready to validate
+       ```
+  If E2E_CHANGE_LOG.md does not exist: skip silently.
+  This is informational only — never blocks execution.
+
+Step 3.6: Suggest semantic compaction (optional)
   If all plans passed (phase is complete, not partial):
   - Check if any previous completed phases have uncompacted summaries:
     For each completed phase in ROADMAP.md:

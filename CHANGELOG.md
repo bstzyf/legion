@@ -5,6 +5,36 @@ All notable changes to the Legion plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.3.0] - 2026-04-07
+
+### Added
+- **`/legion:e2e`** — User-initiated multi-dimensional E2E testing command. Scans accumulated changes from plan/build stages, reconciles with live codebase (dual-source), generates/supplements test cases across 6 quality dimensions, and runs full Playwright regression. Supports `--analyze-only` (write tests without executing) and `--force-run` flags.
+- **6 quality dimensions** — E2E tests cover functional journeys, visual regression (`toHaveScreenshot`), accessibility (axe-core WCAG 2.1 AA), performance (Web Vitals budgets), responsive (multi-device viewports), and API contract validation (`APIRequestContext`).
+- **E2E runner agent** (`agents/e2e-runner.md`, 241 lines) — Lean agent personality with three operating modes: DELTA (build-time, new journeys only), REGRESSION (review-time, all specs), CUMULATIVE (`/legion:e2e`, all sources + all dimensions).
+- **E2E dimensions skill** (`skills/e2e-dimensions/SKILL.md`, 315 lines) — Per-dimension implementation guide with core code templates, Playwright config, and directory structure. Loaded by agent on demand, not injected into context.
+- **E2E change tracker skill** (`skills/e2e-change-tracker/SKILL.md`) — Defines `.planning/E2E_CHANGE_LOG.md` format and two integration points for passive change accumulation.
+- **Passive change recording** — `commands/plan.md` Step 8.9 extracts planned routes/pages/APIs from PLAN files; `commands/build.md` Step g1.5 extracts actual file changes from SUMMARY files. Both append to `E2E_CHANGE_LOG.md` silently.
+- **Review soft prompt** — `commands/review.md` Step 3.7 detects uncovered changes + existing specs → asks user whether to run `/legion:e2e` first. Never blocks review.
+- **Ship advisory** — `skills/ship-pipeline/SKILL.md` Check 7 reports E2E coverage status before shipping. Advisory only, never blocks.
+- **Execution tracker E2E status** — `skills/execution-tracker/SKILL.md` Step 3.5 shows E2E coverage summary after build completion.
+- **Intent router E2E recognition** — Natural language "run e2e", "browser test", "e2e regression" routes to `/legion:e2e`.
+- **E2E user guide** (`docs/e2e-guide.md`) — Chinese-language guide covering the full E2E workflow from zero to execution.
+
+### Changed
+- **Agent roster 48 → 49** — e2e-runner added to Testing division in agent-registry CATALOG.md.
+- **Agent registry** — `e2e`/`end-to-end`/`journey`/`playwright` keywords mapped to `e2e-testing` task type.
+- **settings.json** — New `testing.e2e_change_tracking` setting (default: true) controls passive change recording.
+- **CLAUDE.md** — Registered `/legion:e2e` command, updated command count to 18, added E2E workflow description.
+
+### Design Decisions
+- **User-controlled, not auto-injected** — E2E executes only when the user runs `/legion:e2e`. Plan/build stages only record change facts passively. No forced E2E plans, no mandatory gates.
+- **Agent+Skill split** — Agent personality (241 lines) stays lean for LLM execution accuracy. Dimension details (315 lines) live in a separate skill loaded on demand.
+- **Dual-source reconciliation** — `/legion:e2e` takes the UNION of change log (intent) and code scan (reality) to ensure zero coverage gaps.
+
+### Stats
+- 18 commands, 33 skills, 49 agents
+- New files: 5 | Modified files: 10 | Total: +433 lines across 15 files
+
 ## [7.2.0] - 2026-03-31
 
 ### Added

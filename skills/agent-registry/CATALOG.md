@@ -112,7 +112,7 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | support-legal-compliance-checker | `agents/support-legal-compliance-checker.md` | Expert legal and compliance specialist ensuring business operations, data handling, and content comply with laws, regulations, and industry standards | legal-compliance, risk-assessment, policy-development, regulatory, gdpr-privacy |
 | support-support-responder | `agents/support-support-responder.md` | Expert customer support specialist delivering exceptional customer service, issue resolution, and user experience optimization | customer-support, issue-resolution, multi-channel-support, customer-success, user-experience |
 
-### Testing Division (6 agents)
+### Testing Division (7 agents)
 
 | ID | File | Specialty | Task Types |
 |----|------|-----------|------------|
@@ -122,6 +122,7 @@ The recommendation algorithm and team assembly patterns are in `SKILL.md` in thi
 | testing-test-results-analyzer | `agents/testing-test-results-analyzer.md` | Expert test analysis specialist focused on comprehensive test result evaluation, quality metrics analysis, and actionable insight generation | test-analysis, quality-metrics, test-reporting, trend-analysis, continuous-improvement |
 | testing-tool-evaluator | `agents/testing-tool-evaluator.md` | Expert technology assessment specialist evaluating, testing, and recommending tools, software, and platforms for business use | tool-evaluation, technology-assessment, competitive-comparison, adoption-strategy, productivity-tools |
 | testing-workflow-optimizer | `agents/testing-workflow-optimizer.md` | Testing and QA workflow optimization specialist focused on test pipeline efficiency, CI optimization, QA process improvement, and test automation strategy | test-pipeline-optimization, ci-optimization, qa-process-improvement, test-automation-strategy, flaky-test-detection |
+| e2e-runner | `agents/e2e-runner.md` | End-to-end testing specialist covering journey identification, Playwright/Agent Browser test creation, Page Object Model patterns, flaky test management, artifact collection, and quality gate enforcement | e2e-testing, journey-mapping, pom-design, flaky-detection, quality-gates, ci-integration, test-automation, browser-testing |
 
 ### Custom Division
 

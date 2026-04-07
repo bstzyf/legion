@@ -334,6 +334,30 @@ c. **No match**: If NL parsing returns confidence 0 or no candidates, proceed wi
         {adapter.commit_signature}
       - If the plan failed: do NOT commit — leave changes unstaged for diagnosis
 
+   g1.5. E2E CHANGE RECORDING (lightweight — records only)
+      If `settings.testing.e2e_change_tracking` is not explicitly false (default: true):
+      a. Read this plan's SUMMARY.md "Files Modified" or "Files Created" section
+      b. Categorize files by type:
+         - Routes: `**/routes/**`, `**/pages/**`, `app/**/page.tsx`, `**/router.*`
+         - Components: `**/*Page.*`, `**/*View.*`, `**/*Component.*`, `**/*Screen.*`
+         - APIs: `**/api/**`, `**/controllers/**`, `**/handlers/**`, `**/endpoints/**`
+         - Middleware: `**/middleware/**`, `**/interceptors/**`
+         - Styles: `**/*.css`, `**/*.scss`, `**/*.less`, `**/theme*`, `**/styles/**`
+         - Config: `**/config/**`, `**/*.config.*`, `**/.env*`
+      c. Append to `.planning/E2E_CHANGE_LOG.md` under the existing Phase section:
+         ```markdown
+         ### Actual Changes (recorded at build stage)
+         - Plan {NN}-{PP}: {plan-title}
+           - Files: {categorized list}
+           - Routes: {extracted routes or "none"}
+           - APIs: {extracted endpoints or "none"}
+           - Components: {extracted components or "none"}
+           - Styles: {style file count, if any}
+         ```
+      d. One-line log: "E2E change log updated with Plan {NN}-{PP} actual changes"
+      
+      If setting is false or SUMMARY.md doesn't exist: skip silently.
+
    g2. Record outcome in memory (optional — follows memory-manager Section 6)
        If .planning/memory/OUTCOMES.md exists or .planning/memory/ directory can be created:
          Follow memory-manager Section 3 (Store Outcome):

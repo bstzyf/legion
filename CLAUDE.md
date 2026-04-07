@@ -27,12 +27,13 @@ A multi-CLI plugin for orchestrating 48 AI specialist personalities as a coordin
 | `/legion:learn` | Record, recall, and manage project-specific patterns, pitfalls, and preferences |
 | `/legion:update` | Check for updates and install latest version from npm |
 | `/legion:validate` | Validate .planning/ state file integrity, schema conformance, and cross-references |
+| `/legion:e2e` | Scan changes, generate/supplement test cases across 6 quality dimensions, and run full E2E regression |
 
 ## Project Structure
 
 ```
 bin/                  — npm installer (install.js)
-commands/             — 17 /legion: command entry points
+commands/             — 18 /legion: command entry points
 skills/               — 30 reusable workflow skills (SKILL.md per directory)
 agents/               — 48 agent personality .md files (flat, with division in frontmatter)
 adapters/             — Per-CLI adapter files (claude-code.md, codex-cli.md, cursor.md, etc.)
@@ -64,6 +65,8 @@ Agent frontmatter includes enriched metadata: `languages`, `frameworks`, `artifa
 ```
 
 Each phase: plan (decompose + assign agents) → build (execution — parallel or sequential per CLI) → review (QA loop) → ship (deploy) → retro (learn)
+
+E2E testing: `/legion:e2e` — user-initiated, runs at any point. Plan and build stages passively record changes to `.planning/E2E_CHANGE_LOG.md`. When the user runs `/legion:e2e`, the command scans accumulated changes + live codebase, generates/supplements test cases across 6 quality dimensions (functional, visual regression, accessibility, performance, responsive, API contract), and executes full regression. Review stage softly suggests running E2E if uncovered changes exist.
 
 Learning: `/legion:learn <lesson>` — record patterns, pitfalls, and preferences to project memory
 Advisory: `/legion:advise <topic>` — standalone consultation, no phase context needed
